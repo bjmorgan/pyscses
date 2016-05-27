@@ -19,7 +19,8 @@ class Site:
         for defect in self.defects:
             if defect.fixed:
                 probabilities.append( defect.mole_fraction )
-            else:                probabilities.append( defect.boltzmann_two( phi, temp ) / ( 1.0 + self.sum_of_boltzmann_three( phi, temp ) ) )
+            else:  
+                probabilities.append( defect.boltzmann_two( phi, temp ) / ( 1.0 + self.sum_of_boltzmann_three( phi, temp ) ) )
         return probabilities
   
 
