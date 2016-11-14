@@ -27,11 +27,13 @@ class Site:
     def defect_valences( self ):
         return np.array( [ d.valence for d in self.defects ] )
 
-    def charge_density( self, phi, temp ):
+    def charge( self, phi, temp ):
         '''
-        returns the charge density in C m^-3
+        returns the charge in C 
         '''
-        return self.density * np.dot( self.probabilities( phi, temp ), self.defect_valences() ) * fundamental_charge
+        return np.dot( self.probabilities( phi, temp ), self.defect_valences() ) * fundamental_charge
+
+
 
     def probabilities_boltz( self, phi, temp ):
         return [ defect.boltzmann_two( phi, temp ) for defect in self.defects ]
