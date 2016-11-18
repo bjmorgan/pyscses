@@ -3,9 +3,8 @@ import numpy as np
 from project.constants import fundamental_charge
 
 class Site:
-    def __init__( self, x, density, defect_species, defect_energies ):
+    def __init__( self, x, defect_species, defect_energies ):
         assert( len( defect_species) == len( defect_energies ) )
-        self.density = density
         self.x = x   
         self.defects = [ Defect_at_Site( d.valence, d.mole_fraction, e, d.fixed ) for d, e in zip( defect_species, defect_energies ) ]
 #       self.defects = [ Defect_Species( valence, mole_fraction ) for  ( valence, mole_fraction ) in defect_data ]
@@ -33,13 +32,11 @@ class Site:
         '''
         return np.dot( self.probabilities( phi, temp ), self.defect_valences() ) * fundamental_charge
 
-
-
     def probabilities_boltz( self, phi, temp ):
         return [ defect.boltzmann_two( phi, temp ) for defect in self.defects ]
 
-    def charge_density_boltz( self, phi, temp ):
-        return self.density * np.dot( self.probabilities_boltz( phi, temp ), self.defect_valences() ) * fundamental_charge
+    def charge_boltz( self, phi, temp ):
+        return np.dot( self.probabilities_boltz( phi, temp ), self.defect_valences() ) * fundamental_charge
 
     def defect_concentrations( self, phi, temp ):
         return self.density * self.probabilities( phi, temp )
