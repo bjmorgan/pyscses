@@ -1,5 +1,7 @@
 import numpy as np
-from project.grid import index_of_grid_at_x, phi_at_x
+import math
+from project.grid import index_of_grid_at_x, phi_at_x, energy_at_x
+from project.constants import boltzmann_eV
 #from project.grid import volumes_from_grid
 from bisect import bisect_left
 
@@ -23,6 +25,12 @@ class Set_of_Sites:
     def __getitem__( self, index ):
         return self.sites[ index ]
 
+    def calculate_energies_on_grid( self, grid, phi ):
+        energies_on_grid = np.zeros_like( grid )
+        for site in self.sites:
+            energies_on_grid[index_of_grid_at_x( grid.x, site.x )] =+ energy_at_x( site.defect_energies, grid.x, site.x )
+        return energies_on_grid
+
     def calculate_probabilities( self, grid, phi, temp ):
         probability = np.zeros_like( grid.x )
         for site in self.sites:
@@ -35,4 +43,12 @@ class Set_of_Sites:
             i = index_of_grid_at_x( grid.x, site.x )
             defect_density[ i ] += np.asarray( site.probabilities( phi_at_x( phi, grid.x, site.x ), temp ) ) / grid.volumes[ i ]
         return defect_density  
+
+    def subgrid_calculate_defect_density( self, sub_grid, full_grid, phi, temp ):
+        defect_density = np.zeros_like( sub_grid.x )
+        for site in self.sites:
+            i = index_of_grid_at_x( sub_grid.x, site.x )
+            defect_density[ i ] += np.asarray( site.probabilities( phi_at_x( phi, full_grid.x, site.x ), temp ) ) / sub_grid.volumes[ i ]
+        return defect_density  
+
 

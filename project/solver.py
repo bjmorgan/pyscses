@@ -8,23 +8,6 @@ class Solver:
     def __init__( self, grid ):
         self.grid = grid
 
-#    def laplacian_fullmatrix( self, neumann_bc=[False, False] ):
-#        n_points = len( self.grid )
-#        deltax = self.grid[1:] - self.grid[:-1]
-##        mean_deltax = np.mean( deltax )
-#        extended_deltax = np.insert( deltax, (0, len(deltax)), (mean_deltax, mean_deltax) )
-#        diag = -(extended_deltax[:n_points] + extended_deltax[1:])
-#        if neumann_bc[0]:
-#            diag[0]  += deltax[0]
-#        if neumann_bc[1]:
-#            diag[-1] += deltax[-1]
-#        ldiag = extended_deltax[:n_points-1]
-#        udiag = extended_deltax[2:]
-#        prefactor = 2.0 / ( extended_deltax[:n_points]* extended_deltax[1:] * (extended_deltax[:n_points] + extended_deltax[1:]) )
-#        A = diags( [ diag, udiag, ldiag ], [ 0, 1, -1 ] ).A
-#        L = (A.T * prefactor).T
-#        return L
-
     def laplacian_new_fullmatrix( self, neumann_bc=[False, False] ):
         n_points = len( self.grid )
         deltax = self.grid[1:] - self.grid[:-1]
