@@ -6,4 +6,7 @@ fundamental_charge = faraday_const / n_a
 boltzmann_eV = boltzmann_const / fundamental_charge
 
 vacuum_permittivity = 8.854187817e-12
-Gd_doped_ceria_dielectric = 55
+dielectric = 55
+
+
+

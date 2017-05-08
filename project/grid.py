@@ -105,6 +105,7 @@ def delta_x_from_grid( grid ):
     return delta_x
 
 class Grid_Point:
+    """ The Grid_Point class contains the information and calculations for each grid point individually """
 
     def __init__( self, x, volume ):
         self.x = x
@@ -157,8 +158,7 @@ def avg( energies, method = 'mean' ):
 class Grid:
     def __init__( self, x_coordinates, b, c, site_set ):
        # x_coordinates need to be sorted for the delta_x calculation in volumes_from_grid
-        """ 
-        """
+        """ The Grid class contains information and calculations for the grid containing all the grid points as a single object. """
         self.volumes = volumes_from_grid( b, c, x_coordinates )
         self.points = [ Grid_Point( x, v ) for x, v in zip( x_coordinates, self.volumes ) ]
         self.x = x_coordinates
@@ -212,15 +212,18 @@ class Grid:
         for site in self.points.sites:
             return np.array( [ d.valence for d in site.defects ] )
 
-#    def calculate_defect_density( self, phi, temp ):
-#        defect_density = np.zeros_like( self.x )
-#        for i, point in enumerate( self ):
-#           defect_density[ i ] += np.asarray( site.probabilities( phi_at_x( phi, self.x, site.x ), temp ) ) / self.volumes[ i ]
-#      return defect_density
-
     def resistivity_ratio( self, defect_density, bulk_density ):
+        """
+        Calculates the grain boundary resistivity. This is the resistivity in the space charge region / the resistivity in the bulk crystal.
+
+        Args:
+            defect_density (array) : The defect density at each site.
+            bulk_density (float) : The defect density in the bulk region.
+
+        Returns:
+            local_resistivity (float) : The grain boundary resistivity.  
+        """
         grain_boundary_resistance = sum( delta_x_from_grid( self.x ) / defect_density ) 
-    #    print( grain_boundary_resistance, bulk_density )
         local_resistivity = ( bulk_density / sum( delta_x_from_grid( self.x ) ) ) * grain_boundary_resistance 
         return local_resistivity
 

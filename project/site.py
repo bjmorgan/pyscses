@@ -1,12 +1,16 @@
 from project.defect_at_site import Defect_at_Site
 import numpy as np
+import math
 from project.constants import fundamental_charge, boltzmann_eV
 
 class Site:
-    def __init__( self, x, defect_species, defect_energies, scaling = None ):
+    """ The site class contains all the information about a given site and the defect occupying that site.
+        This class contains functions for the calculations which correspond to each individual site, rather than the whole system. """
+    def __init__( self, label, x, defect_species, defect_energies, scaling = None ):
         assert( len( defect_species) == len( defect_energies ) )
+        self.label = label
         self.x = x   
-        self.defects = [ Defect_at_Site( d.valence, d.mole_fraction, e, d.fixed ) for d, e in zip( defect_species, defect_energies ) ]
+        self.defects = [ Defect_at_Site( d.label, d.valence, d.mole_fraction, e, self, d.fixed ) for d, e in zip( defect_species, defect_energies ) ]
         if scaling:
             self.scaling = scaling
         else:
@@ -14,6 +18,10 @@ class Site:
         self.grid_point = None
 #       self.defects = [ Defect_Species( valence, mole_fraction ) for  ( valence, mole_fraction ) in defect_data ]
 #       self.sites = [ Data(x, energy) for ( x, energy ) in site_data ]
+
+    def defect_with_label( self, label ):
+        """ Returns a list of defects which correspond to the given label """
+        return [ d for d in self.defects if d.label == label ][0]
 
     def energies( self ):
         """ Returns a list of the segregation energies for each defect from self.defects """
@@ -39,8 +47,8 @@ class Site:
         Calculates the sum of the calculated boltzmann_three values for each defect at each site.  
 
         Args: 
-            phi (np.array): Electrostatic potential on a 1D grid.
-            temp (float): Temperature of calculation.
+            phi (float): Electrostatic potential at the site.
+            temp (float): Temperature of calculation in Kelvin.
 
         Returns:
             The sum of ( mole fraction * exp ^ -( ( phi * z )/kBT ) - 1 ) for each defect at each site. 
@@ -49,18 +57,15 @@ class Site:
         return sum( [ d.boltzmann_three( phi, temp ) for d in self.defects ] )
 
     def probabilities( self, phi, temp ):
-        
         """
-    
         Calculates the probability of each site being occupied by a given defect using Fermi-Dirac like statistics.
 
         Args:
-            phi (np.array): Electrostatic potential on a 1D grid.
-            temp (float): Temperature of calculation.
+            phi (floaty):   Electrostatic potential at this site.
+            temp (float):   Temperature of calculation.
 
         Returns: 
             probabilities (list): Probabilities of site occupation on a 1D grid. 
-
         """
         probabilities = []
         for defect in self.defects:
@@ -80,7 +85,7 @@ class Site:
         Calculates the charge in Coulombs at each site under Fermi-Dirac like statistics.
 
         Args:
-            phi (np.array): Electrostatic potential on a 1D grid.
+            phi (float):  Electrostatic potential at this site.
             temp (float): Temperature of calculation.
 
         Returns:
@@ -89,15 +94,13 @@ class Site:
         charge =  np.sum( self.probabilities( phi, temp ) * self.defect_valences() * self.scaling ) * fundamental_charge
         return charge
 
-
-
     def probabilities_boltz( self, phi, temp ):
         """
     
         Calculates the probability of each site being occupied by a given defect using Boltzmann statistics.
 
         Args:
-            phi (np.array): Electrostatic potential on a 1D grid.
+            phi (float): Electrostatic potential at this site.
             temp (float): Temperature of calculation.
 
         Returns: 
@@ -112,7 +115,7 @@ class Site:
         Calculates the charge in Coulombs at each site under Boltzmann statistics.
 
         Args:
-            phi (np.array): Electrostatic potential on a 1D grid.
+            phi (float): Electrostatic potential at this site
             temp (float): Temperature of calculation.
 
         Returns:
