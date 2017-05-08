@@ -78,5 +78,3 @@ class Defect_at_Site:
    
         """
         return self.mole_fraction * ( self.boltzmann_one( phi, temp ) - 1.0 )
-
-
