@@ -23,6 +23,7 @@ def calculation( grid, conv, temp, alpha ):
     Returns:
         phi (array): Electrostatic potential on a one-dimensional grid. 
         rho (float): Charge density on a one-dimensional grid.
+        niter (int): Number of iterations performed to reach convergence.
     """
     poisson_solver = Solver( grid.x )
 
@@ -33,13 +34,15 @@ def calculation( grid, conv, temp, alpha ):
     A = poisson_solver.laplacian_sparse( neumann_bc = [ False, False ] )
 
     convergence = 1
+    niter = 0
     while convergence > conv:
         rho = grid.rho( phi, temp )
         predicted_phi = poisson_solver.pb_solver_sparse( rho, boundary_condition, A, dielectric )
         phi =  alpha * predicted_phi + ( 1.0 - alpha ) * phi
         convergence = (sum(( predicted_phi - phi ) **2)) / len( grid.x )
+        niter += 1
 #        print( convergence )
-    return phi, rho
+    return phi, rho, niter
 
 def diff_central(x, y):
     """
