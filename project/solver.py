@@ -34,6 +34,9 @@ class Solver:
         ldiag = 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x1 )
         udiag = 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x2 ) 
         A = diags( [ diag, udiag[:-1], ldiag[1:] ], [ 0, 1, -1 ] ).A
+        A[-1,0] = ldiag[0] # Will need the proper spacing
+        A[0,-1] = udiag[-1] # Will need the proper spacing
+#        print( A )
         return A
 
     def laplacian_sparse( self, neumann_bc=[False, False] ):

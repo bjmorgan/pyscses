@@ -90,7 +90,7 @@ def calculate_average_molefraction( temp, x_min, x_max, b, c, index, alpha, conv
  
     bulk_mobile_defect_grid = Grid( np.unique( [ x for x in all_sites.get_coords(site_labels[0]) if x <= x_max and x >= x_min ] ), b, c, all_sites.subset( site_labels[0] ) )
     
-    phi, rho = calculation( bulk_grid, conv, temp, alpha )
+    phi, rho, niter = calculation( bulk_grid, conv, temp, alpha )
 
     mobile_defect_density = Set_of_Sites( all_sites.subset( site_labels[0] ) ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, bulk_grid, phi, temp )
 
@@ -111,7 +111,7 @@ def calculate_GB_properties( temp, x_min, x_max, b, c, index, alpha, conv, desir
 
     mobile_defect_grid = Grid( np.unique( [ x for x in all_sites.get_coords(site_labels[0]) ] ), b, c, all_sites.subset(site_labels[0]) )
 
-    phi, rho = calculation( grid, conv, temp, alpha )
+    phi, rho, niter = calculation( grid, conv, temp, alpha )
 
     mobile_defect_density = Set_of_Sites( all_sites.subset(site_labels[0]) ).subgrid_calculate_defect_density( mobile_defect_grid, grid, phi, temp )
 
@@ -124,5 +124,5 @@ def calculate_GB_properties( temp, x_min, x_max, b, c, index, alpha, conv, desir
     mobile_defect_mole_fraction = Set_of_Sites( all_sites.subset(site_labels[0]) ).calculate_probabilities( grid, phi, temp )
     dopant_mole_fraction = Set_of_Sites( all_sites.subset(site_labels[1]) ).calculate_probabilities( grid, phi, temp )
 
-    return( grid, phi, rho, probabilities, resistivity_ratio, mobile_defect_mole_fraction, dopant_mole_fraction, bulk_mobile_defect_density )
+    return( grid, phi, rho, probabilities, resistivity_ratio, mobile_defect_mole_fraction, dopant_mole_fraction, bulk_mobile_defect_density, niter )
 

@@ -3,7 +3,11 @@ import math
 from sympy import mpmath
 from project.solver import Solver
 from project.constants import *
-from project.grid import phi_at_x
+from project.grid import phi_at_x, delta_x_from_grid
+
+def average_potential( phi, grid ):
+    delta_x = delta_x_from_grid(grid)
+    return np.sum( phi * delta_x ) / np.sum(delta_x) 
 
 def sort_xy_data( array ):
     """" Takes an x,y array and sorts it into numerical order from the x axis """
@@ -38,10 +42,15 @@ def calculation( grid, conv, temp, alpha ):
     while convergence > conv:
         rho = grid.rho( phi, temp )
         predicted_phi = poisson_solver.pb_solver_sparse( rho, boundary_condition, A, dielectric )
+        predicted_phi -= average_potential( predicted_phi, grid.x )
         phi =  alpha * predicted_phi + ( 1.0 - alpha ) * phi
         convergence = (sum(( predicted_phi - phi ) **2)) / len( grid.x )
         niter += 1
-#        print( convergence )
+        if niter < 10:
+            print( convergence, flush=True )
+            print(phi, flush = True)
+            print( average_potential( phi, grid.x ), flush = True )
+            print(rho, flush = True)
     return phi, rho, niter
 
 def diff_central(x, y):
