@@ -148,7 +148,18 @@ def avg( energies, method = 'mean' ):
 class Grid:
     def __init__( self, x_coordinates, b, c, site_set ):
        # x_coordinates need to be sorted for the delta_x calculation in volumes_from_grid
-        """ The Grid class contains information and calculations for the grid containing all the grid points as a single object. """
+        """ 
+        Grid objects contain information and methods for the calculation grid.
+  
+        Args:
+            x_coordinates (np.array): The x-coordinates for each grid point.
+            b (float):                b dimension for every grid-point.
+            c (float):                c dimension for every grid-point.
+            site_set (project.Set_of_Sites): The set of defect sites for populating the grid.
+       
+        Returns:
+            None
+        """
         self.volumes = volumes_from_grid( b, c, x_coordinates )
         self.points = [ Grid_Point( x, v ) for x, v in zip( x_coordinates, self.volumes ) ]
         self.x = x_coordinates
