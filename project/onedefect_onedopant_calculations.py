@@ -1,6 +1,5 @@
 from project.defect_species import Defect_Species
 from project.site import Site
-from project.solver import Solver
 #from project.practice import *
 from project.grid import *
 from project.set_of_sites import Set_of_Sites
@@ -64,7 +63,7 @@ def site_from_input_file( site, defect_species ):
  #   return( all_sites )
  
 
-def MF( desired_mobile_defect_MF, slope, intercept ):
+def MF( desired_mobile_defect_mf, slope, intercept ):
     """
     Calculates the mole fraction that is required in the input to get the desired output mole fraction.
     Due to some numerical noise, when the simulation is run the defect mole fractions vary from what they should be and this code uses a solpe and intercept from linear regression of the input and output mole fractions to find what the input mole fraction should be to achieve the desired output.
@@ -77,12 +76,12 @@ def MF( desired_mobile_defect_MF, slope, intercept ):
     Returns:
         MF (float): input mole fraction to achieve desired output mole fraction.
     """
-    mobile_defect_MF = ( Desired_mobile_defect_MF - intercept ) / slope
-    MF = [ mobile_defect_MF, ( mobile_defect_MF * 4 ) ]
+    mobile_defect_mf = ( desired_mobile_defect_mf - intercept ) / slope
+    MF = [ (mobile_defect_mf), ( mobile_defect_mf ) ]
     return MF
 
 
-def calculate_average_molefraction( temp, x_min, x_max, b, c, index, alpha, conv, all_sites, site_labels ):
+def calculate_average_molefraction( temp, x_min, x_max, b, c, index, alpha, conv, all_sites, site_labels, boundary_conditions ):
     
     bulk_x_coordinates = np.unique( np.concatenate( ( ( [ x for x in all_sites.get_coords(site_labels[1]) if x <= x_max and x >= x_min ] ), ( [ x for x in all_sites.get_coords(site_labels[0]) if x <= x_max and x >= x_min ] ) ), axis = 0 ) )
     
@@ -90,7 +89,7 @@ def calculate_average_molefraction( temp, x_min, x_max, b, c, index, alpha, conv
  
     bulk_mobile_defect_grid = Grid( np.unique( [ x for x in all_sites.get_coords(site_labels[0]) if x <= x_max and x >= x_min ] ), b, c, all_sites.subset( site_labels[0] ) )
     
-    phi, rho, niter = calculation( bulk_grid, conv, temp, alpha )
+    phi, rho, niter = calculation( bulk_grid, conv, temp, alpha, boundary_conditions )
 
     mobile_defect_density = Set_of_Sites( all_sites.subset( site_labels[0] ) ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, bulk_grid, phi, temp )
 
@@ -103,7 +102,7 @@ def calculate_average_molefraction( temp, x_min, x_max, b, c, index, alpha, conv
 
     return avg_mobile_defect_MF
 
-def calculate_GB_properties( temp, x_min, x_max, b, c, index, alpha, conv, desired_mobile_defect_MF, all_sites, site_labels ):
+def calculate_GB_properties( temp, x_min, x_max, b, c, index, alpha, conv, desired_mobile_defect_MF, all_sites, site_labels, boundary_conditions ):
     
     x_coordinates = np.unique( np.concatenate( ( ( [ x for x in all_sites.get_coords(site_labels[1]) if x <= x_max and x >= x_min ] ), ( [ x for x in all_sites.get_coords(site_labels[0]) if x <= x_max and x >= x_min ] ) ), axis = 0 ) )
 
@@ -111,7 +110,7 @@ def calculate_GB_properties( temp, x_min, x_max, b, c, index, alpha, conv, desir
 
     mobile_defect_grid = Grid( np.unique( [ x for x in all_sites.get_coords(site_labels[0]) ] ), b, c, all_sites.subset(site_labels[0]) )
 
-    phi, rho, niter = calculation( grid, conv, temp, alpha )
+    phi, rho, niter = calculation( grid, conv, temp, alpha, boundary_conditions )
 
     mobile_defect_density = Set_of_Sites( all_sites.subset(site_labels[0]) ).subgrid_calculate_defect_density( mobile_defect_grid, grid, phi, temp )
 

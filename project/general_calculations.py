@@ -1,7 +1,9 @@
 import numpy as np
 import math
 from sympy import mpmath
-from project.solver import Solver
+from scipy.optimize import minimize_scalar 
+from project.pbc_solver import PBCSolver
+from project.matrix_solver import MatrixSolver
 from project.constants import *
 from project.grid import phi_at_x, delta_x_from_grid
 
@@ -14,7 +16,7 @@ def sort_xy_data( array ):
     ind = np.lexsort( ( array[:,1], array[:,0] ) )
     return array[ ind ]
 
-def calculation( grid, conv, temp, alpha ):
+def calculation( grid, conv, temp, alpha, boundary_conditions ):
     """
     Self-consistent solving of the Poisson-Boltzmann equation. Iterates until the convergence is less than the convergence limit.
 
@@ -29,28 +31,23 @@ def calculation( grid, conv, temp, alpha ):
         rho (float): Charge density on a one-dimensional grid.
         niter (int): Number of iterations performed to reach convergence.
     """
-    poisson_solver = Solver( grid.x )
+
+    solvers = { 'dirichlet' : MatrixSolver, 
+                'periodic' : PBCSolver }
+
+    poisson_solver = solvers[boundary_conditions]( grid, dielectric, temp )
 
     phi = np.zeros_like( grid.x )
     rho = np.zeros_like( grid.x )
-    boundary_condition = poisson_solver.boundary_conditions()
-
-    A = poisson_solver.laplacian_sparse( neumann_bc = [ False, False ] )
 
     convergence = 1
     niter = 0
     while convergence > conv:
         rho = grid.rho( phi, temp )
-        predicted_phi = poisson_solver.pb_solver_sparse( rho, boundary_condition, A, dielectric )
-        predicted_phi -= average_potential( predicted_phi, grid.x )
+        predicted_phi = poisson_solver.solve( rho )
         phi =  alpha * predicted_phi + ( 1.0 - alpha ) * phi
         convergence = (sum(( predicted_phi - phi ) **2)) / len( grid.x )
         niter += 1
-        if niter < 10:
-            print( convergence, flush=True )
-            print(phi, flush = True)
-            print( average_potential( phi, grid.x ), flush = True )
-            print(rho, flush = True)
     return phi, rho, niter
 
 def diff_central(x, y):
