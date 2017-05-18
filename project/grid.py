@@ -7,7 +7,6 @@ from project.constants import boltzmann_const
 
 def phi_at_x( phi, grid, x ):
     """
-    
     Assigns each site x coordinate a grid point and returns the electrostatic potential at the grid point clostest to the x coordinate.
 
     Args:
@@ -17,7 +16,6 @@ def phi_at_x( phi, grid, x ):
 
     Returns:
         phi[index] (float): The electrostatic potential at the x coordinate with position [index].
-    
     """
 
     index = index_of_grid_at_x( grid, x )
@@ -25,7 +23,6 @@ def phi_at_x( phi, grid, x ):
 
 def energy_at_x( energy, grid, x ):
     """
-    
     Assigns each site x coordinate a grid point and returns the segregation energy at the grid point clostest to the x coordinate.
 
     Args:
@@ -35,7 +32,6 @@ def energy_at_x( energy, grid, x ):
 
     Returns:
         energy[index] (float): The segregation energy at the x coordinate with position [index].
-    
     """
 
     index = index_of_grid_at_x( grid, x )
@@ -43,7 +39,6 @@ def energy_at_x( energy, grid, x ):
 
 def index_of_grid_at_x( grid, x ):
     """ 
-
     Assigns each site x coordinate to a position on a regularly or irregularly spaced grid. 
     Returns the index of the grid point clostest to the value x 
 
@@ -53,13 +48,11 @@ def index_of_grid_at_x( grid, x ):
 
     Returns:
         closest_index (int): Index of grid position closest to the site x coordinate.
- 
     """
     return closest_index( grid, x )
 
 def closest_index(myList, myNumber):
     """
-
     Assumes myList is sorted. Returns index of closest value to myNumber.
     If two numbers are equally close, return the index of the smallest number.
 
@@ -69,7 +62,6 @@ def closest_index(myList, myNumber):
 
     Returns:
         pos (int): Index of position of number in myList which is closest to myNumber.
- 
     """
     pos = bisect_left(myList, myNumber)
     if pos == 0:
@@ -85,7 +77,6 @@ def closest_index(myList, myNumber):
 
 def volumes_from_grid( b, c, grid ):
     """
-
     Calculates the volume of each grid point based on the cell parameters and distance between grid points ( 1/2 ( deltax1 + deltax2 ) ).
 
     Args:
@@ -94,7 +85,6 @@ def volumes_from_grid( b, c, grid ):
 
     Returns:
         volumes (np.array): Volumes of each grid point on a 1D grid. 
-
     """
     return delta_x_from_grid( grid ) * b * c
 
@@ -158,7 +148,18 @@ def avg( energies, method = 'mean' ):
 class Grid:
     def __init__( self, x_coordinates, b, c, site_set ):
        # x_coordinates need to be sorted for the delta_x calculation in volumes_from_grid
-        """ The Grid class contains information and calculations for the grid containing all the grid points as a single object. """
+        """ 
+        Grid objects contain information and methods for the calculation grid.
+  
+        Args:
+            x_coordinates (np.array): The x-coordinates for each grid point.
+            b (float):                b dimension for every grid-point.
+            c (float):                c dimension for every grid-point.
+            site_set (project.Set_of_Sites): The set of defect sites for populating the grid.
+       
+        Returns:
+            None
+        """
         self.volumes = volumes_from_grid( b, c, x_coordinates )
         self.points = [ Grid_Point( x, v ) for x, v in zip( x_coordinates, self.volumes ) ]
         self.x = x_coordinates
@@ -172,7 +173,6 @@ class Grid:
 
     def charge( self, phi, temp ):
         """
-
         Calculates the overall charge at each point on a grid.
         
         Args:
@@ -181,9 +181,7 @@ class Grid:
 
         Returns:
             charge (np.array): Overall charge at each point on a 1D grid. 
-
         """
-
         charge = np.zeros_like( self.x )
         for i, point in enumerate( self ):
             charge[ i ] = sum( [ site.charge( phi_at_x( phi, self.x, site.x ), temp ) for site in point.sites ] )
@@ -191,7 +189,6 @@ class Grid:
 
     def rho( self, phi, temp ):
         """
-
         Calculates charge density at each point on a grid, by dividing the overall charge at that grid point by the grid point volume.
 
         Args:
@@ -200,9 +197,7 @@ class Grid:
 
         Returns:
             rho (np.array): The charge density at each point on a grid.
-  
         """
-
         rho = np.zeros_like( self.x )
         rho = self.charge( phi, temp) / self.volumes
         return rho
@@ -230,7 +225,6 @@ class Grid:
 
     def average_site_energies( self, method = 'mean' ):
         """ 
-   
         Returns the average segregation energy for all grid points based on a specified method 
 
         Args: 
@@ -240,9 +234,7 @@ class Grid:
 
         Returns:
             average site energies (np.array): Average segregation energies on a 1D grid.
-  
         """
-
         return np.array( [ p.average_site_energy( method ) for p in self.points ] ).T
 
     def interpolated_energies( self ):

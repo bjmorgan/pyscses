@@ -19,6 +19,12 @@ class Set_of_Sites:
         """ Returns the site corresponding to a given index """
         return self.sites[ index ]
 
+    def __iter__( self ):
+        """
+        Iterator over self.sites
+        """
+        return iter( self.sites )
+
     def subset( self, label ):
         """ Returns a list of all the sites which contain a particular defect """
         return [ s for s in self.sites if s.label == label ] 
