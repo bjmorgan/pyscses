@@ -4,3 +4,9 @@ n_a = 6.023e23
 boltzmann_const = gas_const / n_a
 fundamental_charge = faraday_const / n_a
 boltzmann_eV = boltzmann_const / fundamental_charge
+
+vacuum_permittivity = 8.854187817e-12
+dielectric = 55
+
+
+
