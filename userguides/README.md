@@ -20,5 +20,5 @@
 
 [Comparing sintering temperatures for Gd - doped ceria](notebooks/111_Sintering_Temp.ipynb) 
 
-[ Using the Poisson-Boltzmann solver code on a continuum system (comparison of sintering temperatures ) ](111_Continuum_Sintering_Temp.ipynb)
+[ Using the Poisson-Boltzmann solver code on a continuum system (comparison of sintering temperatures ) ](notebooks/111_Continuum_Sintering_Temp.ipynb)
 
