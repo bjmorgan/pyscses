@@ -77,6 +77,7 @@ def closest_index(myList, myNumber):
 def volumes_from_grid( b, c, limits, grid ):
     """
     Calculates the volume of each grid point based on the cell parameters and distance between grid points ( 1/2 ( deltax1 + deltax2 ) ).
+    TODO explain about end points
 
     Args:
         b, c (float): Cell parameters in y and z directions.
