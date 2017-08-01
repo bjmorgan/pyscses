@@ -3,7 +3,6 @@ import math
 from project.constants import boltzmann_eV
 from bisect import bisect_left
 from scipy.interpolate import griddata
-from project.constants import boltzmann_const
 
 def phi_at_x( phi, grid, x ):
     """
@@ -75,23 +74,28 @@ def closest_index(myList, myNumber):
     else:
        return pos - 1
 
-def volumes_from_grid( b, c, grid ):
+def volumes_from_grid( b, c, limits, grid ):
     """
     Calculates the volume of each grid point based on the cell parameters and distance between grid points ( 1/2 ( deltax1 + deltax2 ) ).
 
     Args:
         b, c (float): Cell parameters in y and z directions.
+        limits ([float,float]): x-coordinates at the edges of the grid.
         grid (np.array): 1D grid of ordered numbers over a region. 
 
     Returns:
         volumes (np.array): Volumes of each grid point on a 1D grid. 
     """
-    return delta_x_from_grid( grid ) * b * c
+    return delta_x_from_grid( grid, limits ) * b * c
 
-def delta_x_from_grid( grid ):
+def delta_x_from_grid( grid, limits ):
+    """
+    docstring!
+    """
     delta_x = np.zeros_like( grid )
     delta_x = ( grid[2:] - grid[:-2] ) / 2.0
-    delta_x = np.insert( delta_x, (0, len( delta_x ) ), ( grid[1] - grid[0], grid[-1] - grid[-2] ) )
+    delta_x = np.insert( delta_x, 0, ( grid[1] - grid[0] ) / 2.0 + ( grid[0] - limits[0] ) )
+    delta_x = np.insert( delta_x, len( delta_x ), ( grid[-1] - grid[-2] ) / 2.0 + ( limits[1] - grid[-1] ) )
     return delta_x
 
 class Grid_Point:
@@ -146,7 +150,7 @@ def avg( energies, method = 'mean' ):
         raise ValueError( "method: {}".format( method ) )
 
 class Grid:
-    def __init__( self, x_coordinates, b, c, site_set ):
+    def __init__( self, x_coordinates, b, c, limits, site_set ):
        # x_coordinates need to be sorted for the delta_x calculation in volumes_from_grid
         """ 
         Grid objects contain information and methods for the calculation grid.
@@ -155,14 +159,16 @@ class Grid:
             x_coordinates (np.array): The x-coordinates for each grid point.
             b (float):                b dimension for every grid-point.
             c (float):                c dimension for every grid-point.
+            limits ([float,float])    x-coordinates for the maximum and minimum grid edges.
             site_set (project.Set_of_Sites): The set of defect sites for populating the grid.
        
         Returns:
             None
         """
-        self.volumes = volumes_from_grid( b, c, x_coordinates )
+        self.volumes = volumes_from_grid( b, c, limits, x_coordinates )
         self.points = [ Grid_Point( x, v ) for x, v in zip( x_coordinates, self.volumes ) ]
         self.x = x_coordinates
+        self.limits = limits
         for site in site_set:
             i = index_of_grid_at_x( self.x, site.x )
             self.points[ i ].sites.append( site ) 
