@@ -1,6 +1,5 @@
 from project.defect_species import Defect_Species
 from project.site import Site
-from project.interacting_site import Interacting_Site
 #from project.practice import *
 from project.grid import *
 from project.set_of_sites import Set_of_Sites
