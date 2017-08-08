@@ -21,7 +21,7 @@ class PBCSolver:
         self.temp = temp 
 
     def integrate( self, n ):
-        delta_x = delta_x_from_grid( self.grid.x )
+        delta_x = delta_x_from_grid( self.grid.x, self.grid.limits )
         n_int = np.cumsum( n * delta_x )
         return n_int - n_int.mean()    
 
