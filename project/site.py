@@ -10,6 +10,7 @@ class Site:
         assert( len( defect_species) == len( defect_energies ) )
         self.label = label
         self.x = x   
+        self.defect_species = defect_species
         self.defects = [ Defect_at_Site( d.label, d.valence, d.mole_fraction, e, self, d.fixed ) for d, e in zip( defect_species, defect_energies ) ]
         if scaling:
             self.scaling = scaling
