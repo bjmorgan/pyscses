@@ -5,6 +5,7 @@ from project.grid import *
 from project.set_of_sites import Set_of_Sites
 from project.constants import * 
 from project.general_calculations import *
+from project.calculation import Calculation
 
 import numpy as np
 import scipy
@@ -20,24 +21,6 @@ from sympy.solvers import solve
 from sympy import Symbol, exp, mpmath
 
 from timeit import default_timer as timer
-
-def site_from_input_file( site, defect_species ):
-    """
-    Takes the data from the input file and converts it into a site.
-    The input data file is a .txt file where each line in the file corresponds to a site.
-
-    Args:
-        site (str): A line in the input file.
-
-    Returns:
-        Site (object)
-    """
-    label = site[0]
-    x = float(site[1]) 
-    defect_labels = site[2::2]
-    defect_energies = [ float(e) for e in site[3::2] ]
-
-    return Site( label, x, [ defect_species[l] for l in defect_labels ], defect_energies )
 
 def form_continuum_sites( all_sites, x_min, x_max, n_points, b, c, defect_species ):
     limits = [ x_min, x_max ]    
@@ -123,26 +106,28 @@ def calculate_average_molefraction( temp, x_min, x_max, b, c, index, alpha, conv
 
     return ( avg_mobile_defect_MF )
 
-def calculate_GB_properties( temp, x_min, x_max, b, c, index, alpha, conv, desired_mobile_defect_MF, all_sites, site_labels, boundary_conditions ):
+#def calculate_GB_properties( temp, x_min, x_max, b, c, index, alpha, conv, desired_mobile_defect_MF, all_sites, site_labels, boundary_conditions ):
     
-    x_coordinates = np.unique( np.concatenate( ( ( [ x for x in all_sites.get_coords(site_labels[1]) if x <= x_max and x >= x_min ] ), ( [ x for x in all_sites.get_coords(site_labels[0]) if x <= x_max and x >= x_min ] ) ), axis = 0 ) )
+#    grid = Grid.grid_from_set_of_sites( all_sites, x_min, x_max, b, c)
 
-    limits = [x_min, x_max]
-    grid = Grid( x_coordinates, b, c, limits, all_sites )
+    
+#    calculation_object = Calculation( grid, alpha, conv, temp, boundary_conditions )
+#    calculation_object.solve()
+#    phi = calculation_object.phi
+#    rho = calculation_object.rho
+#    niter = calculation_object.niter
 
-    mobile_defect_grid = Grid( np.unique( [ x for x in all_sites.get_coords(site_labels[0]) ] ), b, c, limits, all_sites.subset(site_labels[0]) )
+#    calculation_object.form_subgrids( site_labels )
+#    mobile_defect_grid = calculation_object.subgrids[site_labels[0]]
 
-    phi, rho, niter = calculation( grid, conv, temp, alpha, boundary_conditions )
+#    calculation_object.calculate_resistivity_ratio( 0.05 )
+#    resistivity_ratio = calculation_object.resistivity_ratio
+#    bulk_mobile_defect_density = calculation_object.bulk_mobile_defect_density
+   
+#    probabilities = all_sites.calculate_probabilities( grid, phi, temp )
 
-    mobile_defect_density = Set_of_Sites( all_sites.subset(site_labels[0]) ).subgrid_calculate_defect_density( mobile_defect_grid, grid, phi, temp )
+#    calculation_object.calculate_mole_fractions()
+#    mobile_defect_mole_fraction = calculation_object.mole_fractions[site_labels[0]]
+#    dopant_mole_fraction = calculation_object.mole_fractions[site_labels[1] ]
 
-    bulk_mobile_defect_density = len( all_sites.subset(site_labels[0]) ) * desired_mobile_defect_MF / np.sum( mobile_defect_grid.volumes )
-
-    resistivity_ratio = mobile_defect_grid.resistivity_ratio( mobile_defect_density, bulk_mobile_defect_density )
-
-    probabilities = all_sites.calculate_probabilities( grid, phi, temp )
-
-    mobile_defect_mole_fraction = Set_of_Sites( all_sites.subset(site_labels[0]) ).calculate_probabilities( grid, phi, temp )
-    dopant_mole_fraction = Set_of_Sites( all_sites.subset(site_labels[1]) ).calculate_probabilities( grid, phi, temp )
-
-    return( grid, phi, rho, probabilities, resistivity_ratio, mobile_defect_mole_fraction, dopant_mole_fraction, bulk_mobile_defect_density, niter )
+#    return( grid, phi, rho, probabilities, resistivity_ratio, mobile_defect_mole_fraction, dopant_mole_fraction, bulk_mobile_defect_density, niter )
