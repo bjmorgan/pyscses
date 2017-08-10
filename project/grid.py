@@ -151,7 +151,7 @@ def avg( energies, method = 'mean' ):
         raise ValueError( "method: {}".format( method ) )
 
 class Grid:
-    def __init__( self, x_coordinates, b, c, limits, site_set ):
+    def __init__( self, x_coordinates, b, c, limits, set_of_sites ):
        # x_coordinates need to be sorted for the delta_x calculation in volumes_from_grid
         """ 
         Grid objects contain information and methods for the calculation grid.
@@ -161,7 +161,7 @@ class Grid:
             b (float):                b dimension for every grid-point.
             c (float):                c dimension for every grid-point.
             limits ([float,float])    x-coordinates for the maximum and minimum grid edges.
-            site_set (project.Set_of_Sites): The set of defect sites for populating the grid.
+            set_of_sites (project.Set_of_Sites): The set of defect sites for populating the grid.
        
         Returns:
             None
@@ -170,10 +170,17 @@ class Grid:
         self.points = [ Grid_Point( x, v ) for x, v in zip( x_coordinates, self.volumes ) ]
         self.x = x_coordinates
         self.limits = limits
-        for site in site_set:
+        self.b = b
+        self.c = c
+        self.set_of_sites = set_of_sites
+        self.defect_species = []
+        for site in set_of_sites:
             i = index_of_grid_at_x( self.x, site.x )
             self.points[ i ].sites.append( site ) 
             site.grid_point = self.points[i]
+            for defect_species in site.defect_species:
+                if defect_species not in self.defect_species:
+                    self.defect_species.append( defect_species ) 
 
     def __getitem__( self, key ):
         return self.points[ key ]
@@ -252,3 +259,11 @@ class Grid:
             x_new, e_new = np.array( [ ( x, e ) for x, e in zip( self.x, row ) if e ] ).T
             interpolated_energies = griddata( x_new, e_new, self.x, fill_value = 0.0 )
             energies.append( interpolated_energies )
+
+    def subgrid( self, subset_species ):
+        return Grid.grid_from_set_of_sites( self.set_of_sites.subset(subset_species), self.limits[0], self.limits[1], self.b, self.c ) 
+
+    @classmethod
+    def grid_from_set_of_sites( cls, set_of_sites, x_min, x_max, b, c ):
+        limits = [ x_min, x_max ]
+        return cls( np.unique( [ site.x for site in set_of_sites ] ), b, c, limits, set_of_sites )
