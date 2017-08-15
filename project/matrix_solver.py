@@ -1,16 +1,16 @@
 import numpy as np
 from project.variables import wall_potential
-from project.constants import vacuum_permittivity
 from scipy.sparse import dia_matrix, diags, spdiags, csc_matrix
 from scipy.sparse import linalg 
 from scipy.integrate import cumtrapz
 from project.grid import delta_x_from_grid
+from scipy.constants import epsilon_0
 
 class MatrixSolver:
     """ Contains the functions for the finite difference methods used to solve the Poisson-Boltzmann equation on a one-dimensional grid. """
     def __init__( self, grid, dielectric, temp ):
         self.grid = grid
-        self.epsilon = dielectric * vacuum_permittivity
+        self.epsilon = dielectric * epsilon_0
         self.temp = temp
         self.A = self.laplacian_sparse() 
 
