@@ -225,8 +225,8 @@ class Grid:
         Returns:
             local_resistivity (float) : The grain boundary resistivity.  
         """
-        grain_boundary_resistance = sum( delta_x_from_grid( self.x ) / defect_density ) 
-        local_resistivity = ( bulk_density / sum( delta_x_from_grid( self.x ) ) ) * grain_boundary_resistance 
+        grain_boundary_resistance = sum( delta_x_from_grid( self.x, self.limits ) / defect_density ) 
+        local_resistivity = ( bulk_density / sum( delta_x_from_grid( self.x, self.limits ) ) ) * grain_boundary_resistance 
         return local_resistivity
 
 

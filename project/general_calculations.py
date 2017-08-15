@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 from sympy import mpmath
 from scipy.optimize import minimize_scalar 
 from project.pbc_solver import PBCSolver
@@ -47,6 +48,8 @@ def calculation( grid, conv, temp, alpha, boundary_conditions ):
         predicted_phi = poisson_solver.solve( rho )
         phi =  alpha * predicted_phi + ( 1.0 - alpha ) * phi
         convergence = (sum(( predicted_phi - phi ) **2)) / len( grid.x )
+#        print(convergence)
+#        print(niter)
         niter += 1
     return phi, rho, niter
 
@@ -104,7 +107,7 @@ def calculate_activation_energy( ratios, temp ):
     #plt.plot( x, y )
     return Ea
 
-def solve_MS_for_phi(y):
+def solve_MS_for_phi(resistivity_ratio, temp, valence ):
     """
     Solves the Mott-Schottky approximation for the space charge potential usiing the grain bounmdary resistivity.
     
@@ -114,7 +117,9 @@ def solve_MS_for_phi(y):
     Returns:
         space charge potential (float): Mott-Schottky approximation.
     """
-    return -mpmath.lambertw(-1/(2*y),k=-1)
+    if resistivity_ratio < 1.36:
+        raise ValueError( "Resistivity ratio < 1.36. Solution not on a real branch." )
+    return (-mpmath.lambertw(-1/(2*resistivity_ratio),k=-1)) * ( ( boltzmann_eV * temp ) / valence )
 
 def debye_length( bulk_density, temp ):
     """
