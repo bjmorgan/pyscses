@@ -19,10 +19,10 @@ class PBCSolver:
         self.grid = grid
         self.epsilon = vacuum_permittivity * dielectric
         self.temp = temp 
+        self.delta_x = delta_x_from_grid( self.grid.x, self.grid.limits )
 
     def integrate( self, n ):
-        delta_x = delta_x_from_grid( self.grid.x, self.grid.limits )
-        n_int = np.cumsum( n * delta_x )
+        n_int = np.cumsum( n * self.delta_x )
         return n_int - n_int.mean()    
 
     def solve( self, rho ):
