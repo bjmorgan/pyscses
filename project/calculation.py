@@ -1,7 +1,10 @@
+import math
 import numpy as np
+from sympy import mpmath
 from project.set_of_sites import Set_of_Sites
 from project.pbc_solver import PBCSolver
 from project.matrix_solver import MatrixSolver
+from project.general_calculations import diff_central
 from project.constants import *
 
 
@@ -62,10 +65,23 @@ class Calculation:
         self.bulk_mobile_defect_density = bulk_mobile_defect_density
         self.resistivity_ratio = resistivity_ratio
 
-    def calculate_mole_fractions( self ):
+    def solve_MS_approx_for_phi( self, valence ):
+        if self.resistivity_ratio < 1.36:
+            raise ValueError( "Resistivity ratio < 1.36. Solution not on a real branch." )
+        self.ms_phi = (-mpmath.lambertw(-1/(2*self.resistivity_ratio),k=-1)) * ( ( boltzmann_eV * self.temp ) / valence )
+
+    def calculate_debye_length( self ):
+        self.debye_length = math.sqrt( ( dielectric * vacuum_permittivity * boltzmann_eV * self.temp ) / ( 2 * ( fundamental_charge ** 2 ) * self.bulk_mobile_defect_density ) )
+
+    def calculate_space_charge_width( self, valence ):
+        self.space_charge_width = 2 * ( self.debye_length * math.sqrt( max(self.phi) / ( ( boltzmann_eV * self.temp ) / valence ) ) )
+
+
+    @property
+    def mole_fractions( self ):
         mole_fractions = {}
         for label in self.site_labels:
             name = '{}'.format(label)
             mole_fractions[name] = Set_of_Sites(self.subgrids[name].set_of_sites).calculate_probabilities( self.grid, self.phi, self.temp )
-        self.mole_fractions = mole_fractions
+        self.mf = mole_fractions
             
