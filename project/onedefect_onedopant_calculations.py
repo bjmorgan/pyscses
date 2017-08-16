@@ -83,28 +83,28 @@ def MF( desired_mobile_defect_mf, slope, intercept ):
     MF = [ (mobile_defect_mf), ( mobile_defect_mf * 4 ) ]
     return MF
 
-def calculate_average_molefraction( temp, x_min, x_max, b, c, index, alpha, conv, all_sites, site_labels, boundary_conditions ):
-    
-    limits = [x_min, x_max ]
-
-    bulk_x_coordinates = np.unique( np.concatenate( ( ( [ x for x in all_sites.get_coords(site_labels[1]) if x <= x_max and x >= x_min ] ), ( [ x for x in all_sites.get_coords(site_labels[0]) if x <= x_max and x >= x_min ] ) ), axis = 0 ) )
-    
-    bulk_grid = Grid( bulk_x_coordinates, b, c, limits, all_sites )
- 
-    bulk_mobile_defect_grid = Grid( np.unique( [ x for x in all_sites.get_coords(site_labels[0]) if x <= x_max and x >= x_min ] ), b, c, limits, all_sites.subset( site_labels[0] ) )
-    
-    phi, rho, niter = calculation( bulk_grid, conv, temp, alpha, boundary_conditions )
-
-    mobile_defect_density = Set_of_Sites( all_sites.subset( site_labels[0] ) ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, bulk_grid, phi, temp )
-
-    mobile_defect_mole_fraction = Set_of_Sites( all_sites.subset( site_labels[0] ) ).calculate_probabilities( bulk_grid, phi, temp )
-    mobile_defect_MF = []
-    for m in mobile_defect_mole_fraction:
-        if m > 0.0:
-            mobile_defect_MF.append(m)
-    avg_mobile_defect_MF = np.mean(mobile_defect_MF)
-
-    return ( avg_mobile_defect_MF )
+#def calculate_average_molefraction( temp, x_min, x_max, b, c, index, alpha, conv, all_sites, site_labels, boundary_conditions ):
+#    
+#    limits = [x_min, x_max ]
+#
+#    bulk_x_coordinates = np.unique( np.concatenate( ( ( [ x for x in all_sites.get_coords(site_labels[1]) if x <= x_max and x >= x_min ] ), ( [ x for x in all_sites.get_coords(site_labels[0]) if x <= x_max and x >= x_min ] ) ), axis = 0 ) )
+#    
+#    bulk_grid = Grid( bulk_x_coordinates, b, c, limits, all_sites )
+# 
+#    bulk_mobile_defect_grid = Grid( np.unique( [ x for x in all_sites.get_coords(site_labels[0]) if x <= x_max and x >= x_min ] ), b, c, limits, all_sites.subset( site_labels[0] ) )
+#    
+#    phi, rho, niter = calculation( bulk_grid, conv, temp, alpha, boundary_conditions )
+#
+#    mobile_defect_density = Set_of_Sites( all_sites.subset( site_labels[0] ) ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, bulk_grid, phi, temp )
+#
+#    mobile_defect_mole_fraction = Set_of_Sites( all_sites.subset( site_labels[0] ) ).calculate_probabilities( bulk_grid, phi, temp )
+#    mobile_defect_MF = []
+#    for m in mobile_defect_mole_fraction:
+#        if m > 0.0:
+#            mobile_defect_MF.append(m)
+#    avg_mobile_defect_MF = np.mean(mobile_defect_MF)
+#
+#    return ( avg_mobile_defect_MF )
 
 #def calculate_GB_properties( temp, x_min, x_max, b, c, index, alpha, conv, desired_mobile_defect_MF, all_sites, site_labels, boundary_conditions ):
     
