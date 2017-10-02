@@ -6,7 +6,7 @@ from project.constants import fundamental_charge, boltzmann_eV
 class Site:
     """ The site class contains all the information about a given site and the defect occupying that site.
         This class contains functions for the calculations which correspond to each individual site, rather than the whole system. """
-    def __init__( self, label, x, defect_species, defect_energies, scaling = None ):
+    def __init__( self, label, x, defect_species, defect_energies, scaling = None, valence = 0 ):
         assert( len( defect_species) == len( defect_energies ) )
         self.label = label
         self.x = x   
@@ -17,6 +17,7 @@ class Site:
         else:
             self.scaling = np.ones_like( defect_energies )
         self.grid_point = None
+        self.valence = valence
 #       self.defects = [ Defect_Species( valence, mole_fraction ) for  ( valence, mole_fraction ) in defect_data ]
 #       self.sites = [ Data(x, energy) for ( x, energy ) in site_data ]
 
@@ -92,7 +93,7 @@ class Site:
         Returns:
             charge (np.array): The charge on a 1D grid.
         """
-        charge =  np.sum( self.probabilities( phi, temp ) * self.defect_valences() * self.scaling ) * fundamental_charge
+        charge =  ( self.valence +  np.sum( self.probabilities( phi, temp ) * self.defect_valences() * self.scaling ) ) * fundamental_charge
         return charge
 
     def probabilities_boltz( self, phi, temp ):

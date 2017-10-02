@@ -42,6 +42,7 @@ class Calculation:
             predicted_phi = poisson_solver.solve( rho )
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
             conv = (sum(( predicted_phi - phi ) **2)) / len( self.grid.x )
+#            print(conv)
             niter += 1
 
         self.phi = phi
@@ -77,7 +78,6 @@ class Calculation:
         self.space_charge_width = 2 * ( self.debye_length * math.sqrt( max(self.phi) / ( ( boltzmann_eV * self.temp ) / valence ) ) )
 
 
-    @property
     def mole_fractions( self ):
         mole_fractions = {}
         for label in self.site_labels:

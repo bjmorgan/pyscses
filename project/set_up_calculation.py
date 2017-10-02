@@ -1,4 +1,6 @@
 from project.site import Site
+import numpy as np
+from bisect import bisect_left, bisect_right
 
 def site_from_input_file( site, defect_species ):
     """
@@ -12,11 +14,12 @@ def site_from_input_file( site, defect_species ):
         Site (object)
     """
     label = site[0]
-    x = float(site[1])
-    defect_labels = site[2::2]
-    defect_energies = [ float(e) for e in site[3::2] ]
-
-    return Site( label, x, [ defect_species[l] for l in defect_labels ], defect_energies )
+    valence = float(site[1])
+    x = float(site[2])
+    defect_labels = site[3::2]
+#    defect_energies = [ float(e) for e in site[4::2] ]
+    defect_energies = [ 0.0 for e in site[4::2] ]
+    return Site( label, x, [ defect_species[l] for l in defect_labels ], defect_energies, valence=valence )
 
 def format_line( line ):
     """
@@ -24,8 +27,9 @@ def format_line( line ):
     """
     # x coordinate
     line[1] = float( line[1] )
+    line[2] = float( line[2] )
     # defect energies
-    for i in range( 3, len(line) ):
+    for i in range( 4, len(line) ):
         line[i] = float( line[i] )
     return line
 
@@ -35,7 +39,7 @@ def load_site_data( filename, x_min, x_max ):
     """
     with open( filename, 'r' ) as f:
         input_data = [ line.split() for line in f ]
-    input_data = [ format_line( line ) for line in input_data if ( float(line[1]) > x_min and float(line[1]) < x_max ) ]
+    input_data = [ format_line( line ) for line in input_data if ( float(line[2]) > x_min and float(line[2]) < x_max ) ]
     return input_data
 
 def mirror_site_data( site_data ):
@@ -49,3 +53,23 @@ def mirror_site_data( site_data ):
     for l in site_data_mirrored:
         l[1] = float(l[1]) * -1 
     return site_data + site_data_mirrored
+
+#def new_load_site_data( filename, x_min, x_max ):
+#    """
+#    """
+#    with open( filename, 'r' ) as f:
+#        input_data = [ line.split() for line in f ]
+#        x_coords = np.array( [ l[2] for l in input_data ] )
+#        min_index = bisect_right( x_coords, x_min )
+#        max_index = bisect_right( x_coords, x_max )
+#        return [ format_line( line ) for line in input_data[ min_index: max_index ] ]
+
+def calculate_grid_offsets( filename, x_min, x_max ):
+    with open( filename, 'r' ) as f:
+        input_data = [ line.split() for line in f ]
+        x_coords = np.unique( np.array( [ float(l[2]) for l in input_data ] ) )
+        min_index = bisect_right( x_coords, x_min )
+        min_offset = x_coords[min_index] - x_coords[min_index-1]
+        max_index = bisect_right( x_coords, x_max )
+        max_offset = x_coords[max_index] - x_coords[max_index-1]
+    return min_offset, max_offset
