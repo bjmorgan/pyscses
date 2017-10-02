@@ -1,100 +1,100 @@
-site_2 -2.5e-08 defect_2 0.0
-site_1 -2.5e-08 defect_1 0.0
-site_2 -2.4e-08 defect_2 0.0
-site_1 -2.4e-08 defect_1 0.0
-site_2 -2.3e-08 defect_2 0.0
-site_1 -2.3e-08 defect_1 0.0
-site_2 -2.2e-08 defect_2 0.0
-site_1 -2.2e-08 defect_1 0.0
-site_2 -2.1e-08 defect_2 0.0
-site_1 -2.1e-08 defect_1 0.0
-site_2 -2.0e-08 defect_2 0.0
-site_1 -2.0e-08 defect_1 0.0
-site_2 -1.9e-08 defect_2 0.0
-site_1 -1.9e-08 defect_1 0.0
-site_2 -1.8e-08 defect_2 0.0
-site_1 -1.8e-08 defect_1 0.0
-site_2 -1.7e-08 defect_2 0.0
-site_1 -1.7e-08 defect_1 0.0
-site_2 -1.6e-08 defect_2 0.0
-site_1 -1.6e-08 defect_1 0.0
-site_2 -1.5e-08 defect_2 0.0
-site_1 -1.5e-08 defect_1 0.0
-site_2 -1.4e-08 defect_2 0.0
-site_1 -1.4e-08 defect_1 0.0
-site_2 -1.3e-08 defect_2 0.0
-site_1 -1.3e-08 defect_1 0.0
-site_2 -1.2e-08 defect_2 0.0
-site_1 -1.2e-08 defect_1 0.0
-site_2 -1.1e-08 defect_2 0.0
-site_1 -1.1e-08 defect_1 0.0
-site_2 -1.0e-08 defect_2 0.0
-site_1 -1.0e-08 defect_1 0.0
-site_2 -9e-09 defect_2 0.0
-site_1 -9e-09 defect_1 0.0
-site_2 -8e-09 defect_2 0.0
-site_1 -8e-09 defect_1 0.0
-site_2 -7e-09 defect_2 0.0
-site_1 -7e-09 defect_1 0.0
-site_2 -6e-09 defect_2 0.0
-site_1 -6e-09 defect_1 0.0
-site_2 -5e-09 defect_2 0.0
-site_1 -5e-09 defect_1 0.0
-site_2 -4e-09 defect_2 0.0
-site_1 -4e-09 defect_1 0.0
-site_2 -3e-09 defect_2 0.0
-site_1 -3e-09 defect_1 0.0
-site_2 -2e-09 defect_2 0.0
-site_1 -2e-09 defect_1 0.0
-site_2 -1e-09 defect_2 0.0
-site_1 -1e-09 defect_1 0.0
-site_2 0      defect_2 0.0
-site_1 0 defect_1 0.0
-site_1 1e-09 defect_1 0.0
-site_2 1e-09 defect_2 0.0
-site_1 2e-09 defect_1 0.0
-site_2 2e-09 defect_2 0.0
-site_1 3e-09 defect_1 0.0
-site_2 3e-09 defect_2 0.0
-site_1 4e-09 defect_1 0.0
-site_2 4e-09 defect_2 0.0
-site_1 5e-09 defect_1 0.0
-site_2 5e-09 defect_2 0.0
-site_1 6e-09 defect_1 0.0
-site_2 6e-09 defect_2 0.0
-site_1 7e-09 defect_1 0.0
-site_2 7e-09 defect_2 0.0
-site_1 8e-09 defect_1 0.0
-site_2 8e-09 defect_2 0.0
-site_1 9e-09 defect_1 0.0
-site_2 9e-09 defect_2 0.0
-site_1 1e-08 defect_1 0.0
-site_2 1e-08 defect_2 0.0
-site_1 1.1e-08 defect_1 0.0
-site_2 1.1e-08 defect_2 0.0
-site_1 1.2e-08 defect_1 0.0
-site_2 1.2e-08 defect_2 0.0
-site_1 1.3e-08 defect_1 0.0
-site_2 1.3e-08 defect_2 0.0
-site_1 1.4e-08 defect_1 0.0
-site_2 1.4e-08 defect_2 0.0
-site_1 1.5e-08 defect_1 0.0
-site_2 1.5e-08 defect_2 0.0
-site_1 1.6e-08 defect_1 0.0
-site_2 1.6e-08 defect_2 0.0
-site_1 1.7e-08 defect_1 0.0
-site_2 1.7e-08 defect_2 0.0
-site_1 1.8e-08 defect_1 0.0
-site_2 1.8e-08 defect_2 0.0
-site_1 1.9e-08 defect_1 0.0
-site_2 1.9e-08 defect_2 0.0
-site_1 2.0e-08 defect_1 0.0
-site_2 2.0e-08 defect_2 0.0
-site_1 2.1e-08 defect_1 0.0
-site_2 2.1e-08 defect_2 0.0
-site_1 2.2e-08 defect_1 0.0
-site_2 2.2e-08 defect_2 0.0
-site_1 2.3e-08 defect_1 0.0
-site_2 2.3e-08 defect_2 0.0
-site_1 2.4e-08 defect_1 0.0
-site_2 2.4e-08 defect_2 0.0
+site_2 +1 -2.5e-08 defect_2 0.0
+site_1 -1 -2.5e-08 defect_1 0.0
+site_2 +1 -2.4e-08 defect_2 0.0
+site_1 -1 -2.4e-08 defect_1 0.0
+site_2 +1 -2.3e-08 defect_2 0.0
+site_1 -1 -2.3e-08 defect_1 0.0
+site_2 +1 -2.2e-08 defect_2 0.0
+site_1 -1 -2.2e-08 defect_1 0.0
+site_2 +1 -2.1e-08 defect_2 0.0
+site_1 -1 -2.1e-08 defect_1 0.0
+site_2 +1 -2.0e-08 defect_2 0.0
+site_1 -1 -2.0e-08 defect_1 0.0
+site_2 +1 -1.9e-08 defect_2 0.0
+site_1 -1 -1.9e-08 defect_1 0.0
+site_2 +1 -1.8e-08 defect_2 0.0
+site_1 -1 -1.8e-08 defect_1 0.0
+site_2 +1 -1.7e-08 defect_2 0.0
+site_1 -1 -1.7e-08 defect_1 0.0
+site_2 +1 -1.6e-08 defect_2 0.0
+site_1 -1 -1.6e-08 defect_1 0.0
+site_2 +1 -1.5e-08 defect_2 0.0
+site_1 -1 -1.5e-08 defect_1 0.0
+site_2 +1 -1.4e-08 defect_2 0.0
+site_1 -1 -1.4e-08 defect_1 0.0
+site_2 +1 -1.3e-08 defect_2 0.0
+site_1 -1 -1.3e-08 defect_1 0.0
+site_2 +1 -1.2e-08 defect_2 0.0
+site_1 -1 -1.2e-08 defect_1 0.0
+site_2 +1 -1.1e-08 defect_2 0.0
+site_1 -1 -1.1e-08 defect_1 0.0
+site_2 +1 -1.0e-08 defect_2 0.0
+site_1 -1 -1.0e-08 defect_1 0.0
+site_2 +1 -9e-09 defect_2 0.0
+site_1 -1 -9e-09 defect_1 0.0
+site_2 +1 -8e-09 defect_2 0.0
+site_1 -1 -8e-09 defect_1 0.0
+site_2 +1 -7e-09 defect_2 0.0
+site_1 -1 -7e-09 defect_1 0.0
+site_2 +1 -6e-09 defect_2 0.0
+site_1 -1 -6e-09 defect_1 0.0
+site_2 +1 -5e-09 defect_2 0.0
+site_1 -1 -5e-09 defect_1 0.0
+site_2 +1 -4e-09 defect_2 0.0
+site_1 -1 -4e-09 defect_1 0.0
+site_2 +1 -3e-09 defect_2 0.0
+site_1 -1 -3e-09 defect_1 0.0
+site_2 +1 -2e-09 defect_2 0.0
+site_1 -1 -2e-09 defect_1 0.0
+site_2 +1 -1e-09 defect_2 0.0
+site_1 -1 -1e-09 defect_1 0.0
+site_2 +1 0      defect_2 0.0
+site_1 -1 0 defect_1 0.0
+site_1 -1 1e-09 defect_1 0.0
+site_2 +1 1e-09 defect_2 0.0
+site_1 -1 2e-09 defect_1 0.0
+site_2 +1 2e-09 defect_2 0.0
+site_1 -1 3e-09 defect_1 0.0
+site_2 +1 3e-09 defect_2 0.0
+site_1 -1 4e-09 defect_1 0.0
+site_2 +1 4e-09 defect_2 0.0
+site_1 -1 5e-09 defect_1 0.0
+site_2 +1 5e-09 defect_2 0.0
+site_1 -1 6e-09 defect_1 0.0
+site_2 +1 6e-09 defect_2 0.0
+site_1 -1 7e-09 defect_1 0.0
+site_2 +1 7e-09 defect_2 0.0
+site_1 -1 8e-09 defect_1 0.0
+site_2 +1 8e-09 defect_2 0.0
+site_1 -1 9e-09 defect_1 0.0
+site_2 +1 9e-09 defect_2 0.0
+site_1 -1 1e-08 defect_1 0.0
+site_2 +1 1e-08 defect_2 0.0
+site_1 -1 1.1e-08 defect_1 0.0
+site_2 +1 1.1e-08 defect_2 0.0
+site_1 -1 1.2e-08 defect_1 0.0
+site_2 +1 1.2e-08 defect_2 0.0
+site_1 -1 1.3e-08 defect_1 0.0
+site_2 +1 1.3e-08 defect_2 0.0
+site_1 -1 1.4e-08 defect_1 0.0
+site_2 +1 1.4e-08 defect_2 0.0
+site_1 -1 1.5e-08 defect_1 0.0
+site_2 +1 1.5e-08 defect_2 0.0
+site_1 -1 1.6e-08 defect_1 0.0
+site_2 +1 1.6e-08 defect_2 0.0
+site_1 -1 1.7e-08 defect_1 0.0
+site_2 +1 1.7e-08 defect_2 0.0
+site_1 -1 1.8e-08 defect_1 0.0
+site_2 +1 1.8e-08 defect_2 0.0
+site_1 -1 1.9e-08 defect_1 0.0
+site_2 +1 1.9e-08 defect_2 0.0
+site_1 -1 2.0e-08 defect_1 0.0
+site_2 +1 2.0e-08 defect_2 0.0
+site_1 -1 2.1e-08 defect_1 0.0
+site_2 +1 2.1e-08 defect_2 0.0
+site_1 -1 2.2e-08 defect_1 0.0
+site_2 +1 2.2e-08 defect_2 0.0
+site_1 -1 2.3e-08 defect_1 0.0
+site_2 +1 2.3e-08 defect_2 0.0
+site_1 -1 2.4e-08 defect_1 0.0
+site_2 +1 2.4e-08 defect_2 0.0
