@@ -2,6 +2,7 @@ import unittest
 from project.grid import Grid, Grid_Point, volumes_from_grid, delta_x_from_grid
 from project.set_of_sites import Set_of_Sites
 from project.site import Site
+from project.defect_species import DefectSpecies
 from unittest.mock import Mock, MagicMock, patch, call
 import numpy as np
 
@@ -26,6 +27,8 @@ class TestGrid( unittest.TestCase ):
         sites = [ Mock( spec=Site ), Mock( spec=Site ) ]
         sites[0].x = 1.0
         sites[1].x = 3.0
+        sites[0].defect_species = [ Mock( spec=DefectSpecies ) ]
+        sites[1].defect_species = [ Mock( spec=DefectSpecies ) ]
         site_set.__iter__.return_value = iter( sites )
         grid = Grid( x_coordinates=x_coordinates, b=b, c=c, limits=limits, site_set=site_set )
         self.assertEqual( grid.volumes, volumes )
@@ -35,6 +38,10 @@ class TestGrid( unittest.TestCase ):
         expected_sites_at_grid_points = [ [], [ sites[0] ], [], [ sites[1] ], [] ]
         for p, e in zip( grid.points, expected_sites_at_grid_points ):
             self.assertEqual( p.sites, e )
+        for defect_species_list in [ sites[0].defect_species, sites[1].defect_species ]:
+            for defect_species in defect_species_list:
+                self.assertEqual( defect_species in grid.defect_species, True )
+
         # TODO Should really check calls to mocked methods are what we expect
         # TODO The large number of assertions in this test suggests that the Grid __init__ method could be simplifie.
 

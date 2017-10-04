@@ -170,10 +170,14 @@ class Grid:
         self.points = [ Grid_Point( x, v ) for x, v in zip( x_coordinates, self.volumes ) ]
         self.x = x_coordinates
         self.limits = limits
+        self.defect_species = []
         for site in site_set:
             i = index_of_grid_at_x( self.x, site.x )
             self.points[ i ].sites.append( site ) 
             site.grid_point = self.points[i]
+            for defect_species in site.defect_species:
+                if defect_species not in self.defect_species:
+                    self.defect_species.append( defect_species )
 
     def __getitem__( self, key ):
         return self.points[ key ]

@@ -1,4 +1,3 @@
-from project.defect_species import Defect_Species
 from project.site import Site
 #from project.practice import *
 from project.grid import *

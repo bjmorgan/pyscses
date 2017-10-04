@@ -16,8 +16,6 @@ class Site:
         else:
             self.scaling = np.ones_like( defect_energies )
         self.grid_point = None
-#       self.defects = [ Defect_Species( valence, mole_fraction ) for  ( valence, mole_fraction ) in defect_data ]
-#       self.sites = [ Data(x, energy) for ( x, energy ) in site_data ]
 
     def defect_with_label( self, label ):
         """ Returns a list of defects which correspond to the given label """
