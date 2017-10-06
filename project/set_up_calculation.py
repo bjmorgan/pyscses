@@ -17,8 +17,8 @@ def site_from_input_file( site, defect_species ):
     valence = float(site[1])
     x = float(site[2])
     defect_labels = site[3::2]
-#    defect_energies = [ float(e) for e in site[4::2] ]
-    defect_energies = [ 0.0 for e in site[4::2] ]
+    defect_energies = [ float(e) for e in site[4::2] ]
+#    defect_energies = [ 0.0 for e in site[4::2] ]
     return Site( label, x, [ defect_species[l] for l in defect_labels ], defect_energies, valence=valence )
 
 def format_line( line ):
@@ -68,8 +68,10 @@ def calculate_grid_offsets( filename, x_min, x_max ):
     with open( filename, 'r' ) as f:
         input_data = [ line.split() for line in f ]
         x_coords = np.unique( np.array( [ float(l[2]) for l in input_data ] ) )
-        min_index = bisect_right( x_coords, x_min )
-        min_offset = x_coords[min_index] - x_coords[min_index-1]
+        min_index = bisect_left( x_coords, x_min )
+#        min_offset = x_coords[min_index] - x_coords[min_index-1]
         max_index = bisect_right( x_coords, x_max )
-        max_offset = x_coords[max_index] - x_coords[max_index-1]
-    return min_offset, max_offset
+#        max_offset = x_coords[max_index] - x_coords[max_index-1]
+        limits = [ x_coords[min_index-1], x_coords[max_index] ]
+#    return min_offset, max_offset
+    return limits

@@ -90,8 +90,8 @@ def volumes_from_grid( b, c, limits, grid ):
     volumes = delta_x_from_grid( grid, limits ) * b * c
     #volumes[0] = volumes[2]
     #volumes[-1] = volumes[2]
-    #print( volumes, flush=True )
-    print(delta_x_from_grid( grid, limits ))
+    print( volumes, flush=True )
+    #print(delta_x_from_grid( grid, limits ))
     return volumes
 
 def delta_x_from_grid( grid, limits ):
@@ -100,10 +100,10 @@ def delta_x_from_grid( grid, limits ):
     """
     delta_x = np.zeros_like( grid )
     delta_x = ( grid[2:] - grid[:-2] ) / 2.0
-    delta_x = np.insert( delta_x, 0, delta_x[2] )
-    delta_x = np.insert( delta_x, len(delta_x), delta_x[2] )
-    #delta_x = np.insert( delta_x, 0, ( grid[1] - grid[0] ) / 2.0 + ( grid[0] - limits[0] ) )
-    #delta_x = np.insert( delta_x, len( delta_x ), ( grid[-1] - grid[-2] ) / 2.0 + ( limits[1] - grid[-1] ) )
+   #delta_x = np.insert( delta_x, 0, delta_x[2] )
+    #delta_x = np.insert( delta_x, len(delta_x), delta_x[2] )
+    delta_x = np.insert( delta_x, 0, ( grid[1] - grid[0] ) / 2.0 + ( grid[0] - limits[0] ) / 2.0 )
+    delta_x = np.insert( delta_x, len( delta_x ), ( grid[-1] - grid[-2] ) / 2.0 + ( limits[1] - grid[-1] ) / 2.0 )
     return delta_x
 
 class Grid_Point:

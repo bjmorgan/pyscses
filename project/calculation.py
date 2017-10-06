@@ -1,6 +1,7 @@
 import math
 import numpy as np
 from sympy import mpmath
+import matplotlib.pyplot as plt
 from project.set_of_sites import Set_of_Sites
 from project.pbc_solver import PBCSolver
 from project.matrix_solver import MatrixSolver
@@ -39,11 +40,15 @@ class Calculation:
         niter = 0
         while conv > self.convergence:
             rho = self.grid.rho( phi, self.temp )
-            predicted_phi = poisson_solver.solve( rho )
+            predicted_phi = poisson_solver.solve( phi, self.grid )
+#            predicted_phi = poisson_solver.solve( rho )
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
+#            plt.plot( self.grid.x, phi )
             conv = (sum(( predicted_phi - phi ) **2)) / len( self.grid.x )
 #            print(conv)
-            niter += 1
+#            niter += 1
+#            if niter > 0:
+#                stop
 
         self.phi = phi
         self.rho = rho
