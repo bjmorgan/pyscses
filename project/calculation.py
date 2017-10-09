@@ -28,10 +28,7 @@ class Calculation:
         niter (int): Number of iterations performed to reach convergence.
         """
 
-        solvers = { 'dirichlet' : MatrixSolver,
-                    'periodic' : PBCSolver }
-
-        poisson_solver = solvers[self.boundary_conditions]( self.grid, dielectric, self.temp )
+        poisson_solver = MatrixSolver( self.grid, dielectric, self.temp, boundary_conditions=boundary_conditions )
 
         phi = np.zeros_like( self.grid.x )
         rho = np.zeros_like( self.grid.x )
@@ -39,19 +36,12 @@ class Calculation:
         conv = 1
         niter = 0
         while conv > self.convergence:
-            rho = self.grid.rho( phi, self.temp )
             predicted_phi = poisson_solver.solve( phi, self.grid )
-#            predicted_phi = poisson_solver.solve( rho )
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
-#            plt.plot( self.grid.x, phi )
-            conv = (sum(( predicted_phi - phi ) **2)) / len( self.grid.x )
-#            print(conv)
-#            niter += 1
-#            if niter > 0:
-#                stop
+            conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
 
         self.phi = phi
-        self.rho = rho
+        self.rho = self.grid.rho( phi, self.temp )
         self.niter = niter
 
     def form_subgrids( self, site_labels ):
