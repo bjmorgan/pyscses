@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from project.set_up_calculation import site_from_input_file, load_site_data
 from project.grid import index_of_grid_at_x, phi_at_x, energy_at_x
 from project.constants import boltzmann_eV
 from bisect import bisect_left
@@ -107,4 +108,13 @@ class Set_of_Sites:
             defect_density[ i ] += np.asarray( site.probabilities( phi_at_x( phi, full_grid.x, site.x ), temp ) ) / sub_grid.volumes[ i ]
         return defect_density  
 
+    @ classmethod
+    def set_of_sites_from_input_data( cls, input_data, limits, defect_species ):
+        site_data = load_site_data( input_data, limits[0], limits[1] )
+        return Set_of_Sites( [ site_from_input_file( line, defect_species ) for line in site_data ] )
 
+    @ classmethod
+    def mirrored_set_of_sites_from_input_data( cls, input_data, limits, defect_species ):
+        site_data = load_site_data( input_data, limits[0], limits[1] )
+        mirrored_data = mirror_site_data( site_data )
+        return Set_of_Sites( [ site_from_input_file( line, defect_species ) for line in mirrored_data ] )

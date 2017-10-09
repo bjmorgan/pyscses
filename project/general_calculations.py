@@ -104,48 +104,47 @@ def calculate_activation_energy( ratios, temp ):
     y = np.log( 1 / ratios )
     slopes = diff_central( x, y )
     Ea = -slopes * boltzmann_eV
-    #plt.plot( x, y )
     return Ea
 
-def solve_MS_for_phi(resistivity_ratio, temp, valence ):
-    """
-    Solves the Mott-Schottky approximation for the space charge potential usiing the grain bounmdary resistivity.
-    
-    Args:
-        y (float): Grain boundary resistivity
+#def solve_MS_for_phi(resistivity_ratio, temp, valence ):
+#    """
+#    Solves the Mott-Schottky approximation for the space charge potential usiing the grain bounmdary resistivity.
+#    
+#    Args:
+#        y (float): Grain boundary resistivity
+#
+#    Returns:
+#        space charge potential (float): Mott-Schottky approximation.
+#    """
+#    if resistivity_ratio < 1.36:
+#        raise ValueError( "Resistivity ratio < 1.36. Solution not on a real branch." )
+#    return (-mpmath.lambertw(-1/(2*resistivity_ratio),k=-1)) * ( ( boltzmann_eV * temp ) / valence )
 
-    Returns:
-        space charge potential (float): Mott-Schottky approximation.
-    """
-    if resistivity_ratio < 1.36:
-        raise ValueError( "Resistivity ratio < 1.36. Solution not on a real branch." )
-    return (-mpmath.lambertw(-1/(2*resistivity_ratio),k=-1)) * ( ( boltzmann_eV * temp ) / valence )
-
-def debye_length( bulk_density, temp ):
-    """
-    Calculates the Debye length.
-   
-    Args: 
-        bulk_density (float): Defect density of the mobile defect in the bulk region of the crystal.
-        temp (float): Absolute temperature.
-
-    Returns:
-        Debye length (float)
-    """
+#def debye_length( bulk_density, temp ):
+#    """
+#    Calculates the Debye length.
+#   
+#    Args: 
+#        bulk_density (float): Defect density of the mobile defect in the bulk region of the crystal.
+#        temp (float): Absolute temperature.
+#
+#    Returns:
+#        Debye length (float)
+#    """
  
-    return math.sqrt( ( dielectric * vacuum_permittivity * boltzmann_eV * temp ) / ( 2 * ( fundamental_charge ** 2 ) * bulk_density ) )
-
-def space_charge_width( bulk_density, temp, valence, phi_max ):
-    """
-    Calculates the width of the space charge region.
-
-    Args:
-        bulk_density (float): Defect denisty of the mobile defect in the bulk region of the crystal.
-        temp (float): Absolute temperature.
-        valence (float): Charge of the mobile defect.
-        phi_max (float): Space charge potential.
-
-    Returns:
-        space charge width (float)
-    """
-    return 2 * ( debye_length( bulk_density, temp ) * math.sqrt( phi_max / ( ( boltzmann_eV * temp ) / valence ) ) ) 
+#    return math.sqrt( ( dielectric * vacuum_permittivity * boltzmann_eV * temp ) / ( 2 * ( fundamental_charge ** 2 ) * bulk_density ) )
+#
+#def space_charge_width( bulk_density, temp, valence, phi_max ):
+#    """
+#    Calculates the width of the space charge region.
+#
+#    Args:
+#        bulk_density (float): Defect denisty of the mobile defect in the bulk region of the crystal.
+#        temp (float): Absolute temperature.
+#        valence (float): Charge of the mobile defect.
+#        phi_max (float): Space charge potential.
+#
+#    Returns:
+#        space charge width (float)
+#    """
+#    return 2 * ( debye_length( bulk_density, temp ) * math.sqrt( phi_max / ( ( boltzmann_eV * temp ) / valence ) ) ) 

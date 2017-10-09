@@ -95,8 +95,10 @@ def delta_x_from_grid( grid, limits ):
     """
     delta_x = np.zeros_like( grid )
     delta_x = ( grid[2:] - grid[:-2] ) / 2.0
-    delta_x = np.insert( delta_x, 0, ( grid[1] - grid[0] ) / 2.0 + ( grid[0] - limits[0] ) )
-    delta_x = np.insert( delta_x, len( delta_x ), ( grid[-1] - grid[-2] ) / 2.0 + ( limits[1] - grid[-1] ) )
+   #delta_x = np.insert( delta_x, 0, delta_x[2] )
+    #delta_x = np.insert( delta_x, len(delta_x), delta_x[2] )
+    delta_x = np.insert( delta_x, 0, ( grid[1] - grid[0] ) / 2.0 + ( grid[0] - limits[0] ) / 2.0 )
+    delta_x = np.insert( delta_x, len( delta_x ), ( grid[-1] - grid[-2] ) / 2.0 + ( limits[1] - grid[-1] ) / 2.0 )
     return delta_x
 
 class Grid_Point:
@@ -151,7 +153,7 @@ def avg( energies, method = 'mean' ):
         raise ValueError( "method: {}".format( method ) )
 
 class Grid:
-    def __init__( self, x_coordinates, b, c, limits, site_set ):
+    def __init__( self, x_coordinates, b, c, limits, set_of_sites ):
        # x_coordinates need to be sorted for the delta_x calculation in volumes_from_grid
         """ 
         Grid objects contain information and methods for the calculation grid.
@@ -160,8 +162,8 @@ class Grid:
             x_coordinates (np.array): The x-coordinates for each grid point.
             b (float):                b dimension for every grid-point.
             c (float):                c dimension for every grid-point.
-            limits ([float,float])    x-coordinates for the maximum and minimum grid edges.
-            site_set (project.Set_of_Sites): The set of defect sites for populating the grid.
+            limits ([float,float])    x-coordinates for the minimum and maximum grid edges.
+            set_of_sites (project.Set_of_Sites): The set of defect sites for populating the grid.
        
         Returns:
             None
@@ -170,8 +172,11 @@ class Grid:
         self.points = [ Grid_Point( x, v ) for x, v in zip( x_coordinates, self.volumes ) ]
         self.x = x_coordinates
         self.limits = limits
+        self.b = b
+        self.c = c
+        self.set_of_sites = set_of_sites
         self.defect_species = []
-        for site in site_set:
+        for site in set_of_sites:
             i = index_of_grid_at_x( self.x, site.x )
             self.points[ i ].sites.append( site ) 
             site.grid_point = self.points[i]
@@ -256,3 +261,11 @@ class Grid:
             x_new, e_new = np.array( [ ( x, e ) for x, e in zip( self.x, row ) if e ] ).T
             interpolated_energies = griddata( x_new, e_new, self.x, fill_value = 0.0 )
             energies.append( interpolated_energies )
+
+    def subgrid( self, subset_species ):
+        return Grid.grid_from_set_of_sites( self.set_of_sites.subset(subset_species), self.limits[0], self.limits[1], self.b, self.c ) 
+
+    @classmethod
+    def grid_from_set_of_sites( cls, set_of_sites, x_min, x_max, b, c ):
+        limits = [ x_min, x_max ]
+        return cls( np.unique( [ site.x for site in set_of_sites ] ), b, c, limits, set_of_sites )

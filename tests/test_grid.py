@@ -23,7 +23,7 @@ class TestGrid( unittest.TestCase ):
         b = 0.25
         c = 0.1
         limits = [ -0.5, 4.5 ]
-        site_set = MagicMock( spec=Set_of_Sites )
+        set_of_sites = MagicMock( spec=Set_of_Sites )
         sites = [ Mock( spec=Site ), Mock( spec=Site ) ]
         sites[0].x = 1.0
         sites[1].x = 3.0
@@ -41,7 +41,6 @@ class TestGrid( unittest.TestCase ):
         for defect_species_list in [ sites[0].defect_species, sites[1].defect_species ]:
             for defect_species in defect_species_list:
                 self.assertEqual( defect_species in grid.defect_species, True )
-
         # TODO Should really check calls to mocked methods are what we expect
         # TODO The large number of assertions in this test suggests that the Grid __init__ method could be simplifie.
 
@@ -59,15 +58,15 @@ class TestGrid( unittest.TestCase ):
        
     def test_delta_x_from_grid( self ):
         grid = np.array( [ 0.0, 1.0, 2.0, 3.0, 4.0 ] )
-        limits = [-0.5, 4.5]
-        expected_delta_x = np.array( [ 1.0, 1.0, 1.0, 1.0, 1.0 ] )
+        limits = [-0.5, 5.0]
+        expected_delta_x = np.array( [ 0.75, 1.0, 1.0, 1.0, 1.0 ] )
         delta_x = delta_x_from_grid( grid, limits )
         np.testing.assert_array_equal( expected_delta_x, delta_x )
 
     def test_delta_x_from_grid_with_uneven_grid( self ):
         grid = np.array( [ 0.5, 1.0, 2.0, 3.0, 5.0 ] )
         limits = [0.0, 5.2]
-        expected_delta_x = np.array( [ 0.75, 0.75, 1.0, 1.5, 1.2 ] )
+        expected_delta_x = np.array( [ 0.5, 0.75, 1.0, 1.5, 1.1 ] )
         delta_x = delta_x_from_grid( grid, limits )
         np.testing.assert_array_almost_equal( expected_delta_x, delta_x )
      
