@@ -87,12 +87,7 @@ def volumes_from_grid( b, c, limits, grid ):
     Returns:
         volumes (np.array): Volumes of each grid point on a 1D grid. 
     """
-    volumes = delta_x_from_grid( grid, limits ) * b * c
-    #volumes[0] = volumes[2]
-    #volumes[-1] = volumes[2]
-    print( volumes, flush=True )
-    #print(delta_x_from_grid( grid, limits ))
-    return volumes
+    return delta_x_from_grid( grid, limits ) * b * c
 
 def delta_x_from_grid( grid, limits ):
     """
