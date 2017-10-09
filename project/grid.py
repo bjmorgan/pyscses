@@ -167,7 +167,7 @@ class Grid:
             x_coordinates (np.array): The x-coordinates for each grid point.
             b (float):                b dimension for every grid-point.
             c (float):                c dimension for every grid-point.
-            limits ([float,float])    x-coordinates for the maximum and minimum grid edges.
+            limits ([float,float])    x-coordinates for the minimum and maximum grid edges.
             set_of_sites (project.Set_of_Sites): The set of defect sites for populating the grid.
        
         Returns:
