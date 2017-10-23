@@ -7,11 +7,12 @@ from project.pbc_solver import PBCSolver
 from project.matrix_solver import MatrixSolver
 from project.general_calculations import diff_central
 from project.constants import *
+from project.grid import delta_x_from_grid
 
 
 class Calculation:
 
-    def __init__(self, grid, alpha, convergence, temp, boundary_conditions):
+    def __init__(self, grid, alpha, convergence, temp, boundary_conditions ):
         self.grid = grid
         self.alpha = alpha
         self.convergence = convergence
@@ -28,7 +29,7 @@ class Calculation:
         niter (int): Number of iterations performed to reach convergence.
         """
 
-        poisson_solver = MatrixSolver( self.grid, dielectric, self.temp, boundary_conditions=boundary_conditions )
+        poisson_solver = MatrixSolver( self.grid, dielectric, self.temp, boundary_conditions=self.boundary_conditions )
 
         phi = np.zeros_like( self.grid.x )
         rho = np.zeros_like( self.grid.x )
@@ -36,10 +37,13 @@ class Calculation:
         conv = 1
         niter = 0
         while conv > self.convergence:
-            predicted_phi = poisson_solver.solve( phi, self.grid )
+            predicted_phi = poisson_solver.solve( phi )
+            predicted_phi -= predicted_phi[0] 
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
             conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
-
+            niter += 1
+            if niter % 1000 == 0:
+                print(conv, flush=True)
         self.phi = phi
         self.rho = self.grid.rho( phi, self.temp )
         self.niter = niter

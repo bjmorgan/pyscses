@@ -1,9 +1,10 @@
 import numpy as np
 from project.variables import wall_potential
+import scipy as sp
 from scipy.sparse import dia_matrix, diags, spdiags, csc_matrix
 from scipy.sparse import linalg 
 from scipy.integrate import cumtrapz
-from scipy.optimize import minimize_scalar
+from scipy.optimize import brent, minimize_scalar
 from project.grid import delta_x_from_grid
 from scipy.constants import epsilon_0
 
@@ -33,7 +34,7 @@ class MatrixSolver:
             None
         """
         self.grid = grid
-        self.epsilon = dielectric * vacuum_permittivity
+        self.epsilon = dielectric * epsilon_0
         self.temp = temp 
         allowed_boundary_conditions = [ 'dirichlet', 'periodic' ]
         if boundary_conditions not in allowed_boundary_conditions:
@@ -55,14 +56,16 @@ class MatrixSolver:
         Returns:
             A (matrix): Full tridiagonal matrix. 
         """
-        deltax = self.grid.x[1:] - self.grid.x[:-1]
-        lhs_offset = self.grid.x[0] - self.grid.limits[0]
-        rhs_offset = self.grid.limits[1] - self.grid.x[-1]
-        delta_x1 = np.insert( deltax, 0, lhs_offset )
-        delta_x2 = np.insert( deltax, len(deltax), rhs_offset )
+        deltax = self.grid.x[1:] - self.grid.x[:-1] 
+        lhs_offset =  (self.grid.x[0] - self.grid.limits[0])
+        rhs_offset =  (self.grid.limits[1] - self.grid.x[-1] ) 
+        deltax = np.insert( deltax, 0, lhs_offset )
+        deltax = np.insert( deltax, len(deltax), rhs_offset )
+        delta_x1 = deltax[:-1]
+        delta_x2 = deltax[1:]
         diag = -2.0 / (delta_x1 * delta_x2)
         ldiag = 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x1 )
-        udiag = 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x2 ) 
+        udiag = 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x2 )
         A = diags( [ diag, udiag[:-1], ldiag[1:] ], [ 0, 1, -1 ] ).A
         if self.boundary_conditions is 'periodic':
             A[0,-1] = ldiag[0]
@@ -78,7 +81,7 @@ class MatrixSolver:
         Returns:
             A (matrix): Sparse tridiagonal matrix.
         """
-        L_sparse = csc_matrix( self.laplacian_new_fullmatrix( boundary_conditions=boundary_conditions) )
+        L_sparse = csc_matrix( self.laplacian_new_fullmatrix()) 
         return L_sparse
 
     def solve( self, phi_old ):
@@ -92,9 +95,10 @@ class MatrixSolver:
             predicted_phi (array): Electrostatic potential on a one-dimensional grid.
         """
         if self.boundary_conditions is 'periodic':
-            res = minimize_scalar( total_charge_squared, args=(phi_old, self.temp, self.grid ) )
-            phi_old += res.x
-        b = -( self.grid.rho( phi_old, self.temp ) / self.epsilon )
+            rho = self.grid.rho( phi_old, self.temp )  
+            rho_prime = np.sum( rho * delta_x_from_grid( self.grid.x, self.grid.limits ) ) / np.sum(delta_x_from_grid( self.grid.x, self.grid.limits ) ) 
+            rho -= rho_prime
+        b = -( rho / self.epsilon )
         predicted_phi = linalg.spsolve( self.A, b )
         return predicted_phi
 
