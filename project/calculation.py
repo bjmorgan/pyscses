@@ -43,9 +43,9 @@ class Calculation:
         niter = 0
         while conv > self.convergence:
             predicted_phi = poisson_solver.solve( phi )
-#            average_phi = np.sum( predicted_phi[min_bulk_index : max_bulk_index] * delta_x_from_grid( self.grid.x[min_bulk_index:max_bulk_index], [self.grid.x[min_bulk_index-1], self.grid.x[max_bulk_index+1] ] ) ) / np.sum( delta_x_from_grid( self.grid.x[min_bulk_index:max_bulk_index], [self.grid.x[min_bulk_index-1], self.grid.x[max_bulk_index+1] ] ) )  
-            predicted_phi -=  predicted_phi[0]
-#            predicted_phi -= average_phi
+            average_phi = np.sum( predicted_phi[min_bulk_index : max_bulk_index] * delta_x_from_grid( self.grid.x[min_bulk_index:max_bulk_index], [self.grid.x[min_bulk_index-1], self.grid.x[max_bulk_index+1] ] ) ) / np.sum( delta_x_from_grid( self.grid.x[min_bulk_index:max_bulk_index], [self.grid.x[min_bulk_index-1], self.grid.x[max_bulk_index+1] ] ) )  
+#            predicted_phi -=  predicted_phi[0]
+            predicted_phi -= average_phi
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
             conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
             niter += 1
