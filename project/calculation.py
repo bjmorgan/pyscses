@@ -2,7 +2,7 @@ import math
 import numpy as np
 from sympy import mpmath
 import matplotlib.pyplot as plt
-from bisect import bisect_left
+from bisect import bisect_left, bisect_right
 from project.set_of_sites import Set_of_Sites
 from project.pbc_solver import PBCSolver
 from project.matrix_solver import MatrixSolver
@@ -43,17 +43,16 @@ class Calculation:
         niter = 0
         while conv > self.convergence:
             predicted_phi = poisson_solver.solve( phi )
-            average_phi = np.sum( predicted_phi[min_bulk_index : max_bulk_index] * delta_x_from_grid( self.grid.x[min_bulk_index:max_bulk_index], [self.grid.x[min_bulk_index-1], self.grid.x[max_bulk_index+1] ] ) ) / np.sum( delta_x_from_grid( self.grid.x[min_bulk_index:max_bulk_index], [self.grid.x[min_bulk_index-1], self.grid.x[max_bulk_index+1] ] ) )  
+            average_phi = np.sum( predicted_phi[min_bulk_index+1 : max_bulk_index] * delta_x_from_grid( self.grid.x[min_bulk_index+1:max_bulk_index], [self.grid.x[min_bulk_index], self.grid.x[max_bulk_index+1] ] ) ) / np.sum( delta_x_from_grid( self.grid.x[min_bulk_index+1:max_bulk_index], [self.grid.x[min_bulk_index], self.grid.x[max_bulk_index+1] ] ) )  
 #            predicted_phi -=  predicted_phi[0]
             predicted_phi -= average_phi
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
             conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
             niter += 1
-            if niter % 1000 == 0:
+            if niter % 5000== 0:
                 print(conv, flush=True)
-#        average_phi = np.sum( predicted_phi[min_bulk_index : max_bulk_index] * delta_x_from_grid( self.grid.x[min_bulk_index:max_bulk_index], [self.grid.x[min_bulk_index-1], self.grid.x[max_bulk_index+1] ] ) ) / np.sum( delta_x_from_grid( self.grid.x[min_bulk_index:max_bulk_index], [self.grid.x[min_bulk_index-1], self.grid.x[max_bulk_index+1] ] ) )  
-#        phi += average_phi
         self.phi = phi
+        self.average_phi = np.sum( predicted_phi[min_bulk_index+1 : max_bulk_index] * delta_x_from_grid( self.grid.x[min_bulk_index+1:max_bulk_index], [self.grid.x[min_bulk_index], self.grid.x[max_bulk_index+1] ] ) ) / np.sum( delta_x_from_grid( self.grid.x[min_bulk_index+1:max_bulk_index], [self.grid.x[min_bulk_index], self.grid.x[max_bulk_index+1] ] ) )  
         self.rho = self.grid.rho( phi, self.temp )
         self.niter = niter
 
