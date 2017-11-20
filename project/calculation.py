@@ -8,8 +8,8 @@ from project.pbc_solver import PBCSolver
 from project.matrix_solver import MatrixSolver
 from project.general_calculations import diff_central
 from project.constants import *
-from project.grid import delta_x_from_grid
-
+from project.grid import delta_x_from_grid, Grid
+from scipy.optimize import minimize
 
 class Calculation:
 
@@ -21,6 +21,84 @@ class Calculation:
         self.convergence = convergence
         self.temp = temp 
         self.boundary_conditions = boundary_conditions
+
+    def mole_fraction_error( self, input_mole_fractions, target_mole_fractions):
+        input_mole_fractions = np.array([input_mole_fractions])
+        output_mole_fractions = self.mole_fraction_output(input_mole_fractions)
+        o_gd = output_mole_fractions[0,1]
+        o_vo = output_mole_fractions[0,0]
+        t_gd = target_mole_fractions[0,1]
+        t_vo = target_mole_fractions[0,0]
+
+        return ( ( o_gd - t_gd )**2 ) + ( ( o_vo - t_vo )**2 )
+
+    def mole_fraction_output(self, input_mole_fractions):
+        for site in self.grid.set_of_sites.subset('O'):
+            for defect in site.defect_species:
+                defect.mole_fraction = input_mole_fractions[0,0]
+            for defect in site.defects:
+                defect.mole_fraction = input_mole_fractions[0,0]
+        for site in self.grid.set_of_sites.subset('Ce'):
+            for defect in site.defect_species:
+                defect.mole_fraction = input_mole_fractions[0,1]
+            for defect in site.defects:
+                defect.mole_fraction = input_mole_fractions[0,1]
+        Vo_molfracs = []
+        Gd_molfracs = []
+        self.solve()
+        self.form_subgrids( [ 'O', 'Ce' ] )
+        self.mole_fractions()
+        min_vo_index = bisect_left( self.subgrids['O'].x, self.bulk_x_min )
+        max_vo_index = bisect_left( self.subgrids['O'].x, self.bulk_x_max )
+        min_gd_index = bisect_left( self.subgrids['Ce'].x, self.bulk_x_min )
+        max_gd_index = bisect_left( self.subgrids['Ce'].x, self.bulk_x_max )
+        self.mf['O'] = [ mf for mf in self.mf['O'] if mf != 0.0 ]
+        self.mf['Ce'] = [ mf for mf in self.mf['Ce'] if mf != 0.0 ]
+
+        for mf in self.mf['O'][min_vo_index+1 : max_vo_index]:
+            if mf > 0.0:
+                Vo_molfracs.append(mf)
+
+        avg_vo_molfrac = np.sum( Vo_molfracs * delta_x_from_grid( self.subgrids['O'].x[min_vo_index+1:max_vo_index], [ self.subgrids['O'].x[min_vo_index], self.subgrids['O'].x[max_vo_index+1] ] ) ) / np.sum( delta_x_from_grid( self.subgrids['O'].x[min_vo_index+1:max_vo_index], [ self.subgrids['O'].x[min_vo_index], self.subgrids['O'].x[max_vo_index+1] ] ) ) 
+       
+        for mf in self.mf['Ce'][min_gd_index+1 : max_gd_index]:
+            if mf > 0.0:
+                Gd_molfracs.append(mf)
+
+        avg_gd_molfrac = np.sum( Gd_molfracs * delta_x_from_grid( self.subgrids['Ce'].x[min_gd_index+1:max_gd_index], [ self.subgrids['Ce'].x[min_gd_index], self.subgrids['Ce'].x[max_gd_index+1] ] ) ) / np.sum( delta_x_from_grid( self.subgrids['Ce'].x[min_gd_index+1:max_gd_index], [ self.subgrids['Ce'].x[min_gd_index], self.subgrids['Ce'].x[max_gd_index+1] ] ) ) 
+        
+        output_mole_fractions = np.array( [ [ avg_vo_molfrac, avg_gd_molfrac ] ] )
+        return output_mole_fractions
+
+        
+    def mole_fraction_correction( self, target_mole_fractions ):
+        target_mole_fractions = np.array([target_mole_fractions])
+        initial_guess = np.array( [ 0.05, 0.2 ] )
+        opt_mole_fractions = minimize( self.mole_fraction_error, initial_guess, args=(  target_mole_fractions ), bounds = ( (0.0001,1), (0.0001,1) ) )
+        opt_mole_fractions.x = np.array([opt_mole_fractions.x])
+        for site in self.grid.set_of_sites.subset('O'):
+            for defect in site.defect_species:
+                defect.mole_fraction = opt_mole_fractions.x[0,0]
+            for defect in site.defects:
+                defect.mole_fraction = opt_mole_fractions.x[0,0]
+        for site in self.grid.set_of_sites.subset('Ce'):
+            for defect in site.defect_species:
+                defect.mole_fraction = opt_mole_fractions.x[0,1]
+            for defect in site.defects:
+                defect.mole_fraction = opt_mole_fractions.x[0,1]
+
+
+    def form_bulk_grid( self ):
+        self.min_bulk_index = bisect_left( self.grid.x, self.bulk_x_min )
+        self.max_bulk_index = bisect_left( self.grid.x, self.bulk_x_max )
+        self.bulk_limits = [ self.grid.x[self.min_bulk_index], self.grid.x[self.max_bulk_index+1 ] ]
+        bulk_sites = []
+        for site in self.grid.set_of_sites:
+            if site.x > self.bulk_x_min and site.x < self.bulk_x_max:
+                bulk_sites.append(site)
+        bulk_set_of_sites = Set_of_Sites(bulk_sites)
+        bulk_grid = Grid.grid_from_set_of_sites( bulk_set_of_sites, self.bulk_limits[0], self.bulk_limits[1], self.grid.b, self.grid.c )    
+        return bulk_grid
 
     def solve( self ):
         """
