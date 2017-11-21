@@ -13,7 +13,7 @@ from scipy.optimize import minimize
 
 class Calculation:
 
-    def __init__(self, grid, bulk_x_min, bulk_x_max, alpha, convergence, temp, boundary_conditions ):
+    def __init__(self, grid, bulk_x_min, bulk_x_max, alpha, convergence, temp, boundary_conditions, initial_guess=None ):
         self.grid = grid
         self.bulk_x_min = bulk_x_min
         self.bulk_x_max = bulk_x_max
@@ -21,6 +21,7 @@ class Calculation:
         self.convergence = convergence
         self.temp = temp 
         self.boundary_conditions = boundary_conditions
+        self.initial_guess = initial_guess
 
     def mole_fraction_error( self, input_mole_fractions, target_mole_fractions):
         input_mole_fractions = np.array([input_mole_fractions])
@@ -72,9 +73,10 @@ class Calculation:
 
         
     def mole_fraction_correction( self, target_mole_fractions ):
+        if self.initial_guess == None:
+            self.initial_guess = target_mole_fractions
         target_mole_fractions = np.array([target_mole_fractions])
-        initial_guess = np.array( [ 0.05, 0.2 ] )
-        opt_mole_fractions = minimize( self.mole_fraction_error, initial_guess, args=(  target_mole_fractions ), bounds = ( (0.0001,1), (0.0001,1) ) )
+        opt_mole_fractions = minimize( self.mole_fraction_error, self.initial_guess, args=(  target_mole_fractions ), bounds = ( (0.0001,1), (0.0001,1) ) )
         opt_mole_fractions.x = np.array([opt_mole_fractions.x])
         for site in self.grid.set_of_sites.subset('O'):
             for defect in site.defect_species:
@@ -86,6 +88,7 @@ class Calculation:
                 defect.mole_fraction = opt_mole_fractions.x[0,1]
             for defect in site.defects:
                 defect.mole_fraction = opt_mole_fractions.x[0,1]
+        self.initial_guess = opt_mole_fractions.x
 
 
     def form_bulk_grid( self ):
