@@ -4,13 +4,13 @@ from project.constants import boltzmann_eV
 from bisect import bisect_left
 from scipy.interpolate import griddata
 
-def phi_at_x( phi, grid, x ):
+def phi_at_x( phi, coordinates, x ):
     """
     Assigns each site x coordinate a grid point and returns the electrostatic potential at the grid point clostest to the x coordinate.
 
     Args:
         phi (np.array): electrostatic potential on 1D grid. 
-        grid (np.array): 1D grid of ordered numbers over a region to compare with x coordinates.
+        coordinates (np.array): 1D grid of ordered numbers over a region.
         x (float): Site x coordinate.
 
     Returns:
@@ -20,13 +20,13 @@ def phi_at_x( phi, grid, x ):
     index = index_of_grid_at_x( grid, x )
     return phi[ index ]
 
-def energy_at_x( energy, grid, x ):
+def energy_at_x( energy, coordinates, x ):
     """
     Assigns each site x coordinate a grid point and returns the segregation energy at the grid point clostest to the x coordinate.
 
     Args:
         energy (np.array): Segregation energies on 1D grid. 
-        grid (np.array): 1D grid of ordered numbers over a region.
+        coordinates (np.array): 1D grid of ordered numbers over a region.
         x (float): Site x coordinate.
 
     Returns:
@@ -36,13 +36,13 @@ def energy_at_x( energy, grid, x ):
     index = index_of_grid_at_x( grid, x )
     return energy[ index ]
 
-def index_of_grid_at_x( grid, x ):
+def index_of_grid_at_x( coordinates, x ):
     """ 
     Assigns each site x coordinate to a position on a regularly or irregularly spaced grid. 
     Returns the index of the grid point clostest to the value x 
 
     Args:
-        grid (np.array): 1D grid of ordered numbers over a region.
+        coordinates (np.array): 1D grid of ordered numbers over a region.
         x (float): Site x coordinate
 
     Returns:
@@ -74,37 +74,30 @@ def closest_index(myList, myNumber):
     else:
        return pos - 1
 
-def volumes_from_grid( b, c, limits, grid ):
+def delta_x_from_grid( coordinates, limits ):
     """
-    Calculates the volume of each grid point based on the cell parameters and distance between grid points ( 1/2 ( deltax1 + deltax2 ) ).
-    TODO explain about end points
-
+    Calculates the distance between the midpoints of each consecutive site. Inserts the calculated distance to the next grid point outside of the calculation region to the first and last position as the delta_x value for the endmost sites. 
     Args:
-        b, c (float): Cell parameters in y and z directions.
-        limits ([float,float]): x-coordinates at the edges of the grid.
-        grid (np.array): 1D grid of ordered numbers over a region. 
-
+        coordinates (np.array): 1D grid of ordered numbers over a region.
+        limits (list): Distance between the midpoint of the endmost sites and the midpoint of the repective site outside of the calculation region.
     Returns:
-        volumes (np.array): Volumes of each grid point on a 1D grid. 
-    """
-    return delta_x_from_grid( grid, limits ) * b * c
-
-def delta_x_from_grid( grid, limits ):
-    """
-    docstring!
+        delta_x (np.array): Distance between the midpoints of each consecutive site.  
     """
     delta_x = np.zeros_like( grid )
     delta_x = ( grid[2:] - grid[:-2] ) / 2.0
-   #delta_x = np.insert( delta_x, 0, delta_x[2] )
-    #delta_x = np.insert( delta_x, len(delta_x), delta_x[2] )
-    delta_x = np.insert( delta_x, 0, ( grid[1] - grid[0] ) / 2.0 + ( grid[0] - limits[0] ) / 2.0 )
-    delta_x = np.insert( delta_x, len( delta_x ), ( grid[-1] - grid[-2] ) / 2.0 + ( limits[1] - grid[-1] ) / 2.0 )
+    delta_x = np.insert( delta_x, 0, limits[0] )
+    delta_x = np.insert( delta_x, len(delta_x), limits[1] )
     return delta_x
 
 class Grid_Point:
     """ The Grid_Point class contains the information and calculations for each grid point individually """
 
     def __init__( self, x, volume ):
+        """
+        x (float): x coordinate of grid point.
+        volume (float): volume of site at grid point.
+        sites (list): defect sites at grid point.
+        """
         self.x = x
         self.volume = volume
         self.sites = []
@@ -153,25 +146,32 @@ def avg( energies, method = 'mean' ):
         raise ValueError( "method: {}".format( method ) )
 
 class Grid:
-    def __init__( self, x_coordinates, b, c, limits, set_of_sites ):
+    def __init__( self, x_coordinates, b, c, limits, limits_for_laplacian, set_of_sites ):
        # x_coordinates need to be sorted for the delta_x calculation in volumes_from_grid
         """ 
         Grid objects contain information and methods for the calculation grid.
   
         Args:
-            x_coordinates (np.array): The x-coordinates for each grid point.
+            delta_x (np.array): Distance between the midpoint of each consecutive grid point. 
+            volumes (np.array): Volume of each consecutive grid point. 
+            points (list): Grid_Point object at each grid point in Grid.
+            x (np.array): The x-coordinates for each grid point.
+            limits(list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. 
+            limits_for_laplacian(list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
             b (float):                b dimension for every grid-point.
             c (float):                c dimension for every grid-point.
             limits ([float,float])    x-coordinates for the minimum and maximum grid edges.
-            set_of_sites (project.Set_of_Sites): The set of defect sites for populating the grid.
-       
+            set_of_sites (object): Set of Site objects that populate the Grid.
+            defect_Species (list): Defect species that populate the Grid.  
         Returns:
             None
         """
-        self.volumes = volumes_from_grid( b, c, limits, x_coordinates )
+        self.delta_x = delta_x_from_grid( x_coordinates, limits )
+        self.volumes = self.delta_x * b * c 
         self.points = [ Grid_Point( x, v ) for x, v in zip( x_coordinates, self.volumes ) ]
         self.x = x_coordinates
         self.limits = limits
+        self.limits_for_laplacian = limits_for_laplacian
         self.b = b
         self.c = c
         self.set_of_sites = set_of_sites
@@ -219,24 +219,12 @@ class Grid:
         return rho
 
     def defect_valences( self ):
-        """ Returns an array of valences for each defect from self.defects """
+        """
+        Returns:
+            (np.array): Valences for each defect from self.defects
+        """
         for site in self.points.sites:
             return np.array( [ d.valence for d in site.defects ] )
-
-    def resistivity_ratio( self, defect_density, bulk_density ):
-        """
-        Calculates the grain boundary resistivity. This is the resistivity in the space charge region / the resistivity in the bulk crystal.
-
-        Args:
-            defect_density (array) : The defect density at each site.
-            bulk_density (float) : The defect density in the bulk region.
-
-        Returns:
-            local_resistivity (float) : The grain boundary resistivity.  
-        """
-        grain_boundary_resistance = sum( delta_x_from_grid( self.x, self.limits ) / defect_density ) 
-        local_resistivity = ( bulk_density / sum( delta_x_from_grid( self.x, self.limits ) ) ) * grain_boundary_resistance 
-        return local_resistivity
 
 
     def average_site_energies( self, method = 'mean' ):
@@ -254,7 +242,10 @@ class Grid:
         return np.array( [ p.average_site_energy( method ) for p in self.points ] ).T
 
     def interpolated_energies( self ):
-        """Returns the average site energies linearly interpolated onto a regularly spaced grid"""
+        """
+        Returns:
+           (list): The average site energies linearly interpolated onto a regularly spaced grid
+        """
 
         energies = []
         for row in self.average_site_energies():
@@ -263,9 +254,24 @@ class Grid:
             energies.append( interpolated_energies )
 
     def subgrid( self, subset_species ):
-        return Grid.grid_from_set_of_sites( self.set_of_sites.subset(subset_species), self.limits[0], self.limits[1], self.b, self.c ) 
+        """
+        Creates a subgrid for each species.
+        Args:
+            subset_species (str): Site species to separate into subgrid. 
+        Returns:
+            (obj): Grid object for subset of data.
+        """
+        return Grid.grid_from_set_of_sites( self.set_of_sites.subset(subset_species), self.limits, self.limits_for_laplacian, self.b, self.c ) 
 
     @classmethod
-    def grid_from_set_of_sites( cls, set_of_sites, x_min, x_max, b, c ):
-        limits = [ x_min, x_max ]
-        return cls( np.unique( [ site.x for site in set_of_sites ] ), b, c, limits, set_of_sites )
+    def grid_from_set_of_sites( cls, set_of_sites, limits, limits_for_laplacian, b, c ):
+    """
+    Creates a grid from a given Set_of_Sites object.
+    Args:
+        set_of_sites(obj): Set_of_Sites object containing a set of all Site objects. 
+        limits(list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. 
+        limits_for_laplacian(list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
+        b (float):                b dimension for every grid-point.
+        c (float):                c dimension for every grid-point.
+    """ 
+        return cls( np.unique( [ site.x for site in set_of_sites ] ), b, c, limits, limits_for_laplacian, set_of_sites )
