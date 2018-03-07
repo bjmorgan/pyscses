@@ -1,18 +1,7 @@
 import numpy as np
-from project.variables import wall_potential
-import scipy as sp
 from scipy.sparse import dia_matrix, diags, spdiags, csc_matrix
 from scipy.sparse import linalg 
-from scipy.integrate import cumtrapz
-from scipy.optimize import brent, minimize_scalar
-from project.grid import delta_x_from_grid
 from scipy.constants import epsilon_0
-
-def total_charge( c, phi, temp, grid ):
-    return sum( grid.charge( phi + c, temp ) )
-
-def total_charge_squared( c, phi, temp, grid ):
-    return total_charge( c, phi, temp, grid )**2
 
 class MatrixSolver:
     """ 
@@ -24,9 +13,9 @@ class MatrixSolver:
         Create a MatrixSolver object.
 
         Args:
-            grid (TODO)
-            dielectric ( TODO)
-            temp (TODO) Why is this used?
+            grid (object): class object.
+            dielectric (float): dielectric constant for the studied material. 
+            temp (float): Temperature. Used to calculate the charge density.
             boundary_conditions (String): Specify the boundary conditions for the matrix solver. 
                                           Allowed values are `dirichlet` and `periodic`.
                                           Default = `dirichlet`.
@@ -49,6 +38,7 @@ class MatrixSolver:
         Using a finite difference approximation the diagonal becomes -2.0 / (deltax_1 * deltax_2 ), 
         the upper diagonal becomes 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x2 ) 
         and the lower diagonal becomes 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x1 ).
+        If boundary_conditions are 'periodic', the corner elements of the matrix are filled. 
 
         Args:
             None
@@ -57,10 +47,8 @@ class MatrixSolver:
             A (matrix): Full tridiagonal matrix. 
         """
         deltax = self.grid.x[1:] - self.grid.x[:-1] 
-        lhs_offset =  (self.grid.x[0] - self.grid.limits[0])
-        rhs_offset =  (self.grid.limits[1] - self.grid.x[-1] ) 
-        deltax = np.insert( deltax, 0, lhs_offset )
-        deltax = np.insert( deltax, len(deltax), rhs_offset )
+        deltax = np.insert( deltax, len(deltax), self.grid.limits_for_laplacian[0] )
+        deltax = np.insert( deltax, 0, self.grid.limits_for_laplacian[1] )
         delta_x1 = deltax[:-1]
         delta_x2 = deltax[1:]
         diag = -2.0 / (delta_x1 * delta_x2)
@@ -86,21 +74,22 @@ class MatrixSolver:
 
     def solve( self, phi_old ):
         """ 
-        Uses matrix inversion to solve the Poisson-Boltzmann equation through finite difference methods.
+        Uses matrix inversion to solve the Poisson-Boltzmann equation through finite difference methods. The charge denisty is calculated from the elctrostatic potential, the elctrostatic potential is then updated using the updated charge density. If boundary_conditions are 'periodic', the charge density is minimised before the matrix inversion. 
     
         Args: 
-            phi (array): Electrostatic potential on a one-dimensional grid.
+            phi_old (array): Electrostatic potential on a one-dimensional grid.
  
         Returns:
-            predicted_phi (array): Electrostatic potential on a one-dimensional grid.
+            predicted_phi (array): Updated electrostatic potential on a one-dimensional grid.
+            rho (array): Updated charge density on a one-dimensional grid.
         """
+        rho = self.grid.rho( phi_old, self.temp )
         if self.boundary_conditions is 'periodic':
-            rho = self.grid.rho( phi_old, self.temp )  
-            rho_prime = np.sum( rho * delta_x_from_grid( self.grid.x, self.grid.limits ) ) / np.sum(delta_x_from_grid( self.grid.x, self.grid.limits ) ) 
+            rho_prime = np.sum( rho * self.grid.delta_x ) / np.sum(self.grid.delta_x ) 
             rho -= rho_prime
         b = -( rho / self.epsilon )
         predicted_phi = linalg.spsolve( self.A, b )
-        return predicted_phi
+        return predicted_phi, rho
 
     
 
