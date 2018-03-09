@@ -9,6 +9,9 @@ from project.grid import delta_x_from_grid, Grid, phi_at_x
 from scipy.optimize import minimize
 
 class Calculation:
+    """
+    Calculation class
+    """
 
     def __init__(self, grid, bulk_x_min, bulk_x_max, alpha, convergence, temp, boundary_conditions, initial_guess=None ):
         self.grid = grid

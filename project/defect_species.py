@@ -1,7 +1,9 @@
 class DefectSpecies:
     """ 
     The DefectSpecies class includes the information about each defect species present in the system. 
+
     Attributes:
+
         label (string): refers to what the defect is called i.e. 'Vo' for an oxygen vacancy. 
         valence (float): The charge of the defect, in atomic units.
         mole_fraction (float): The mole fraction of the defect present in the system. 
