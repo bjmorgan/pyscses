@@ -46,7 +46,8 @@ class MatrixSolver:
         Returns:
             A (matrix): Full tridiagonal matrix. 
         """
-        deltax = self.grid.x[1:] - self.grid.x[:-1] 
+        deltax = self.grid.x[1:] - self.grid.x[:-1]
+        print(deltax) 
         deltax = np.insert( deltax, len(deltax), self.grid.limits_for_laplacian[0] )
         deltax = np.insert( deltax, 0, self.grid.limits_for_laplacian[1] )
         delta_x1 = deltax[:-1]
@@ -84,9 +85,11 @@ class MatrixSolver:
             rho (array): Updated charge density on a one-dimensional grid.
         """
         rho = self.grid.rho( phi_old, self.temp )
+        print('rho',rho)
         if self.boundary_conditions is 'periodic':
             rho_prime = np.sum( rho * self.grid.delta_x ) / np.sum(self.grid.delta_x ) 
             rho -= rho_prime
+        print('rho_prime',rho)
         b = -( rho / self.epsilon )
         predicted_phi = linalg.spsolve( self.A, b )
         return predicted_phi, rho

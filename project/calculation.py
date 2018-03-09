@@ -4,9 +4,7 @@ from sympy import mpmath
 import matplotlib.pyplot as plt
 from bisect import bisect_left, bisect_right
 from project.set_of_sites import Set_of_Sites
-from project.pbc_solver import PBCSolver
 from project.matrix_solver import MatrixSolver
-from project.general_calculations import diff_central
 from project.constants import *
 from project.grid import delta_x_from_grid, Grid, phi_at_x
 from scipy.optimize import minimize
@@ -116,7 +114,7 @@ class Calculation:
         self.initial_guess = opt_mole_fractions.x
 
 
-    def solve( self, conditions ):
+    def solve( self, approximation ):
         """
         Self-consistent solving of the Poisson-Boltzmann equation. Iterates until the convergence is less than the convergence limit.
         Args:
@@ -129,6 +127,7 @@ class Calculation:
             niter (int): Number of iterations performed to reach convergence.
         """
 
+       
         poisson_solver = MatrixSolver( self.grid, dielectric, self.temp, boundary_conditions=self.boundary_conditions )
 
         phi = np.zeros_like( self.grid.x )
@@ -153,7 +152,9 @@ class Calculation:
             prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp )
             niter += 1
 #            if niter % 1000 == 0.0:
-                #print(conv)
+            if niter == 1:
+                print(phi, rho)
+                stop
         self.phi = phi
         self.rho = self.grid.rho( phi, self.temp )
         self.niter = niter
@@ -234,29 +235,29 @@ class Calculation:
         self.ms_phi = (-mpmath.lambertw(-1/(2*self.resistivity_ratio),k=-1)) * ( ( boltzmann_eV * self.temp ) / valence )
 
     def calculate_debye_length( self ):
-    """
-    Returns:
-        debye_length( float ): Debye length as derived from Poisson-Boltzmann equation
-    """
+        """
+        Returns:
+            debye_length( float ): Debye length as derived from Poisson-Boltzmann equation
+        """
         self.debye_length = math.sqrt( ( dielectric * vacuum_permittivity * boltzmann_eV * self.temp ) / ( 2 * ( fundamental_charge ** 2 ) * self.bulk_mobile_defect_density ) )
 
     def calculate_space_charge_width( self, valence ):
-    """
-    Calculates the approximate space charge width from the debye length.
+        """
+        Calculates the approximate space charge width from the debye length.
    
-    Returns:
-        space_charge_width( float ): Approximate space charge width.
-    """
+        Returns:
+            space_charge_width( float ): Approximate space charge width.
+        """
         self.space_charge_width = 2 * ( self.debye_length * math.sqrt( max(self.phi) / ( ( boltzmann_eV * self.temp ) / valence ) ) )
 
 
     def mole_fractions( self ):
-    """
-    Calculates the mole fractions (probability of defects occupation ) for each site on the subgrid for each species.
+        """
+        Calculates the mole fractions (probability of defects occupation ) for each site on the subgrid for each species.
  
-    Returns:
-        mf( np.array ): defect species mole fractions for each site on the subgrid for each site species. 
-    """
+        Returns:
+            mf( np.array ): defect species mole fractions for each site on the subgrid for each site species. 
+        """
         mole_fractions = {}
         for label in self.site_labels:
             name = '{}'.format(label)

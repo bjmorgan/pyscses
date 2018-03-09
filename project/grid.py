@@ -17,7 +17,7 @@ def phi_at_x( phi, coordinates, x ):
         phi[index] (float): The electrostatic potential at the x coordinate with position [index].
     """
 
-    index = index_of_grid_at_x( grid, x )
+    index = index_of_grid_at_x( coordinates, x )
     return phi[ index ]
 
 def energy_at_x( energy, coordinates, x ):
@@ -33,7 +33,7 @@ def energy_at_x( energy, coordinates, x ):
         energy[index] (float): The segregation energy at the x coordinate with position [index].
     """
 
-    index = index_of_grid_at_x( grid, x )
+    index = index_of_grid_at_x( coordinates, x )
     return energy[ index ]
 
 def index_of_grid_at_x( coordinates, x ):
@@ -48,7 +48,7 @@ def index_of_grid_at_x( coordinates, x ):
     Returns:
         closest_index (int): Index of grid position closest to the site x coordinate.
     """
-    return closest_index( grid, x )
+    return closest_index( coordinates, x )
 
 def closest_index(myList, myNumber):
     """
@@ -83,8 +83,8 @@ def delta_x_from_grid( coordinates, limits ):
     Returns:
         delta_x (np.array): Distance between the midpoints of each consecutive site.  
     """
-    delta_x = np.zeros_like( grid )
-    delta_x = ( grid[2:] - grid[:-2] ) / 2.0
+    delta_x = np.zeros_like( coordinates )
+    delta_x = ( coordinates[2:] - coordinates[:-2] ) / 2.0
     delta_x = np.insert( delta_x, 0, limits[0] )
     delta_x = np.insert( delta_x, len(delta_x), limits[1] )
     return delta_x
@@ -265,13 +265,13 @@ class Grid:
 
     @classmethod
     def grid_from_set_of_sites( cls, set_of_sites, limits, limits_for_laplacian, b, c ):
-    """
-    Creates a grid from a given Set_of_Sites object.
-    Args:
-        set_of_sites(obj): Set_of_Sites object containing a set of all Site objects. 
-        limits(list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. 
-        limits_for_laplacian(list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
-        b (float):                b dimension for every grid-point.
-        c (float):                c dimension for every grid-point.
-    """ 
+        """
+        Creates a grid from a given Set_of_Sites object.
+        Args:
+            set_of_sites(obj): Set_of_Sites object containing a set of all Site objects. 
+            limits(list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. 
+            limits_for_laplacian(list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
+            b (float):                b dimension for every grid-point.
+            c (float):                c dimension for every grid-point.
+        """ 
         return cls( np.unique( [ site.x for site in set_of_sites ] ), b, c, limits, limits_for_laplacian, set_of_sites )
