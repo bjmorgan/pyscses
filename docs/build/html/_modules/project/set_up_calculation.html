@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>project.set_up_calculation &mdash; project  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="project  documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> project
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">project</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>project.set_up_calculation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for project.set_up_calculation</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">project.site</span> <span class="k">import</span> <span class="n">Site</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">bisect</span> <span class="k">import</span> <span class="n">bisect_left</span><span class="p">,</span> <span class="n">bisect_right</span>
+
+<div class="viewcode-block" id="site_from_input_file"><a class="viewcode-back" href="../../project.html#project.set_up_calculation.site_from_input_file">[docs]</a><span class="k">def</span> <span class="nf">site_from_input_file</span><span class="p">(</span> <span class="n">site</span><span class="p">,</span> <span class="n">defect_species</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes the data from the input file and converts it into a site.</span>
+<span class="sd">    The input data file is a .txt file where each line in the file corresponds to a site.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        site (str): A line in the input file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Site (object)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">site</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">valence</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">site</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="c1">#    valence = 0.0</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">site</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">defect_labels</span> <span class="o">=</span> <span class="n">site</span><span class="p">[</span><span class="mi">3</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">defect_energies</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="mi">4</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="p">]</span>
+    <span class="c1">#defect_energies = [ 0.0 for e in site[4::2] ]</span></div>
+    <span class="k">return</span> <span class="n">Site</span><span class="p">(</span> <span class="n">label</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span> <span class="n">defect_species</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">defect_labels</span> <span class="p">],</span> <span class="n">defect_energies</span><span class="p">,</span> <span class="n">valence</span><span class="o">=</span><span class="n">valence</span> <span class="p">)</span>
+
+<div class="viewcode-block" id="format_line"><a class="viewcode-back" href="../../project.html#project.set_up_calculation.format_line">[docs]</a><span class="k">def</span> <span class="nf">format_line</span><span class="p">(</span> <span class="n">line</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Each line in the input file is formatted into separate components to form sites. </span>
+<span class="sd">    Args:</span>
+<span class="sd">        line(str): A line in the input file.</span>
+<span class="sd">    Returns: </span>
+<span class="sd">        line(list): Formatted line from the input file. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># x coordinate</span>
+    <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+    <span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span> <span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
+    <span class="c1"># defect energies</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="p">):</span>
+        <span class="n">line</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span> <span class="n">line</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">)</span>
+<span class="c1">#        line[i] = 0.0</span></div>
+    <span class="k">return</span> <span class="n">line</span>
+
+<div class="viewcode-block" id="load_site_data"><a class="viewcode-back" href="../../project.html#project.set_up_calculation.load_site_data">[docs]</a><span class="k">def</span> <span class="nf">load_site_data</span><span class="p">(</span> <span class="n">filename</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads in the input data and formats the input data if the x coordinate values are within the calculation region.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        filename(string): Filename for importing the input data.</span>
+<span class="sd">        x_min(float): Minimum x coordinate value defining the calculation region.</span>
+<span class="sd">        x_max(float): Maximum x coordinate value defining the calculation region. </span>
+<span class="sd">   </span>
+<span class="sd">    Return:</span>
+<span class="sd">        input_data(list): formatted data for calculation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span> <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="p">[</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span> <span class="p">]</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="p">[</span> <span class="n">format_line</span><span class="p">(</span> <span class="n">line</span> <span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">input_data</span> <span class="k">if</span> <span class="p">(</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">x_min</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">x_max</span> <span class="p">)</span> <span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">input_data</span>
+
+<div class="viewcode-block" id="mirror_site_data"><a class="viewcode-back" href="../../project.html#project.set_up_calculation.mirror_site_data">[docs]</a><span class="k">def</span> <span class="nf">mirror_site_data</span><span class="p">(</span> <span class="n">site_data</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Formatted site data is offset so the maximum x coordinate is shifted to an x coordinate of 0.0. The site data with an x coordinate less than 0.0 is mirrored and the shifted and mirrored site data is concatenated to create a system with two grain boundaries. </span>
+<span class="sd">    Args:</span>
+<span class="sd">        site_data(list): Formatted site data.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        site_data_mirrored(list): Formatted site data for a mirrored system. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">midpoint</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span> <span class="p">[</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span> <span class="p">]</span> <span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span><span class="p">:</span>
+        <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">midpoint</span>
+    <span class="n">site_data_mirrored</span> <span class="o">=</span> <span class="p">[</span> <span class="n">copy</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">site_data</span> <span class="k">if</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="p">]</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">site_data_mirrored</span><span class="p">:</span>
+        <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span> </div>
+    <span class="k">return</span> <span class="n">site_data</span> <span class="o">+</span> <span class="n">site_data_mirrored</span>
+
+<div class="viewcode-block" id="calculate_grid_offsets"><a class="viewcode-back" href="../../project.html#project.set_up_calculation.calculate_grid_offsets">[docs]</a><span class="k">def</span> <span class="nf">calculate_grid_offsets</span><span class="p">(</span> <span class="n">filename</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">system</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads in the input data calculates the distance to the next site outside of the defined calculation region. Allows calculation of the delta_x and volume values for the endmost grid points.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        filename(string): Filename for importing the input data.</span>
+<span class="sd">        x_min(float): Minimum x coordinate value defining the calculation region.</span>
+<span class="sd">        x_max(float): Maximum x coordinate value defining the calculation region. </span>
+<span class="sd">        system(str): &#39;single&#39; for single grain boundary systems, &#39;double&#39; for systems where the input data has been mirrored to give two grain boundaries. </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        limits(list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. </span>
+<span class="sd">        limits_for_laplacian(list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span> <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="p">[</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span> <span class="p">]</span>
+        <span class="n">x_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">input_data</span> <span class="p">]</span> <span class="p">)</span> <span class="p">)</span>
+        <span class="n">min_index</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span> <span class="n">x_coords</span><span class="p">,</span> <span class="n">x_min</span> <span class="p">)</span>
+        <span class="n">max_index</span> <span class="o">=</span> <span class="n">bisect_right</span><span class="p">(</span> <span class="n">x_coords</span><span class="p">,</span> <span class="n">x_max</span> <span class="p">)</span>
+        <span class="n">min_offset</span> <span class="o">=</span> <span class="p">((</span><span class="n">x_coords</span><span class="p">[</span><span class="n">min_index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">x_coords</span><span class="p">[</span><span class="n">min_index</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="p">((</span><span class="n">x_coords</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span><span class="o">-</span><span class="n">x_coords</span><span class="p">[</span><span class="n">min_index</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">max_offset</span> <span class="o">=</span> <span class="p">((</span><span class="n">x_coords</span><span class="p">[</span><span class="n">max_index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">x_coords</span><span class="p">[</span><span class="n">max_index</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="p">((</span><span class="n">x_coords</span><span class="p">[</span><span class="n">max_index</span><span class="p">]</span><span class="o">-</span><span class="n">x_coords</span><span class="p">[</span><span class="n">max_index</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;single&#39;</span><span class="p">:</span>
+            <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span> <span class="n">min_offset</span><span class="p">,</span> <span class="n">max_offset</span> <span class="p">]</span>
+            <span class="n">limits_for_laplacian</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="n">x_coords</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span><span class="o">-</span><span class="n">x_coords</span><span class="p">[</span><span class="n">min_index</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="n">x_coords</span><span class="p">[</span><span class="n">max_index</span><span class="p">]</span><span class="o">-</span><span class="n">x_coords</span><span class="p">[</span><span class="n">max_index</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="p">]</span>
+        <span class="k">if</span> <span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;double&#39;</span><span class="p">:</span>
+            <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">min_offset</span><span class="p">,</span> <span class="n">min_offset</span><span class="p">]</span>
+            <span class="n">limits_for_laplacian</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="n">x_coords</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span><span class="o">-</span><span class="n">x_coords</span><span class="p">[</span><span class="n">min_index</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="n">x_coords</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span><span class="o">-</span><span class="n">x_coords</span><span class="p">[</span><span class="n">min_index</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">limits</span><span class="p">,</span> <span class="n">limits_for_laplacian</span>
+
+<div class="viewcode-block" id="form_continuum_sites"><a class="viewcode-back" href="../../project.html#project.set_up_calculation.form_continuum_sites">[docs]</a><span class="k">def</span> <span class="nf">form_continuum_sites</span><span class="p">(</span> <span class="n">all_sites</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">n_points</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">defect_species</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    NEEDS UPDATING TO WORK WITH NEW CODE FORMAT.</span>
+<span class="sd">    INCLUDE DOCSTRING</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="p">]</span>    
+
+    <span class="n">grid_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">n_points</span> <span class="p">)</span>
+    
+    <span class="n">Gd_scaling</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="s1">&#39;Ce&#39;</span> <span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span> <span class="n">grid_1</span> <span class="p">)</span>
+    <span class="n">Vo_scaling</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="s1">&#39;O&#39;</span> <span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span> <span class="n">grid_1</span> <span class="p">)</span>
+    
+    <span class="n">Vo_continuum_grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span> <span class="n">grid_1</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">limits</span><span class="p">,</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="s1">&#39;O&#39;</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="n">Gd_continuum_grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span> <span class="n">grid_1</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">limits</span><span class="p">,</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="s1">&#39;Ce&#39;</span> <span class="p">)</span> <span class="p">)</span>
+    
+    <span class="n">Vo_average_energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span> <span class="n">site</span><span class="o">.</span><span class="n">average_local_energy</span><span class="p">(</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;mean&#39;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="s1">&#39;O&#39;</span> <span class="p">)</span> <span class="p">]</span> <span class="p">)</span>
+    <span class="n">Gd_average_energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span> <span class="n">site</span><span class="o">.</span><span class="n">average_local_energy</span><span class="p">(</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;mean&#39;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="s1">&#39;Ce&#39;</span> <span class="p">)</span> <span class="p">]</span> <span class="p">)</span>
+    
+    
+    <span class="n">Vo_new_energies</span> <span class="o">=</span> <span class="n">griddata</span><span class="p">(</span> <span class="p">(</span> <span class="p">[</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="s1">&#39;O&#39;</span> <span class="p">)</span> <span class="p">]</span> <span class="p">),</span> <span class="n">Vo_average_energies</span><span class="p">,</span> <span class="n">grid_1</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;nearest&#39;</span> <span class="p">)</span>
+    <span class="n">Gd_new_energies</span> <span class="o">=</span> <span class="n">griddata</span><span class="p">(</span> <span class="p">(</span> <span class="p">[</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="s1">&#39;Ce&#39;</span> <span class="p">)</span> <span class="p">]</span> <span class="p">),</span> <span class="n">Gd_average_energies</span><span class="p">,</span> <span class="n">grid_1</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;nearest&#39;</span> <span class="p">)</span>
+    
+    
+    <span class="n">Vo_new_sites</span> <span class="o">=</span> <span class="n">Set_of_Sites</span><span class="p">(</span> <span class="p">[</span> <span class="n">Site</span><span class="p">(</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span> <span class="n">defect_species</span><span class="p">[</span><span class="s1">&#39;Vo&#39;</span><span class="p">]</span> <span class="p">],</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">scaling</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">Vo_scaling</span> <span class="p">)</span> <span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span> <span class="n">grid_1</span><span class="p">,</span> <span class="n">Vo_new_energies</span> <span class="p">)</span> <span class="p">]</span> <span class="p">)</span>
+    <span class="n">Gd_new_sites</span> <span class="o">=</span> <span class="n">Set_of_Sites</span><span class="p">(</span> <span class="p">[</span> <span class="n">Site</span><span class="p">(</span> <span class="s1">&#39;Ce&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span> <span class="n">defect_species</span><span class="p">[</span><span class="s1">&#39;Gd&#39;</span><span class="p">]</span> <span class="p">],</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">scaling</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">Gd_scaling</span> <span class="p">)</span> <span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span> <span class="n">grid_1</span><span class="p">,</span> <span class="n">Gd_new_energies</span> <span class="p">)</span> <span class="p">]</span> <span class="p">)</span>   
+    
+    <span class="n">all_sites_new</span> <span class="o">=</span> <span class="n">Vo_new_sites</span> <span class="o">+</span> <span class="n">Gd_new_sites</span>
+    </div>
+    <span class="k">return</span> <span class="n">all_sites_new</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Georgina Wellock.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,1387 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>project package &mdash; project  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="project  documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> project
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">project package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-project.calculation">project.calculation module</a></li>
+<li><a class="reference internal" href="#module-project.constants">project.constants module</a></li>
+<li><a class="reference internal" href="#module-project.defect_at_site">project.defect_at_site module</a></li>
+<li><a class="reference internal" href="#module-project.defect_species">project.defect_species module</a></li>
+<li><a class="reference internal" href="#module-project.grid">project.grid module</a></li>
+<li><a class="reference internal" href="#module-project.matrix_solver">project.matrix_solver module</a></li>
+<li><a class="reference internal" href="#module-project.set_of_sites">project.set_of_sites module</a></li>
+<li><a class="reference internal" href="#module-project.set_up_calculation">project.set_up_calculation module</a></li>
+<li><a class="reference internal" href="#module-project.site">project.site module</a></li>
+<li><a class="reference internal" href="#module-project">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">project</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>project package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/project.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="project-package">
+<h1>project package<a class="headerlink" href="#project-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-project.calculation">
+<span id="project-calculation-module"></span><h2>project.calculation module<a class="headerlink" href="#module-project.calculation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="project.calculation.Calculation">
+<em class="property">class </em><code class="descclassname">project.calculation.</code><code class="descname">Calculation</code><span class="sig-paren">(</span><em>grid</em>, <em>bulk_x_min</em>, <em>bulk_x_max</em>, <em>alpha</em>, <em>convergence</em>, <em>temp</em>, <em>boundary_conditions</em>, <em>initial_guess=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="project.calculation.Calculation.calculate_debye_length">
+<code class="descname">calculate_debye_length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation.calculate_debye_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation.calculate_debye_length" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Debye length as derived from Poisson-Boltzmann equation</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">debye_length( float )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.calculation.Calculation.calculate_resistivity_ratio_new">
+<code class="descname">calculate_resistivity_ratio_new</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation.calculate_resistivity_ratio_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation.calculate_resistivity_ratio_new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the ratio of the resistivity in the bulk compared to the resistivity over the space charge regions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Ratio between resistivity in the bulk and resistivity over the space charge region.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">resistivity_ratio( float )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.calculation.Calculation.calculate_space_charge_width">
+<code class="descname">calculate_space_charge_width</code><span class="sig-paren">(</span><em>valence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation.calculate_space_charge_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation.calculate_space_charge_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the approximate space charge width from the debye length.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Approximate space charge width.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">space_charge_width( float )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.calculation.Calculation.form_subgrids">
+<code class="descname">form_subgrids</code><span class="sig-paren">(</span><em>site_labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation.form_subgrids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation.form_subgrids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a Grid class for each species in the system.
+:param site_labels: List of strings for the different site species.
+:type site_labels: list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Separate Grid classes for the different site species (name).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">subgrids[name]( cls )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.calculation.Calculation.mole_fraction_correction">
+<code class="descname">mole_fraction_correction</code><span class="sig-paren">(</span><em>target_mole_fractions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation.mole_fraction_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation.mole_fraction_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starting from an initial guess for the appropriate input mole fractions, minimises the error between the target bulk mole fraction and the output mole fraction from the iterative Poisson-Boltzmann solver.
+:param target_mole_fractions: The value that the mole fractions should be in the bulk.
+:type target_mole_fractions: list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The optimum values to be used as the input mole fractions for the iterative Poisson-Boltzmann solver so that the output bulk mole fractions are the target bulk mole fractions.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">opt_mole_fractions( list )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.calculation.Calculation.mole_fraction_error">
+<code class="descname">mole_fraction_error</code><span class="sig-paren">(</span><em>input_mole_fractions</em>, <em>target_mole_fractions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation.mole_fraction_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation.mole_fraction_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the sum of sqaures error between the output mole fractions calculated from the input mole fractions, compared to the target mole fractions.
+:param input_mole_fractions: Mole fractions for each of the species used in the iterative Poisson-Boltzmann solver.
+:type input_mole_fractions: list
+:param target_mole_fractions: The value that the mole fractions should be in the bulk.
+:type target_mole_fractions: list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Sum of squares error between output and target mole fractions.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.calculation.Calculation.mole_fraction_output">
+<code class="descname">mole_fraction_output</code><span class="sig-paren">(</span><em>input_mole_fractions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation.mole_fraction_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation.mole_fraction_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the output mole fraction for a given input mole fraction when solving the Poisson-Boltzmann equation.
+:param input_mole_fractions: Mole fractions for each of the species used in the iterative Poisson-Boltzmann solver.
+:type input_mole_fractions: list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Mole fractions that are calculated from the iterative Poisson-Boltzmann solver.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">output_mole_fractions( list )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.calculation.Calculation.mole_fractions">
+<code class="descname">mole_fractions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation.mole_fractions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation.mole_fractions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the mole fractions (probability of defects occupation ) for each site on the subgrid for each species.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">defect species mole fractions for each site on the subgrid for each site species.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">mf( np.array )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.calculation.Calculation.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>approximation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Self-consistent solving of the Poisson-Boltzmann equation. Iterates until the convergence is less than the convergence limit.
+:param approximation: Approximation used for the defect behaviour.</p>
+<blockquote>
+<div>‘mott-schottky’ - Some defects immobile / fixed to bulk mole fractions.
+‘gouy-chapman’ - All defects mobile / able to redistribute.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Electrostatic potential on a one-dimensional grid.
+rho (float): Charge density on a one-dimensional grid.
+niter (int): Number of iterations performed to reach convergence.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">phi (array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.calculation.Calculation.solve_MS_approx_for_phi">
+<code class="descname">solve_MS_approx_for_phi</code><span class="sig-paren">(</span><em>valence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#Calculation.solve_MS_approx_for_phi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.Calculation.solve_MS_approx_for_phi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using the calculated resistivity ratio, solves the Mott-Schottky model to calculate the space charge potential (analogous to experimental analysis).
+If the resistivity ratio calculated is less that 1.36, ValueError raised as solution to the Mott-Schottky model is not on a real branch.
+:param valence: Charge of species at site.
+:type valence: float</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Space charge potential calculated from Mott-Schottky model</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">ms_phi( float )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="project.calculation.calculate_activation_energies">
+<code class="descclassname">project.calculation.</code><code class="descname">calculate_activation_energies</code><span class="sig-paren">(</span><em>ratios</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#calculate_activation_energies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.calculate_activation_energies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the Arrhenius equation using the calculated resistivity ratio for a series of temperatures to calculate the activation energy for single defect segregation.
+Uses a central difference approach so endpoints filled in with NaN to create an array with the same length as the args.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ratios</strong> (<em>list</em>) – Resistivity ratios calculated for a range of temperatures.</li>
+<li><strong>temp</strong> (<em>list</em>) – Temperature (values used to calculate resistivity ratio values).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The activation energy calculated for different temperatures.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Ea2( np.array )</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.calculation.diff_central">
+<code class="descclassname">project.calculation.</code><code class="descname">diff_central</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/calculation.html#diff_central"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.calculation.diff_central" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the numerical derivative of x,y data using a central difference approximation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>y</strong> (<em>x</em><em>,</em>) – x,y data to be differentiated.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numerical derivative of x,y</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-project.constants">
+<span id="project-constants-module"></span><h2>project.constants module<a class="headerlink" href="#module-project.constants" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-project.defect_at_site">
+<span id="project-defect-at-site-module"></span><h2>project.defect_at_site module<a class="headerlink" href="#module-project.defect_at_site" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="project.defect_at_site.Defect_at_Site">
+<em class="property">class </em><code class="descclassname">project.defect_at_site.</code><code class="descname">Defect_at_Site</code><span class="sig-paren">(</span><em>label</em>, <em>valence</em>, <em>mole_fraction</em>, <em>energy</em>, <em>site</em>, <em>fixed=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/defect_at_site.html#Defect_at_Site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.defect_at_site.Defect_at_Site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Defect_at_Site class contains the information about each defect at each site, its valence, mole fraction and the segregation energy for that defect at that site.
+This functions in this class combine to give the correct statistics for site occupation in solid electrolytes. It is a ‘Fermi-Dirac’ like approach as described in ‘Origin of Space Charge in Grain boundaries of Protoin-Conductibng BaZrO3’ by Helgee, Lindmann and Wahnstrom in 2012 (published in Fuel Cells).
+The overall equation takes traditional Boltzmann statistics (def Boltzmann one), and adds normalisation so that each site cannot have a probability of being occupied that is any higher than 1 (at 1 the site is fully occupied) and accounts for any competition of like charged defects.
+There is also an option to fix any defect at their sites which is appropriate for defects which are not mobile.</p>
+<dl class="method">
+<dt id="project.defect_at_site.Defect_at_Site.boltzmann_one">
+<code class="descname">boltzmann_one</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/defect_at_site.html#Defect_at_Site.boltzmann_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.defect_at_site.Defect_at_Site.boltzmann_one" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Boltzmann statistics calculation</p>
+<p>(In LaTeX notation) exp^{</p>
+</div></blockquote>
+<p>rac{ Phi z + Delta E }{ k_BT } }</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Args:</dt>
+<dd>phi (float): Electrostatic potential.
+temp (float): Temperature of calculation.</dd>
+<dt>Returns:</dt>
+<dd>(float): Boltzmann statistics</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.defect_at_site.Defect_at_Site.boltzmann_three">
+<code class="descname">boltzmann_three</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/defect_at_site.html#Defect_at_Site.boltzmann_three"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.defect_at_site.Defect_at_Site.boltzmann_three" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Boltzmann statistics calculation</p>
+<p>( In LaTeX notation ) x (exp^{</p>
+</div></blockquote>
+<p>rac{ Phi z + Delta E}{ K_BT} } - 1 )</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Args:</dt>
+<dd>phi (float): Electrostatic potential.
+temp (float): Temperature of calculation.</dd>
+<dt>Returns:</dt>
+<dd>(float): ( Boltzmann statistics - 1 ) * mole fraction.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.defect_at_site.Defect_at_Site.boltzmann_two">
+<code class="descname">boltzmann_two</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/defect_at_site.html#Defect_at_Site.boltzmann_two"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.defect_at_site.Defect_at_Site.boltzmann_two" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Boltzmann statistics calculation</p>
+<p>(In LaTeX notation) x ( exp^{</p>
+</div></blockquote>
+<p>rac{Phi z + Delta E}{K_BT} } )</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Args:</dt>
+<dd>phi (float): Electrostatic potential.
+temp (float): Temperature of calculation.</dd>
+<dt>Returns:</dt>
+<dd>(float): Boltzmann statistics * mole fraction</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.defect_at_site.Defect_at_Site.potential_energy">
+<code class="descname">potential_energy</code><span class="sig-paren">(</span><em>phi</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/defect_at_site.html#Defect_at_Site.potential_energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.defect_at_site.Defect_at_Site.potential_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Potential energy for the defect at this site.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>phi</strong> (<em>float</em>) – electrostatic potential at this site</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The electrochemical potential</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(float)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-project.defect_species">
+<span id="project-defect-species-module"></span><h2>project.defect_species module<a class="headerlink" href="#module-project.defect_species" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="project.defect_species.DefectSpecies">
+<em class="property">class </em><code class="descclassname">project.defect_species.</code><code class="descname">DefectSpecies</code><span class="sig-paren">(</span><em>label</em>, <em>valence</em>, <em>mole_fraction</em>, <em>fixed=False</em>, <em>mobility=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/defect_species.html#DefectSpecies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.defect_species.DefectSpecies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The DefectSpecies class includes the information about each defect species present in the system.
+.. attribute:: label</p>
+<blockquote>
+<div><em>string</em> – refers to what the defect is called i.e. ‘Vo’ for an oxygen vacancy.</div></blockquote>
+<dl class="attribute">
+<dt id="project.defect_species.DefectSpecies.valence">
+<code class="descname">valence</code><a class="headerlink" href="#project.defect_species.DefectSpecies.valence" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – The charge of the defect, in atomic units.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="project.defect_species.DefectSpecies.mole_fraction">
+<code class="descname">mole_fraction</code><a class="headerlink" href="#project.defect_species.DefectSpecies.mole_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – The mole fraction of the defect present in the system.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="project.defect_species.DefectSpecies.fixed">
+<code class="descname">fixed</code><a class="headerlink" href="#project.defect_species.DefectSpecies.fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>bool</em> – set whether this defect species can redistribute to an equilibrium distriution. Default=False.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="project.defect_species.DefectSpecies.mobility">
+<code class="descname">mobility</code><a class="headerlink" href="#project.defect_species.DefectSpecies.mobility" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – mobility of this defect species. Default = 0.0.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-project.grid">
+<span id="project-grid-module"></span><h2>project.grid module<a class="headerlink" href="#module-project.grid" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="project.grid.Grid">
+<em class="property">class </em><code class="descclassname">project.grid.</code><code class="descname">Grid</code><span class="sig-paren">(</span><em>x_coordinates</em>, <em>b</em>, <em>c</em>, <em>limits</em>, <em>limits_for_laplacian</em>, <em>set_of_sites</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#Grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.Grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="project.grid.Grid.average_site_energies">
+<code class="descname">average_site_energies</code><span class="sig-paren">(</span><em>method='mean'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#Grid.average_site_energies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.Grid.average_site_energies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the average segregation energy for all grid points based on a specified method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>method</strong> (<em>str</em>) – The method in which the average segregation energies will be calculated.
+‘mean’ - Returns the sum of all values at that site divided by the number of values at that site.
+‘min’ - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Average segregation energies on a 1D grid.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">average site energies (np.array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.grid.Grid.charge">
+<code class="descname">charge</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#Grid.charge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.Grid.charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the overall charge at each point on a grid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>np.array</em>) – Electrostatic potential on a 1D grid.</li>
+<li><strong>temp</strong> (<em>float</em>) – Temperature of calculation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Overall charge at each point on a 1D grid.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">charge (np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.grid.Grid.defect_valences">
+<code class="descname">defect_valences</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#Grid.defect_valences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.Grid.defect_valences" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Valences for each defect from self.defects</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(np.array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="project.grid.Grid.grid_from_set_of_sites">
+<em class="property">classmethod </em><code class="descname">grid_from_set_of_sites</code><span class="sig-paren">(</span><em>set_of_sites</em>, <em>limits</em>, <em>limits_for_laplacian</em>, <em>b</em>, <em>c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#Grid.grid_from_set_of_sites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.Grid.grid_from_set_of_sites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a grid from a given Set_of_Sites object.
+:param set_of_sites: Set_of_Sites object containing a set of all Site objects.
+:type set_of_sites: obj
+:param limits: distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively.
+:type limits: list
+:param limits_for_laplacian: distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
+:type limits_for_laplacian: list
+:param b: b dimension for every grid-point.
+:type b: float
+:param c: c dimension for every grid-point.
+:type c: float</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.grid.Grid.interpolated_energies">
+<code class="descname">interpolated_energies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#Grid.interpolated_energies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.Grid.interpolated_energies" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The average site energies linearly interpolated onto a regularly spaced grid</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.grid.Grid.rho">
+<code class="descname">rho</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#Grid.rho"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.Grid.rho" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates charge density at each point on a grid, by dividing the overall charge at that grid point by the grid point volume.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>np.array</em>) – Electrostatic potential on a 1D grid.</li>
+<li><strong>temp</strong> (<em>float</em>) – Temperature of calculation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The charge density at each point on a grid.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">rho (np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.grid.Grid.subgrid">
+<code class="descname">subgrid</code><span class="sig-paren">(</span><em>subset_species</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#Grid.subgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.Grid.subgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a subgrid for each species.
+:param subset_species: Site species to separate into subgrid.
+:type subset_species: str</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Grid object for subset of data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(obj)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="project.grid.Grid_Point">
+<em class="property">class </em><code class="descclassname">project.grid.</code><code class="descname">Grid_Point</code><span class="sig-paren">(</span><em>x</em>, <em>volume</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#Grid_Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.Grid_Point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Grid_Point class contains the information and calculations for each grid point individually</p>
+<dl class="method">
+<dt id="project.grid.Grid_Point.average_site_energy">
+<code class="descname">average_site_energy</code><span class="sig-paren">(</span><em>method='mean'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#Grid_Point.average_site_energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.Grid_Point.average_site_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the average segregation energy for all sites based on a specified method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>method</strong> (<em>str</em>) – The method in which the average segregation energies will be calculated.
+‘mean’ - Returns the sum of all values at that site divided by the number of values at that site.
+‘min’ - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Average segregation energies on a 1D grid.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">average site energies (np.array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="project.grid.avg">
+<code class="descclassname">project.grid.</code><code class="descname">avg</code><span class="sig-paren">(</span><em>energies</em>, <em>method='mean'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#avg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.avg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the average segregation energy for a site based on a specified method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>energies</strong> (<em>np.array</em>) – Segregation energies on 1D grid.</li>
+<li><strong>method</strong> (<em>str</em>) – The method in which the average segregation energies will be calculated.
+‘mean’ - Returns the sum of all values at that site divided by the number of values at that site.
+‘min’ - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Average segregation energies on a 1D grid.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">average site energies (np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.grid.closest_index">
+<code class="descclassname">project.grid.</code><code class="descname">closest_index</code><span class="sig-paren">(</span><em>myList</em>, <em>myNumber</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#closest_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.closest_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assumes myList is sorted. Returns index of closest value to myNumber.
+If two numbers are equally close, return the index of the smallest number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>myList</strong> (<em>list</em>) – List of numbers to compare against. This should be sorted.</li>
+<li><strong>myNumber</strong> (<em>float</em>) – The number to compare against myList.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Index of position of number in myList which is closest to myNumber.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pos (int)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.grid.delta_x_from_grid">
+<code class="descclassname">project.grid.</code><code class="descname">delta_x_from_grid</code><span class="sig-paren">(</span><em>coordinates</em>, <em>limits</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#delta_x_from_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.delta_x_from_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the distance between the midpoints of each consecutive site. Inserts the calculated distance to the next grid point outside of the calculation region to the first and last position as the delta_x value for the endmost sites.
+:param coordinates: 1D grid of ordered numbers over a region.
+:type coordinates: np.array
+:param limits: Distance between the midpoint of the endmost sites and the midpoint of the repective site outside of the calculation region.
+:type limits: list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Distance between the midpoints of each consecutive site.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">delta_x (np.array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.grid.energy_at_x">
+<code class="descclassname">project.grid.</code><code class="descname">energy_at_x</code><span class="sig-paren">(</span><em>energy</em>, <em>coordinates</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#energy_at_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.energy_at_x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assigns each site x coordinate a grid point and returns the segregation energy at the grid point clostest to the x coordinate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>energy</strong> (<em>np.array</em>) – Segregation energies on 1D grid.</li>
+<li><strong>coordinates</strong> (<em>np.array</em>) – 1D grid of ordered numbers over a region.</li>
+<li><strong>x</strong> (<em>float</em>) – Site x coordinate.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The segregation energy at the x coordinate with position [index].</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">energy[index] (float)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.grid.index_of_grid_at_x">
+<code class="descclassname">project.grid.</code><code class="descname">index_of_grid_at_x</code><span class="sig-paren">(</span><em>coordinates</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#index_of_grid_at_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.index_of_grid_at_x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assigns each site x coordinate to a position on a regularly or irregularly spaced grid.
+Returns the index of the grid point clostest to the value x</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>coordinates</strong> (<em>np.array</em>) – 1D grid of ordered numbers over a region.</li>
+<li><strong>x</strong> (<em>float</em>) – Site x coordinate</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Index of grid position closest to the site x coordinate.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">closest_index (int)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.grid.phi_at_x">
+<code class="descclassname">project.grid.</code><code class="descname">phi_at_x</code><span class="sig-paren">(</span><em>phi</em>, <em>coordinates</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/grid.html#phi_at_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.grid.phi_at_x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assigns each site x coordinate a grid point and returns the electrostatic potential at the grid point clostest to the x coordinate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>np.array</em>) – electrostatic potential on 1D grid.</li>
+<li><strong>coordinates</strong> (<em>np.array</em>) – 1D grid of ordered numbers over a region.</li>
+<li><strong>x</strong> (<em>float</em>) – Site x coordinate.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The electrostatic potential at the x coordinate with position [index].</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">phi[index] (float)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-project.matrix_solver">
+<span id="project-matrix-solver-module"></span><h2>project.matrix_solver module<a class="headerlink" href="#module-project.matrix_solver" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="project.matrix_solver.MatrixSolver">
+<em class="property">class </em><code class="descclassname">project.matrix_solver.</code><code class="descname">MatrixSolver</code><span class="sig-paren">(</span><em>grid</em>, <em>dielectric</em>, <em>temp</em>, <em>boundary_conditions='dirichlet'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/matrix_solver.html#MatrixSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.matrix_solver.MatrixSolver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Contains the functions for the finite difference methods used to solve the Poisson-Boltzmann equation on a one-dimensional grid.</p>
+<dl class="method">
+<dt id="project.matrix_solver.MatrixSolver.laplacian_new_fullmatrix">
+<code class="descname">laplacian_new_fullmatrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/matrix_solver.html#MatrixSolver.laplacian_new_fullmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.matrix_solver.MatrixSolver.laplacian_new_fullmatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the full tridiagonal matrix used to solve the Poisson-Boltzmann equation using a finite element method.
+deltax is taken as the width of each grid point, from the center point between itself and the next grid point on either side.
+Using a finite difference approximation the diagonal becomes -2.0 / (deltax_1 * deltax_2 ),
+the upper diagonal becomes 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x2 )
+and the lower diagonal becomes 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x1 ).
+If boundary_conditions are ‘periodic’, the corner elements of the matrix are filled.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Full tridiagonal matrix.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A (matrix)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.matrix_solver.MatrixSolver.laplacian_sparse">
+<code class="descname">laplacian_sparse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/matrix_solver.html#MatrixSolver.laplacian_sparse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.matrix_solver.MatrixSolver.laplacian_sparse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a sparse matrix from a full matrix by taking only the tridiagonal values.
+:param None:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Sparse tridiagonal matrix.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">A (matrix)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.matrix_solver.MatrixSolver.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>phi_old</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/matrix_solver.html#MatrixSolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.matrix_solver.MatrixSolver.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses matrix inversion to solve the Poisson-Boltzmann equation through finite difference methods. The charge denisty is calculated from the elctrostatic potential, the elctrostatic potential is then updated using the updated charge density. If boundary_conditions are ‘periodic’, the charge density is minimised before the matrix inversion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>phi_old</strong> (<em>array</em>) – Electrostatic potential on a one-dimensional grid.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Updated electrostatic potential on a one-dimensional grid.
+rho (array): Updated charge density on a one-dimensional grid.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">predicted_phi (array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-project.set_of_sites">
+<span id="project-set-of-sites-module"></span><h2>project.set_of_sites module<a class="headerlink" href="#module-project.set_of_sites" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="project.set_of_sites.Set_of_Sites">
+<em class="property">class </em><code class="descclassname">project.set_of_sites.</code><code class="descname">Set_of_Sites</code><span class="sig-paren">(</span><em>sites</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_of_sites.html#Set_of_Sites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_of_sites.Set_of_Sites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Set_of_Sites object groups together all of the Site objects into one object and contains functions for the calculations that provide properties of all of the sites together rather than individually.</p>
+<dl class="method">
+<dt id="project.set_of_sites.Set_of_Sites.calculate_defect_density">
+<code class="descname">calculate_defect_density</code><span class="sig-paren">(</span><em>grid</em>, <em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_of_sites.html#Set_of_Sites.calculate_defect_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_of_sites.Set_of_Sites.calculate_defect_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the defect density at each site.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grid</strong> (<em>object</em>) – Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.</li>
+<li><strong>phi</strong> (<em>array</em>) – electrostatic potential on a one-dimensional grid.</li>
+<li><strong>temp</strong> (<em>float</em>) – Absolute temperature.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">defect density for each site using their grid points</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">defect_density (array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.set_of_sites.Set_of_Sites.calculate_energies_on_grid">
+<code class="descname">calculate_energies_on_grid</code><span class="sig-paren">(</span><em>grid</em>, <em>phi</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_of_sites.html#Set_of_Sites.calculate_energies_on_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_of_sites.Set_of_Sites.calculate_energies_on_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of energies at their points on a one-dimensional grid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grid</strong> (<em>object</em>) – Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.</li>
+<li><strong>phi</strong> (<em>array</em>) – electrostatic potential on a one-dimensional grid.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">energies at their grid points</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">energies_on_grid (array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.set_of_sites.Set_of_Sites.calculate_probabilities">
+<code class="descname">calculate_probabilities</code><span class="sig-paren">(</span><em>grid</em>, <em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_of_sites.html#Set_of_Sites.calculate_probabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_of_sites.Set_of_Sites.calculate_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the probability of a site being occupied by its corresponding defect.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grid</strong> (<em>object</em>) – Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.</li>
+<li><strong>phi</strong> (<em>array</em>) – electrostatic potential on a one-dimensional grid.</li>
+<li><strong>temp</strong> (<em>float</em>) – Absolute temperature.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">probabilities of defects occupying each site using their grid points</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">probability (array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.set_of_sites.Set_of_Sites.get_coords">
+<code class="descname">get_coords</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_of_sites.html#Set_of_Sites.get_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_of_sites.Set_of_Sites.get_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the x coordinates for all the sites wich contain a particular defect</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="project.set_of_sites.Set_of_Sites.mirrored_set_of_sites_from_input_data">
+<em class="property">classmethod </em><code class="descname">mirrored_set_of_sites_from_input_data</code><span class="sig-paren">(</span><em>input_data</em>, <em>limits</em>, <em>defect_species</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_of_sites.html#Set_of_Sites.mirrored_set_of_sites_from_input_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_of_sites.Set_of_Sites.mirrored_set_of_sites_from_input_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="project.set_of_sites.Set_of_Sites.set_of_sites_from_input_data">
+<em class="property">classmethod </em><code class="descname">set_of_sites_from_input_data</code><span class="sig-paren">(</span><em>input_data</em>, <em>limits</em>, <em>defect_species</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_of_sites.html#Set_of_Sites.set_of_sites_from_input_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_of_sites.Set_of_Sites.set_of_sites_from_input_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="project.set_of_sites.Set_of_Sites.subgrid_calculate_defect_density">
+<code class="descname">subgrid_calculate_defect_density</code><span class="sig-paren">(</span><em>sub_grid</em>, <em>full_grid</em>, <em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_of_sites.html#Set_of_Sites.subgrid_calculate_defect_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_of_sites.Set_of_Sites.subgrid_calculate_defect_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the defect density at each site for a given subset of sites.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>subgrid</strong> (<em>object</em>) – Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates. For a given subset of sites.</li>
+<li><strong>full_grid</strong> (<em>object</em>) – Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates. For all sites.</li>
+<li><strong>phi</strong> (<em>array</em>) – electrostatic potential on a one-dimensional grid.</li>
+<li><strong>temp</strong> (<em>float</em>) – Absolute temperature.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">defect density for each site using their grid points</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">defect_density (array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.set_of_sites.Set_of_Sites.subset">
+<code class="descname">subset</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_of_sites.html#Set_of_Sites.subset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_of_sites.Set_of_Sites.subset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all the sites which contain a particular defect</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-project.set_up_calculation">
+<span id="project-set-up-calculation-module"></span><h2>project.set_up_calculation module<a class="headerlink" href="#module-project.set_up_calculation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="project.set_up_calculation.calculate_grid_offsets">
+<code class="descclassname">project.set_up_calculation.</code><code class="descname">calculate_grid_offsets</code><span class="sig-paren">(</span><em>filename</em>, <em>x_min</em>, <em>x_max</em>, <em>system</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_up_calculation.html#calculate_grid_offsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_up_calculation.calculate_grid_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads in the input data calculates the distance to the next site outside of the defined calculation region. Allows calculation of the delta_x and volume values for the endmost grid points.
+:param filename: Filename for importing the input data.
+:type filename: string
+:param x_min: Minimum x coordinate value defining the calculation region.
+:type x_min: float
+:param x_max: Maximum x coordinate value defining the calculation region.
+:type x_max: float
+:param system: ‘single’ for single grain boundary systems, ‘double’ for systems where the input data has been mirrored to give two grain boundaries.
+:type system: str</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively.
+limits_for_laplacian(list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">limits(list)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.set_up_calculation.form_continuum_sites">
+<code class="descclassname">project.set_up_calculation.</code><code class="descname">form_continuum_sites</code><span class="sig-paren">(</span><em>all_sites</em>, <em>x_min</em>, <em>x_max</em>, <em>n_points</em>, <em>b</em>, <em>c</em>, <em>defect_species</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_up_calculation.html#form_continuum_sites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_up_calculation.form_continuum_sites" title="Permalink to this definition">¶</a></dt>
+<dd><p>NEEDS UPDATING TO WORK WITH NEW CODE FORMAT.
+INCLUDE DOCSTRING</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.set_up_calculation.format_line">
+<code class="descclassname">project.set_up_calculation.</code><code class="descname">format_line</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_up_calculation.html#format_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_up_calculation.format_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Each line in the input file is formatted into separate components to form sites.
+:param line: A line in the input file.
+:type line: str</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Formatted line from the input file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">line(list)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.set_up_calculation.load_site_data">
+<code class="descclassname">project.set_up_calculation.</code><code class="descname">load_site_data</code><span class="sig-paren">(</span><em>filename</em>, <em>x_min</em>, <em>x_max</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_up_calculation.html#load_site_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_up_calculation.load_site_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads in the input data and formats the input data if the x coordinate values are within the calculation region.
+:param filename: Filename for importing the input data.
+:type filename: string
+:param x_min: Minimum x coordinate value defining the calculation region.
+:type x_min: float
+:param x_max: Maximum x coordinate value defining the calculation region.
+:type x_max: float</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">formatted data for calculation.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">input_data(list)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.set_up_calculation.mirror_site_data">
+<code class="descclassname">project.set_up_calculation.</code><code class="descname">mirror_site_data</code><span class="sig-paren">(</span><em>site_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_up_calculation.html#mirror_site_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_up_calculation.mirror_site_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formatted site data is offset so the maximum x coordinate is shifted to an x coordinate of 0.0. The site data with an x coordinate less than 0.0 is mirrored and the shifted and mirrored site data is concatenated to create a system with two grain boundaries.
+:param site_data: Formatted site data.
+:type site_data: list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Formatted site data for a mirrored system.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">site_data_mirrored(list)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="project.set_up_calculation.site_from_input_file">
+<code class="descclassname">project.set_up_calculation.</code><code class="descname">site_from_input_file</code><span class="sig-paren">(</span><em>site</em>, <em>defect_species</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/set_up_calculation.html#site_from_input_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.set_up_calculation.site_from_input_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes the data from the input file and converts it into a site.
+The input data file is a .txt file where each line in the file corresponds to a site.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site</strong> (<em>str</em>) – A line in the input file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Site (object)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-project.site">
+<span id="project-site-module"></span><h2>project.site module<a class="headerlink" href="#module-project.site" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="project.site.Site">
+<em class="property">class </em><code class="descclassname">project.site.</code><code class="descname">Site</code><span class="sig-paren">(</span><em>label</em>, <em>x</em>, <em>defect_species</em>, <em>defect_energies</em>, <em>scaling=None</em>, <em>valence=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/site.html#Site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.site.Site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The site class contains all the information about a given site and the defect occupying that site.
+This class contains functions for the calculations which correspond to each individual site, rather than the whole system.</p>
+<dl class="method">
+<dt id="project.site.Site.average_local_energy">
+<code class="descname">average_local_energy</code><span class="sig-paren">(</span><em>method='mean'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/site.html#Site.average_local_energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.site.Site.average_local_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the average local segregation energy for each site based on a specified method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>method</strong> (<em>str</em>) – The method in which the average segregation energies will be calculated.
+‘mean’ - Returns the sum of all values at that site divided by the number of values at that site.
+‘min’ - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Average segregation energies on the site coordinates grid.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">average site energies (np.array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.site.Site.charge">
+<code class="descname">charge</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/site.html#Site.charge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.site.Site.charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the charge in Coulombs at each site under Fermi-Dirac like statistics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>float</em>) – Electrostatic potential at this site.</li>
+<li><strong>temp</strong> (<em>float</em>) – Temperature of calculation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The charge on a 1D grid.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">charge (np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.site.Site.charge_boltz">
+<code class="descname">charge_boltz</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/site.html#Site.charge_boltz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.site.Site.charge_boltz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the charge in Coulombs at each site under Boltzmann statistics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>float</em>) – Electrostatic potential at this site</li>
+<li><strong>temp</strong> (<em>float</em>) – Temperature of calculation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The charge on a 1D grid.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">charge (np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.site.Site.defect_valences">
+<code class="descname">defect_valences</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/site.html#Site.defect_valences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.site.Site.defect_valences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of valences for each defect from self.defects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.site.Site.defect_with_label">
+<code class="descname">defect_with_label</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/site.html#Site.defect_with_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.site.Site.defect_with_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of defects which correspond to the given label</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.site.Site.energies">
+<code class="descname">energies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/site.html#Site.energies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.site.Site.energies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the segregation energies for each defect from self.defects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.site.Site.probabilities">
+<code class="descname">probabilities</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/site.html#Site.probabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.site.Site.probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the probability of each site being occupied by a given defect using Fermi-Dirac like statistics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>floaty</em>) – Electrostatic potential at this site.</li>
+<li><strong>temp</strong> (<em>float</em>) – Temperature of calculation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Probabilities of site occupation on a 1D grid.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">probabilities (list)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.site.Site.probabilities_boltz">
+<code class="descname">probabilities_boltz</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/site.html#Site.probabilities_boltz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.site.Site.probabilities_boltz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the probability of each site being occupied by a given defect using Boltzmann statistics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>float</em>) – Electrostatic potential at this site.</li>
+<li><strong>temp</strong> (<em>float</em>) – Temperature of calculation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Probabilities of site occupation on a 1D grid.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">boltzmann_probabilities (list)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="project.site.Site.sum_of_boltzmann_three">
+<code class="descname">sum_of_boltzmann_three</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project/site.html#Site.sum_of_boltzmann_three"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#project.site.Site.sum_of_boltzmann_three" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the sum of the calculated boltzmann_three values for each defect at each site.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>float</em>) – Electrostatic potential at the site.</li>
+<li><strong>temp</strong> (<em>float</em>) – Temperature of calculation in Kelvin.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The sum of ( mole fraction * exp ^ -( ( phi * z )/kBT ) - 1 ) for each defect at each site.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-project">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-project" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Georgina Wellock.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
