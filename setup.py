@@ -11,7 +11,7 @@ config = {
     'name': 'gwpb',
     'author': 'Georgina L. Wellock',
     'packages': ['project'],
-    'install_requires': [ 'numpy', 'scipy', 'sympy' ]
+    'install_requires': [ 'scipy', 'sympy', 'numpy' ]
 }
 
 setup(**config)
