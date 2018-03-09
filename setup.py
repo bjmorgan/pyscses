@@ -10,7 +10,8 @@ readme = 'README.md'
 config = {
     'name': 'gwpb',
     'author': 'Georgina L. Wellock',
-    'packages': ['project']
+    'packages': ['project'],
+    'install_requires': [ 'numpy', 'scipy', 'sympy' ]
 }
 
 setup(**config)
