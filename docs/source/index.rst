@@ -7,9 +7,10 @@ Welcome to project's documentation!
 ===================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :caption: API documentation
+   :maxdepth: 3
 
+   modules
 
 
 Indices and tables
