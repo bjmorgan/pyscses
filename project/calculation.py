@@ -1,7 +1,6 @@
 import math
 import numpy as np
 from sympy import mpmath
-import matplotlib.pyplot as plt
 from bisect import bisect_left, bisect_right
 from project.set_of_sites import Set_of_Sites
 from project.matrix_solver import MatrixSolver
