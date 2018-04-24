@@ -1,37 +1,48 @@
+from copy import copy
+from operator import itemgetter
 from project.site import Site
 import numpy as np
 from bisect import bisect_left, bisect_right
 
-def site_from_input_file( site, defect_species ):
+def site_from_input_file( site, defect_species, site_charge ):
     """
     Takes the data from the input file and converts it into a site.
     The input data file is a .txt file where each line in the file corresponds to a site.
 
     Args:
         site (str): A line in the input file.
+        defect_species (cls): Class containing information about the defect species present in the system.
+        site_charge (bool): True if site charges are to be included in the calculation, false if they are not to be included.
 
     Returns:
         Site (object)
     """
     label = site[0]
-    valence = float(site[1])
-#    valence = 0.0
+    if site_charge == True:
+        valence = float(site[1])
+    if site_charge == False:
+        valence = 0.0
     x = float(site[2])
     defect_labels = site[3::2]
     defect_energies = [ float(e) for e in site[4::2] ]
     #defect_energies = [ 0.0 for e in site[4::2] ]
     return Site( label, x, [ defect_species[l] for l in defect_labels ], defect_energies, valence=valence )
 
-def format_line( line ):
+def format_line( line, site_charge ):
     """
     Each line in the input file is formatted into separate components to form sites. 
     Args:
         line(str): A line in the input file.
+        site_charge (bool): True if site charges are to be included in the calculation, false if they are not to be included.
     Returns: 
         line(list): Formatted line from the input file. 
     """
     # x coordinate
-    line[1] = float( line[1] )
+    if site_charge == True:
+        line[1] = float( line[1] )
+    if site_charge == False:
+        line[1] = 0.0
+
     line[2] = float( line[2] )
     # defect energies
     for i in range( 4, len(line) ):
@@ -39,23 +50,24 @@ def format_line( line ):
 #        line[i] = 0.0
     return line
 
-def load_site_data( filename, x_min, x_max ):
+def load_site_data( filename, x_min, x_max, site_charge ):
     """
     Reads in the input data and formats the input data if the x coordinate values are within the calculation region.
     Args:
         filename(string): Filename for importing the input data.
         x_min(float): Minimum x coordinate value defining the calculation region.
         x_max(float): Maximum x coordinate value defining the calculation region. 
+        site_charge (bool): True if site charges are to be included in the calculation, false if they are not to be included.
    
     Return:
         input_data(list): formatted data for calculation.
     """
     with open( filename, 'r' ) as f:
         input_data = [ line.split() for line in f ]
-    input_data = [ format_line( line ) for line in input_data if ( float(line[2]) > x_min and float(line[2]) < x_max ) ]
+    input_data = [ format_line( line, site_charge ) for line in input_data if ( float(line[2]) > x_min and float(line[2]) < x_max ) ]
     return input_data
 
-def mirror_site_data( site_data ):
+def mirror_site_data( site_data, condition = 'symmetrical' ):
     """
     Formatted site data is offset so the maximum x coordinate is shifted to an x coordinate of 0.0. The site data with an x coordinate less than 0.0 is mirrored and the shifted and mirrored site data is concatenated to create a system with two grain boundaries. 
     Args:
@@ -63,12 +75,52 @@ def mirror_site_data( site_data ):
     Returns:
         site_data_mirrored(list): Formatted site data for a mirrored system. 
     """
-    midpoint = max( [ line[1] for line in site_data ] )
+
+    site_data = sorted(site_data, key=itemgetter(2))
     for line in site_data:
-        line[1] -= midpoint
-    site_data_mirrored = [ copy(l) for l in site_data if l[1] < 0 ]
-    for l in site_data_mirrored:
-        l[1] = float(l[1]) * -1 
+        line[2] = np.round( line[2], 14 )
+    if site_data[-1][0] == 'Ce':
+        condition = 'symmetrical'
+    elif site_data[-1][0] == 'O' and site_data[-5][0] == 'O':
+        condition = 'non_symmetrical'
+    else:
+        raise ValueError('data cannot be mirrored with this end site') 
+
+    if condition == 'symmetrical':
+        midpoint = max( [ line[2] for line in site_data ] )
+        for line in site_data:
+            line[2] -= midpoint
+        site_data_mirrored = [ copy(l) for l in site_data if l[2] < 0 ]
+        for l in site_data_mirrored:
+            l[2] = float(l[2]) * -1 
+    if condition == 'non_symmetrical':
+        i_list = []
+        insert_o_site = copy(site_data[-1])
+        offset = site_data[-1][2] - site_data[-5][2]
+    
+        for i in range( 0, len(site_data) ):
+            if round(site_data[i][2], 14) == round(site_data[-1][2], 14):
+                i_list.append(i)
+        for i in reversed(i_list):
+            del site_data[i]
+        
+        insert_o_site[2] = copy(offset)
+        midpoint = max( [ line[2] for line in site_data ] )
+        for l in site_data:
+            l[2] -= midpoint
+    
+        site_data_mirrored = [ copy(l) for l in site_data if l[2] < 0 ]
+        for l in site_data_mirrored:
+            l[2] = float(l[2]) * -1 
+        site_data_mirrored = sorted(site_data_mirrored, key=itemgetter(2))
+        for l in site_data_mirrored:
+            l[2] += offset
+        
+        site_data_mirrored.insert(0, insert_o_site )
+        site_data_mirrored.insert(0, insert_o_site )
+        site_data_mirrored.insert(0, insert_o_site )
+        site_data_mirrored.insert(0, insert_o_site )
+
     return site_data + site_data_mirrored
 
 def calculate_grid_offsets( filename, x_min, x_max, system ):
@@ -98,32 +150,3 @@ def calculate_grid_offsets( filename, x_min, x_max, system ):
             limits_for_laplacian = [ (x_coords[min_index]-x_coords[min_index-1]), (x_coords[min_index]-x_coords[min_index-1]) ]
     return limits, limits_for_laplacian
 
-def form_continuum_sites( all_sites, x_min, x_max, n_points, b, c, defect_species ):
-    """
-    NEEDS UPDATING TO WORK WITH NEW CODE FORMAT.
-    INCLUDE DOCSTRING
-    """
-    limits = [ x_min, x_max ]    
-
-    grid_1 = np.linspace( x_min, x_max, n_points )
-    
-    Gd_scaling = len( all_sites.subset( 'Ce' ) ) / len( grid_1 )
-    Vo_scaling = len( all_sites.subset( 'O' ) ) / len( grid_1 )
-    
-    Vo_continuum_grid = Grid( grid_1, b, c, limits, all_sites.subset( 'O' ) )
-    Gd_continuum_grid = Grid( grid_1, b, c, limits, all_sites.subset( 'Ce' ) )
-    
-    Vo_average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( 'O' ) ] )
-    Gd_average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( 'Ce' ) ] )
-    
-    
-    Vo_new_energies = griddata( ( [ site.x for site in all_sites.subset( 'O' ) ] ), Vo_average_energies, grid_1, method = 'nearest' )
-    Gd_new_energies = griddata( ( [ site.x for site in all_sites.subset( 'Ce' ) ] ), Gd_average_energies, grid_1, method = 'nearest' )
-    
-    
-    Vo_new_sites = Set_of_Sites( [ Site( 'O', x, [ defect_species['Vo'] ], [e], scaling = np.array( Vo_scaling ) ) for x, e in zip( grid_1, Vo_new_energies ) ] )
-    Gd_new_sites = Set_of_Sites( [ Site( 'Ce', x, [ defect_species['Gd'] ], [e], scaling = np.array( Gd_scaling ) ) for x, e in zip( grid_1, Gd_new_energies ) ] )   
-    
-    all_sites_new = Vo_new_sites + Gd_new_sites
-    
-    return all_sites_new
