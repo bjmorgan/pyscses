@@ -154,9 +154,10 @@ class Calculation:
             prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp )
             niter += 1
 #            if niter % 1000 == 0.0:
-            if niter == 1:
-                print(phi, rho)
-                stop
+#            if niter == 1:
+#                print(conv)
+#                print(phi, rho)
+#                stop
         self.phi = phi
         self.rho = self.grid.rho( phi, self.temp )
         self.niter = niter
@@ -187,9 +188,12 @@ class Calculation:
              resistivity_ratio( float ): Ratio between resistivity in the bulk and resistivity over the space charge region.  
         """
         scr = []
+        self.mobile_defect_grid = self.subgrids[self.site_labels[0]]
         mobile_defect_grid = self.subgrids[self.site_labels[0]]
-        phi_at_mdg = [ phi_at_x( self.phi, self.grid.x, x ) for x in mobile_defect_grid.x ]
-        x_and_phi = np.column_stack(( mobile_defect_grid.x, phi_at_mdg ))
+        self.full_mobile_defect_density = Set_of_Sites( mobile_defect_grid.set_of_sites ).subgrid_calculate_defect_density( mobile_defect_grid, self.grid, self.phi, self.temp )
+        self.phi_at_mdg = [ phi_at_x( self.phi, self.grid.x, x ) for x in mobile_defect_grid.x ]
+        self.rho_at_mdg = [phi_at_x(self.rho, self.grid.x, x ) for x in mobile_defect_grid.x ]
+        x_and_phi = np.column_stack(( mobile_defect_grid.x, self.phi_at_mdg ))
         for i in range( len( x_and_phi ) ):
             if x_and_phi[i, 1]-x_and_phi[0,1] > 2e-2:
                 scr.append( x_and_phi[i,0] )
@@ -218,9 +222,10 @@ class Calculation:
                 bulk_mobile_defect_sites.append(site)
         bulk_mobile_defect_set_of_sites = Set_of_Sites(bulk_mobile_defect_sites)
         bulk_mobile_defect_grid = Grid.grid_from_set_of_sites( bulk_mobile_defect_set_of_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c )
-        bulk_mobile_defect_density = Set_of_Sites( bulk_mobile_defect_grid.set_of_sites ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )
-        self.resistivity_ratio = sum( bulk_mobile_defect_density / bulk_mobile_defect_grid.delta_x ) * sum( scr_grid.delta_x / mobile_defect_density )        
-    
+        bulk_mobile_defect_density = Set_of_Sites( bulk_mobile_defect_grid.set_of_sites ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )  
+        average_bulk_mobile_defect_density = sum( bulk_mobile_defect_density * bulk_mobile_defect_grid.delta_x ) / sum( bulk_mobile_defect_grid.delta_x) 
+        self.resistivity_ratio = sum( bulk_mobile_defect_density / bulk_mobile_defect_grid.delta_x ) * sum( scr_grid.delta_x / mobile_defect_density )  
+        self.depletion_factor = 1 - ( self.full_mobile_defect_density / average_bulk_mobile_defect_density )    
 
     def solve_MS_approx_for_phi( self, valence ):
         """
