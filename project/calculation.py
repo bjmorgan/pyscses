@@ -1,9 +1,9 @@
-import math
 import numpy as np
 from sympy import mpmath
 from bisect import bisect_left, bisect_right
 from project.set_of_sites import Set_of_Sites
 from project.matrix_solver import MatrixSolver
+from project.set_up_calculation import calculate_grid_offsets
 from project.constants import *
 from project.grid import delta_x_from_grid, Grid, phi_at_x
 from scipy.optimize import minimize
@@ -23,7 +23,7 @@ class Calculation:
         self.boundary_conditions = boundary_conditions
         self.initial_guess = initial_guess
 
-    def mole_fraction_error( self, input_mole_fractions, target_mole_fractions):
+    def mole_fraction_error( self, input_mole_fractions, target_mole_fractions, approximation):
         """
         Calculates the sum of sqaures error between the output mole fractions calculated from the input mole fractions, compared to the target mole fractions.
         Args:
@@ -34,7 +34,7 @@ class Calculation:
             Sum of squares error between output and target mole fractions. 
         """
         input_mole_fractions = np.array([input_mole_fractions])
-        output_mole_fractions = self.mole_fraction_output(input_mole_fractions)
+        output_mole_fractions = self.mole_fraction_output(input_mole_fractions, approximation)
         o_gd = output_mole_fractions[0,1]
         o_vo = output_mole_fractions[0,0]
         t_gd = target_mole_fractions[0,1]
@@ -42,7 +42,7 @@ class Calculation:
 
         return ( ( o_gd - t_gd )**2 ) + ( ( o_vo - t_vo )**2 )
 
-    def mole_fraction_output(self, input_mole_fractions):
+    def mole_fraction_output(self, input_mole_fractions, approximation):
         """
         Calculates the output mole fraction for a given input mole fraction when solving the Poisson-Boltzmann equation.
         Args:
@@ -51,45 +51,30 @@ class Calculation:
         Returns:
             output_mole_fractions( list ): Mole fractions that are calculated from the iterative Poisson-Boltzmann solver.
         """
-        for site in self.grid.set_of_sites.subset('O'):
+        for site in self.grid.set_of_sites.subset(self.site_labels[0]):
             for defect in site.defect_species:
                 defect.mole_fraction = input_mole_fractions[0,0]
             for defect in site.defects:
                 defect.mole_fraction = input_mole_fractions[0,0]
-        for site in self.grid.set_of_sites.subset('Ce'):
+        for site in self.grid.set_of_sites.subset(self.site_labels[1]):
             for defect in site.defect_species:
                 defect.mole_fraction = input_mole_fractions[0,1]
             for defect in site.defects:
                 defect.mole_fraction = input_mole_fractions[0,1]
-        Vo_molfracs = []
-        Gd_molfracs = []
-        self.solve()
-        self.form_subgrids( [ 'O', 'Ce' ] )
+        self.solve( approximation )
+        self.form_subgrids( [ self.site_labels[0], self.site_labels[1] ] )
         self.mole_fractions()
-        min_vo_index = bisect_left( self.subgrids['O'].x, self.bulk_x_min )
-        max_vo_index = bisect_left( self.subgrids['O'].x, self.bulk_x_max )
-        min_gd_index = bisect_left( self.subgrids['Ce'].x, self.bulk_x_min )
-        max_gd_index = bisect_left( self.subgrids['Ce'].x, self.bulk_x_max )
-        self.mf['O'] = [ mf for mf in self.mf['O'] if mf != 0.0 ]
-        self.mf['Ce'] = [ mf for mf in self.mf['Ce'] if mf != 0.0 ]
 
-        for mf in self.mf['O'][min_vo_index+1 : max_vo_index]:
-            if mf > 0.0:
-                Vo_molfracs.append(mf)
+        self.mf[self.site_labels[0]] = [ mf for mf in self.mf[self.site_labels[0]] if mf != 0.0 ]
+        self.mf[self.site_labels[1]] = [ mf for mf in self.mf[self.site_labels[1]] if mf != 0.0 ]
 
-        avg_vo_molfrac = np.sum( Vo_molfracs * delta_x_from_grid( self.subgrids['O'].x[min_vo_index+1:max_vo_index], [ self.subgrids['O'].x[min_vo_index], self.subgrids['O'].x[max_vo_index+1] ] ) ) / np.sum( delta_x_from_grid( self.subgrids['O'].x[min_vo_index+1:max_vo_index], [ self.subgrids['O'].x[min_vo_index], self.subgrids['O'].x[max_vo_index+1] ] ) ) 
-       
-        for mf in self.mf['Ce'][min_gd_index+1 : max_gd_index]:
-            if mf > 0.0:
-                Gd_molfracs.append(mf)
-
-        avg_gd_molfrac = np.sum( Gd_molfracs * delta_x_from_grid( self.subgrids['Ce'].x[min_gd_index+1:max_gd_index], [ self.subgrids['Ce'].x[min_gd_index], self.subgrids['Ce'].x[max_gd_index+1] ] ) ) / np.sum( delta_x_from_grid( self.subgrids['Ce'].x[min_gd_index+1:max_gd_index], [ self.subgrids['Ce'].x[min_gd_index], self.subgrids['Ce'].x[max_gd_index+1] ] ) ) 
-        
-        output_mole_fractions = np.array( [ [ avg_vo_molfrac, avg_gd_molfrac ] ] )
+        avg_vo_molfrac = self.calculate_average( self.subgrids[self.site_labels[0]], self.bulk_x_min, self.bulk_x_max, self.mf[self.site_labels[0]]  )
+        avg_gd_molfrac = self.calculate_average( self.subgrids[self.site_labels[1]], self.bulk_x_min, self.bulk_x_max, self.mf[self.site_labels[1]] )
+        output_mole_fractions = np.array( [ [ avg_vo_molfrac, avg_gd_molfrac, 0.0 ] ] )
         return output_mole_fractions
 
         
-    def mole_fraction_correction( self, target_mole_fractions ):
+    def mole_fraction_correction( self, target_mole_fractions, approximation ):
         """
         Starting from an initial guess for the appropriate input mole fractions, minimises the error between the target bulk mole fraction and the output mole fraction from the iterative Poisson-Boltzmann solver. 
         Args:
@@ -101,20 +86,40 @@ class Calculation:
         if self.initial_guess == None:
             self.initial_guess = target_mole_fractions
         target_mole_fractions = np.array([target_mole_fractions])
-        opt_mole_fractions = minimize( self.mole_fraction_error, self.initial_guess, args=(  target_mole_fractions ), bounds = ( (0.0001,1), (0.0001,1) ) )
+        opt_mole_fractions = minimize( self.mole_fraction_error, self.initial_guess, args=(  target_mole_fractions, approximation ), bounds = ((0.0001, 1), (0.0001,1), (0.0001,1) ) )
         opt_mole_fractions.x = np.array([opt_mole_fractions.x])
-        for site in self.grid.set_of_sites.subset('O'):
+        for site in self.grid.set_of_sites.subset(self.site_labels[0]):
             for defect in site.defect_species:
                 defect.mole_fraction = opt_mole_fractions.x[0,0]
             for defect in site.defects:
                 defect.mole_fraction = opt_mole_fractions.x[0,0]
-        for site in self.grid.set_of_sites.subset('Ce'):
+        for site in self.grid.set_of_sites.subset(self.site_labels[1]):
             for defect in site.defect_species:
                 defect.mole_fraction = opt_mole_fractions.x[0,1]
             for defect in site.defects:
                 defect.mole_fraction = opt_mole_fractions.x[0,1]
         self.initial_guess = opt_mole_fractions.x
 
+    def find_index( self, grid, min_cut_off, max_cut_off ):
+        min_index = bisect_left( grid.x, min_cut_off )
+        max_index = bisect_left( grid.x, max_cut_off )
+        return min_index, max_index
+
+    def calculate_offset( self, grid, min_cut_off, max_cut_off ):
+        min_index, max_index = self.find_index( grid, min_cut_off, max_cut_off )
+        min_offset = ( ( grid.x[ min_index + 1 ] - grid.x[ min_index ] ) / 2 ) + ( ( grid.x[ min_index ] - grid.x[ min_index - 1 ] ) / 2 )
+        max_offset = ( ( grid.x[ max_index + 1 ] - grid.x[ max_index ] ) / 2 ) + ( ( grid.x[ max_index ] - grid.x[ max_index - 1 ] ) / 2 )
+        return min_offset, max_offset
+
+    def calculate_delta_x( self, grid, min_cut_off, max_cut_off ):
+        min_index, max_index = self.find_index( grid, min_cut_off, max_cut_off )
+        min_offset, max_offset = self.calculate_offset( grid, min_cut_off, max_cut_off )
+        return delta_x_from_grid( grid.x[ min_index+1 : max_index ], [min_offset, max_offset] )
+
+    def calculate_average( self, grid, min_cut_off, max_cut_off, sc_property ):
+        min_index, max_index = self.find_index( grid, min_cut_off, max_cut_off )
+        delta_x = self.calculate_delta_x( grid, min_cut_off, max_cut_off )
+        return np.sum( sc_property[ min_index + 1 : max_index ] * delta_x ) / np.sum( delta_x )
 
     def solve( self, approximation ):
         """
@@ -128,26 +133,21 @@ class Calculation:
             rho (float): Charge density on a one-dimensional grid.
             niter (int): Number of iterations performed to reach convergence.
         """
-
-       
         poisson_solver = MatrixSolver( self.grid, dielectric, self.temp, boundary_conditions=self.boundary_conditions )
 
         phi = np.zeros_like( self.grid.x )
         rho = np.zeros_like( self.grid.x )
 
-        vo_subgrid = self.grid.subgrid('O')
-        min_bulk_index = bisect_left( vo_subgrid.x, self.bulk_x_min )
-        max_bulk_index = bisect_left( vo_subgrid.x, self.bulk_x_max )
         conv = 1
         niter = 0
         while conv > self.convergence:
             predicted_phi, rho = poisson_solver.solve( phi )
             if approximation == 'gouy-chapman':
-                average_phi = np.sum( predicted_phi[min_bulk_index+1 : max_bulk_index] * delta_x_from_grid( self.grid.x[min_bulk_index+1:max_bulk_index], [self.grid.x[min_bulk_index], self.grid.x[max_bulk_index+1] ] ) ) / np.sum( delta_x_from_grid( self.grid.x[min_bulk_index+1:max_bulk_index], [self.grid.x[min_bulk_index], self.grid.x[max_bulk_index+1] ] ) )  
+                average_phi = self.calculate_average( self.grid, self.bulk_x_min, self.bulk_x_max, predicted_phi )
                 predicted_phi -= average_phi
             if approximation == 'mott-schottky':
-                vo_predicted_phi = [ phi_at_x( predicted_phi, self.grid.x, x ) for x in vo_subgrid.x ]
-                average_vo_predicted_phi = np.sum( vo_predicted_phi[min_bulk_index+1 : max_bulk_index] * delta_x_from_grid( vo_subgrid.x[min_bulk_index+1:max_bulk_index], [vo_subgrid.x[min_bulk_index], vo_subgrid.x[max_bulk_index+1] ] ) ) / np.sum( delta_x_from_grid( vo_subgrid.x[min_bulk_index+1:max_bulk_index], [vo_subgrid.x[min_bulk_index], vo_subgrid.x[max_bulk_index+1] ] ) )  
+                vo_predicted_phi = [ phi_at_x( predicted_phi, self.grid.x, x ) for x in self.grid.subgrid(self.site_labels[0]).x ]
+                average_vo_predicted_phi = self.calculate_average( self.grid.subgrid( self.site_labels[0] ), self.bulk_x_min, self.bulk_x_max, predicted_phi )
                 predicted_phi -= average_vo_predicted_phi
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
             conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
@@ -180,51 +180,47 @@ class Calculation:
             subgrids[name].delta_x[-1] = subgrids[name].delta_x[1]
         self.subgrids = subgrids
 
-    def calculate_resistivity_ratio_new( self ):
+    def create_subregion_sites( self, grid, min_cut_off, max_cut_off ):
+        sites = []
+        for site in grid.set_of_sites:
+            if site.x > min_cut_off and site.x < max_cut_off:
+                sites.append( site )
+        sites = Set_of_Sites( sites )
+        return sites
+
+    def create_space_charge_region( self, grid, pos_or_neg_scr, scr_limit ):
+       space_charge_region = []
+       self.phi_on_mobile_defect_grid = [ phi_at_x( self.phi, self.grid.x, x ) for x in grid.x ] 
+       x_and_phi = np.column_stack( ( grid.x, self.phi_on_mobile_defect_grid ) )
+       for i in range( len( x_and_phi ) ):
+           if pos_or_neg_scr == 'positive':
+               if x_and_phi[i, 1]-x_and_phi[0,1] > scr_limit:
+                   space_charge_region.append( x_and_phi[i,0] )
+           if pos_or_neg_scr == 'negative': 
+               if  x_and_phi[i,1]-x_and_phi[0,1] < scr_limit:
+                   space_charge_region.append( x_and_phi[i,0] )
+       return space_charge_region
+
+    def calculate_resistivity_ratio_new( self, pos_or_neg_scr, scr_limit ):
         """
         Calculates the ratio of the resistivity in the bulk compared to the resistivity over the space charge regions.
       
         Returns:
              resistivity_ratio( float ): Ratio between resistivity in the bulk and resistivity over the space charge region.  
         """
-        scr = []
-        self.mobile_defect_grid = self.subgrids[self.site_labels[0]]
-        mobile_defect_grid = self.subgrids[self.site_labels[0]]
-        self.full_mobile_defect_density = Set_of_Sites( mobile_defect_grid.set_of_sites ).subgrid_calculate_defect_density( mobile_defect_grid, self.grid, self.phi, self.temp )
-        self.phi_at_mdg = [ phi_at_x( self.phi, self.grid.x, x ) for x in mobile_defect_grid.x ]
-        self.rho_at_mdg = [phi_at_x(self.rho, self.grid.x, x ) for x in mobile_defect_grid.x ]
-        x_and_phi = np.column_stack(( mobile_defect_grid.x, self.phi_at_mdg ))
-        for i in range( len( x_and_phi ) ):
-            if x_and_phi[i, 1]-x_and_phi[0,1] > 2e-2:
-                scr.append( x_and_phi[i,0] )
-        x_min_scr = min( scr )
-        x_max_scr = max( scr )
-        min_scr_index = bisect_left( mobile_defect_grid.x, x_min_scr )
-        max_scr_index = bisect_left( mobile_defect_grid.x, x_max_scr )
-        min_scr_offset = ((mobile_defect_grid.x[min_scr_index+2]-mobile_defect_grid.x[min_scr_index+1])/2) + ((mobile_defect_grid.x[min_scr_index+1]-mobile_defect_grid.x[min_scr_index])/2)
-        max_scr_offset = ((mobile_defect_grid.x[max_scr_index+1]-mobile_defect_grid.x[max_scr_index])/2) + ((mobile_defect_grid.x[max_scr_index]-mobile_defect_grid.x[max_scr_index-1])/2)
-        scr_limits = [ min_scr_offset, max_scr_offset ]
-        scr_sites = []
-        for site in mobile_defect_grid.set_of_sites:
-            if site.x > x_min_scr and site.x < x_max_scr:
-                scr_sites.append(site)
-        scr_set_of_sites = Set_of_Sites(scr_sites)
-        scr_grid = Grid.grid_from_set_of_sites( scr_set_of_sites, scr_limits, scr_limits, self.grid.b, self.grid.c )
-        mobile_defect_density = scr_set_of_sites.subgrid_calculate_defect_density( scr_grid, self.grid, self.phi, self.temp )
-        min_bulk_index = bisect_left( mobile_defect_grid.x, self.bulk_x_min )
-        max_bulk_index = bisect_left( mobile_defect_grid.x, self.bulk_x_max )
-        min_bulk_offset = ((mobile_defect_grid.x[min_bulk_index+2]-mobile_defect_grid.x[min_bulk_index+1])/2) + ((mobile_defect_grid.x[min_bulk_index+1]-mobile_defect_grid.x[min_bulk_index])/2)
-        max_bulk_offset = ((mobile_defect_grid.x[max_bulk_index+1]-mobile_defect_grid.x[max_bulk_index])/2) + ((mobile_defect_grid.x[max_bulk_index]-mobile_defect_grid.x[max_bulk_index-1])/2)
-        self.bulk_limits = [ min_bulk_offset, max_bulk_offset ]
-        bulk_mobile_defect_sites = []
-        for site in mobile_defect_grid.set_of_sites:
-            if site.x > self.bulk_x_min and site.x < self.bulk_x_max:
-                bulk_mobile_defect_sites.append(site)
-        bulk_mobile_defect_set_of_sites = Set_of_Sites(bulk_mobile_defect_sites)
-        bulk_mobile_defect_grid = Grid.grid_from_set_of_sites( bulk_mobile_defect_set_of_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c )
-        bulk_mobile_defect_density = Set_of_Sites( bulk_mobile_defect_grid.set_of_sites ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )  
-        average_bulk_mobile_defect_density = sum( bulk_mobile_defect_density * bulk_mobile_defect_grid.delta_x ) / sum( bulk_mobile_defect_grid.delta_x) 
-        self.resistivity_ratio = sum( bulk_mobile_defect_density / bulk_mobile_defect_grid.delta_x ) * sum( scr_grid.delta_x / mobile_defect_density )  
+        space_charge_region = self.create_space_charge_region( self.subgrids[self.site_labels[0]], pos_or_neg_scr, scr_limit )
+        space_charge_region_limits = self.calculate_offset( self.subgrids[self.site_labels[0]], np.min(space_charge_region), np.max(space_charge_region) ) 
+        space_charge_region_sites = self.create_subregion_sites( self.subgrids[self.site_labels[0]], np.min(space_charge_region), np.max(space_charge_region) )
+        space_charge_region_grid = Grid.grid_from_set_of_sites( space_charge_region_sites, space_charge_region_limits, space_charge_region_limits, self.grid.b, self.grid.c )
+        self.full_mobile_defect_density = Set_of_Sites( self.subgrids[self.site_labels[0]].set_of_sites ).subgrid_calculate_defect_density( self.subgrids[self.site_labels[0]], self.grid, self.phi, self.temp )
+        space_charge_region_mobile_defect_density = space_charge_region_sites.subgrid_calculate_defect_density( space_charge_region_grid, self.grid, self.phi, self.temp )
+        min_bulk_index, max_bulk_index = self.find_index( self.subgrids[self.site_labels[0]], self.bulk_x_min,  self.bulk_x_max )
+        self.bulk_limits = self.calculate_offset( self.subgrids[self.site_labels[0]], self.bulk_x_min, self.bulk_x_max ) 
+        bulk_mobile_defect_sites = self.create_subregion_sites( self.subgrids[self.site_labels[0]], self.bulk_x_min, self.bulk_x_max )
+        bulk_mobile_defect_grid = Grid.grid_from_set_of_sites( bulk_mobile_defect_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c )
+        self.bulk_mobile_defect_density = Set_of_Sites( bulk_mobile_defect_grid.set_of_sites ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )  
+        average_bulk_mobile_defect_density = sum( self.bulk_mobile_defect_density * bulk_mobile_defect_grid.delta_x ) / sum( bulk_mobile_defect_grid.delta_x) 
+        self.resistivity_ratio = sum( self.bulk_mobile_defect_density / bulk_mobile_defect_grid.delta_x ) * sum( space_charge_region_grid.delta_x / space_charge_region_mobile_defect_density )  
         self.depletion_factor = 1 - ( self.full_mobile_defect_density / average_bulk_mobile_defect_density )    
 
     def solve_MS_approx_for_phi( self, valence ):
