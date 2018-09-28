@@ -2,9 +2,10 @@ from copy import copy
 from operator import itemgetter
 from project.site import Site
 import numpy as np
+from project.constants import boltzmann_eV
 from bisect import bisect_left, bisect_right
 
-def site_from_input_file( site, defect_species, site_charge ):
+def site_from_input_file( site, defect_species, site_charge, core, temperature ):
     """
     Takes the data from the input file and converts it into a site.
     The input data file is a .txt file where each line in the file corresponds to a site.
@@ -25,6 +26,15 @@ def site_from_input_file( site, defect_species, site_charge ):
     x = float(site[2])
     defect_labels = site[3::2]
     defect_energies = [ float(e) for e in site[4::2] ]
+    min_energy = min(defect_energies)
+    if core == 'single':
+        for d_e in defect_energies:
+            if d_e > min_energy:
+                d_e = 0.0
+    if core == 'multi-site':
+        for d_e in defect_energies:
+            if ( -boltzmann_eV * temperature) <= d_e <= ( boltzmann_eV * temperature ):
+                d_e = 0.0
     #defect_energies = [ 0.0 for e in site[4::2] ]
     return Site( label, x, [ defect_species[l] for l in defect_labels ], defect_energies, valence=valence )
 
@@ -47,6 +57,8 @@ def format_line( line, site_charge ):
     # defect energies
     for i in range( 4, len(line) ):
         line[i] = float( line[i] )
+        if line[i] < 0.0:
+            line[i] += 0.1
 #        line[i] = 0.0
     return line
 
