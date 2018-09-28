@@ -143,12 +143,45 @@ class Set_of_Sites:
         return all_sites_new
 
     @ classmethod
-    def set_of_sites_from_input_data( cls, input_data, limits, defect_species, site_charge ):
+    def set_of_sites_from_input_data( cls, input_data, limits, defect_species, site_charge, core, temperature ):
         site_data = load_site_data( input_data, limits[0], limits[1], site_charge )
-        return Set_of_Sites( [ site_from_input_file( line, defect_species, site_charge ) for line in site_data ] )
+        energies = [ line[4] for line in site_data ]
+        min_energy = min(energies)
+        if core == 'single':
+            for line in site_data:
+                if line[4] > min_energy:
+                    line[4] = 0.0
+        #print(boltzmann_eV * temperature, flush=True)
+        if core == 'multi_site':
+            for line in site_data:
+                if ( -boltzmann_eV * temperature) <= line[4] <= ( boltzmann_eV * temperature ):
+                    line[4] = 0.0
+        return Set_of_Sites( [ site_from_input_file( line, defect_species, site_charge, core, temperature ) for line in site_data ] )
 
     @ classmethod
     def mirrored_set_of_sites_from_input_data( cls, input_data, limits, defect_species ):
         site_data = load_site_data( input_data, limits[0], limits[1] )
         mirrored_data = mirror_site_data( site_data )
-        return Set_of_Sites( [ site_from_input_file( line, defect_species ) for line in mirrored_data ] )
+
+
+    @ classmethod
+    def core_width_analysis( cls, input_data, limits, defect_species, site_charge, core, temperature ):
+        site_data = load_site_data( input_data, limits[0], limits[1], site_charge )
+        energies = [ line[4] for line in site_data ]
+        min_energy = min(energies)
+        if core == 'single':
+            for line in site_data:
+                if line[4] > min_energy:
+                    line[4] = 0.0
+        #print(boltzmann_eV * temperature, flush=True)
+        if core == 'multi_site':
+            for line in site_data:
+                if ( -boltzmann_eV * temperature) <= line[4] <= ( boltzmann_eV * temperature ):
+                    line[4] = 0.0
+        energies = [line[4] for line in site_data ]
+        x = [line[2] for line in site_data ]
+        x_seg = np.column_stack(( x, energies ))
+        minval = np.min(x_seg[:,0][np.nonzero(x_seg[:,1])])
+        maxval = np.max(x_seg[:,0][np.nonzero(x_seg[:,1])])
+        core_width = maxval-minval
+        return(core_width)
