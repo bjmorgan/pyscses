@@ -35,12 +35,13 @@ class Calculation:
         """
         input_mole_fractions = np.array([input_mole_fractions])
         output_mole_fractions = self.mole_fraction_output(input_mole_fractions, approximation)
-        o_gd = output_mole_fractions[0,1]
-        o_vo = output_mole_fractions[0,0]
-        t_gd = target_mole_fractions[0,1]
-        t_vo = target_mole_fractions[0,0]
-
-        return ( ( o_gd - t_gd )**2 ) + ( ( o_vo - t_vo )**2 )
+        squares = []
+        for mf in input_mole_fractions:
+            for i in range(len(mf)):
+                output = output_mole_fractions[0,i]
+                target = target_mole_fractions[0,i]
+                squares.append(( output - target )**2)
+        return sum( squares )
 
     def mole_fraction_output(self, input_mole_fractions, approximation):
         """
@@ -51,26 +52,29 @@ class Calculation:
         Returns:
             output_mole_fractions( list ): Mole fractions that are calculated from the iterative Poisson-Boltzmann solver.
         """
-        for site in self.grid.set_of_sites.subset(self.site_labels[0]):
-            for defect in site.defect_species:
-                defect.mole_fraction = input_mole_fractions[0,0]
-            for defect in site.defects:
-                defect.mole_fraction = input_mole_fractions[0,0]
-        for site in self.grid.set_of_sites.subset(self.site_labels[1]):
-            for defect in site.defect_species:
-                defect.mole_fraction = input_mole_fractions[0,1]
-            for defect in site.defects:
-                defect.mole_fraction = input_mole_fractions[0,1]
+        for mf in input_mole_fractions:
+            for i in range(len(mf)):
+                for site in self.grid.set_of_sites.subset( self.site_labels[i] ):
+                    for defect in site.defect_species:
+                        defect.mole_fraction = input_mole_fractions[0,i]
+                    for defect in site.defects:
+                        defect.mole_fraction = input_mole_fractions[0,i]
+        
         self.solve( approximation )
-        self.form_subgrids( [ self.site_labels[0], self.site_labels[1] ] )
+        species =[]
+        for mf in input_mole_fractions:
+            for i in range(len(mf)):
+                species.append(self.site_labels[i])
+        self.form_subgrids( species )
         self.mole_fractions()
-
-        self.mf[self.site_labels[0]] = [ mf for mf in self.mf[self.site_labels[0]] if mf != 0.0 ]
-        self.mf[self.site_labels[1]] = [ mf for mf in self.mf[self.site_labels[1]] if mf != 0.0 ]
-
-        avg_vo_molfrac = self.calculate_average( self.subgrids[self.site_labels[0]], self.bulk_x_min, self.bulk_x_max, self.mf[self.site_labels[0]]  )
-        avg_gd_molfrac = self.calculate_average( self.subgrids[self.site_labels[1]], self.bulk_x_min, self.bulk_x_max, self.mf[self.site_labels[1]] )
-        output_mole_fractions = np.array( [ [ avg_vo_molfrac, avg_gd_molfrac, 0.0 ] ] )
+        average_mole_fractions = []
+        for mf in input_mole_fractions:
+            for i in range(len(mf)):
+                self.mf[self.site_labels[i]] = [mf for mf in self.mf[self.site_labels[i]] if mf != 0.0 ]
+                average_mf = self.calculate_average(self.subgrids[self.site_labels[i]], self.bulk_x_min, self.bulk_x_max, self.mf[self.site_labels[i]])
+                average_mole_fractions.append(average_mf) 
+        output_mole_fractions = np.array( [ average_mole_fractions ] )
+        print( output_mole_fractions )
         return output_mole_fractions
 
         
@@ -85,19 +89,17 @@ class Calculation:
         """
         if self.initial_guess == None:
             self.initial_guess = target_mole_fractions
+        bounds = [(0.0001, 1)]*len(target_mole_fractions)
         target_mole_fractions = np.array([target_mole_fractions])
-        opt_mole_fractions = minimize( self.mole_fraction_error, self.initial_guess, args=(  target_mole_fractions, approximation ), bounds = ((0.0001, 1), (0.0001,1), (0.0001,1) ) )
+        opt_mole_fractions = minimize( self.mole_fraction_error, self.initial_guess, args=(  target_mole_fractions, approximation ), bounds = (bounds) )
         opt_mole_fractions.x = np.array([opt_mole_fractions.x])
-        for site in self.grid.set_of_sites.subset(self.site_labels[0]):
-            for defect in site.defect_species:
-                defect.mole_fraction = opt_mole_fractions.x[0,0]
-            for defect in site.defects:
-                defect.mole_fraction = opt_mole_fractions.x[0,0]
-        for site in self.grid.set_of_sites.subset(self.site_labels[1]):
-            for defect in site.defect_species:
-                defect.mole_fraction = opt_mole_fractions.x[0,1]
-            for defect in site.defects:
-                defect.mole_fraction = opt_mole_fractions.x[0,1]
+        for mf in target_mole_fractions:
+            for i in range(len(mf)):
+                for site in self.grid.set_of_sites.subset( self.site_labels[i] ):
+                    for defect in site.defect_species:
+                        defect.mole_fraction = opt_mole_fractions.x[0,i]
+                    for defect in site.defects:
+                        defect.mole_fraction = opt_mole_fractions.x[0,i]
         self.initial_guess = opt_mole_fractions.x
 
     def find_index( self, grid, min_cut_off, max_cut_off ):
