@@ -57,8 +57,8 @@ def format_line( line, site_charge ):
     # defect energies
     for i in range( 4, len(line) ):
         line[i] = float( line[i] )
-        if line[i] < 0.0:
-            line[i] += 0.1
+#        if line[i] < 0.0:
+#            line[i] += 0.1
 #        line[i] = 0.0
     return line
 
