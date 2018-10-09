@@ -155,9 +155,9 @@ class Calculation:
             conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
             prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp )
             niter += 1
-            if niter % 1000 == 0.0:
+#            if niter % 1000 == 0.0:
 #            if niter == 1:
-                print(conv)
+#                print(conv)
 #                print(phi, rho)
 #                stop
         self.phi = phi
@@ -180,6 +180,8 @@ class Calculation:
             subgrids[name] = self.grid.subgrid( label )
             subgrids[name].delta_x[0] = subgrids[name].delta_x[1]
             subgrids[name].delta_x[-1] = subgrids[name].delta_x[1]
+            subgrids[name].volumes[0] = subgrids[name].volumes[1]
+            subgrids[name].volumes[-1] = subgrids[name].volumes[1]
         self.subgrids = subgrids
 
     def create_subregion_sites( self, grid, min_cut_off, max_cut_off ):
