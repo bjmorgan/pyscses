@@ -4,7 +4,6 @@ fundamental_charge = elementary_charge
 boltzmann_eV = physical_constants[ 'Boltzmann constant in eV/K' ][0]
 
 vacuum_permittivity = epsilon_0
-dielectric = 55
 
 
 
