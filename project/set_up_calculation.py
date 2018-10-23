@@ -38,7 +38,7 @@ def site_from_input_file( site, defect_species, site_charge, core, temperature )
     #defect_energies = [ 0.0 for e in site[4::2] ]
     return Site( label, x, [ defect_species[l] for l in defect_labels ], defect_energies, valence=valence )
 
-def format_line( line, site_charge ):
+def format_line( line, site_charge, offset = 0.0 ):
     """
     Each line in the input file is formatted into separate components to form sites. 
     Args:
@@ -57,12 +57,14 @@ def format_line( line, site_charge ):
     # defect energies
     for i in range( 4, len(line) ):
         line[i] = float( line[i] )
-#        if line[i] < 0.0:
-#            line[i] += 0.1
+        if line[i] < 0.0:
+            line[i] += offset
+        if line[i] > 0.0:
+            line[i] += offset
 #        line[i] = 0.0
     return line
 
-def load_site_data( filename, x_min, x_max, site_charge ):
+def load_site_data( filename, x_min, x_max, site_charge, offset = 0.0 ):
     """
     Reads in the input data and formats the input data if the x coordinate values are within the calculation region.
     Args:
@@ -76,8 +78,40 @@ def load_site_data( filename, x_min, x_max, site_charge ):
     """
     with open( filename, 'r' ) as f:
         input_data = [ line.split() for line in f ]
-    input_data = [ format_line( line, site_charge ) for line in input_data if ( float(line[2]) > x_min and float(line[2]) < x_max ) ]
+    input_data = [ format_line( line, site_charge, offset ) for line in input_data if ( float(line[2]) > x_min and float(line[2]) < x_max ) ]
+    input_data = sorted( input_data, key=lambda x: x[2] )
+#    for i in input_data:
+#        print(i[0], i[2], flush=True)
+    input_data = average_similar_sites( input_data )
+#    print()
+#    for i in input_data:
+#        print(i[0], i[2], flush=True)
     return input_data
+
+def average_similar_sites( d ):
+    a = []
+    b = []
+    c = []
+#    d = sorted(d, key=lambda x: x[2])
+    for i in d:
+        a.append(i[2])
+
+    for i in range(len(a)):
+        b.append([])
+    for j in range(len(a)):
+        for k in range(len(a)):
+            if abs(a[j] - a[k]) < 2e-11:
+                b[j].append(a[k])
+    for m in range(len(b)):
+        if len(b[m]) == 1:
+            c.append(b[m][0])
+        else:
+            c.append(sum(b[m])/len(b[m]))
+
+    for i, j in enumerate(d):
+        d[i][2] = c[i]
+    return d
+
 
 def mirror_site_data( site_data, condition = 'symmetrical' ):
     """
@@ -149,6 +183,9 @@ def calculate_grid_offsets( filename, x_min, x_max, system ):
     """
     with open( filename, 'r' ) as f:
         input_data = [ line.split() for line in f ]
+        input_data = [ format_line( line, 0.0, 0.0 ) for line in input_data ]
+        input_data = sorted( input_data, key=lambda x: x[2] )
+        input_data = average_similar_sites( input_data )
         x_coords = np.unique( np.array( [ float(l[2]) for l in input_data ] ) )
         min_index = bisect_left( x_coords, x_min )
         max_index = bisect_right( x_coords, x_max )
