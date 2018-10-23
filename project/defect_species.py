@@ -11,12 +11,12 @@ class DefectSpecies:
         mobility (float): mobility of this defect species. Default = 0.0.
     """
 
-    def __init__( self, label, valence, mole_fraction, fixed=False, mobility=0.0 ):
+    def __init__( self, label, valence, mole_fraction, mobility=0.0,  fixed=False ):
         assert( isinstance( label, str ) )
         assert( isinstance( valence, float ) )
         assert( isinstance( mole_fraction, float ) )
         self.label = label
         self.valence = valence
         self.mole_fraction = mole_fraction
-        self.fixed = fixed
         self.mobility = mobility
+        self.fixed = fixed
