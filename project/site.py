@@ -12,7 +12,7 @@ class Site:
         self.x = x  
         self.defect_energies = defect_energies 
         self.defect_species = defect_species
-        self.defects = [ Defect_at_Site( d.label, d.valence, d.mole_fraction, e, self, d.fixed ) for d, e in zip( defect_species, defect_energies ) ]
+        self.defects = [ Defect_at_Site( d.label, d.valence, d.mole_fraction, d.mobility, e, self, d.fixed ) for d, e in zip( defect_species, defect_energies ) ]
         if scaling:
             self.scaling = scaling
         else:
@@ -64,7 +64,7 @@ class Site:
         Calculates the probability of each site being occupied by a given defect using Fermi-Dirac like statistics.
 
         Args:
-            phi (floaty):   Electrostatic potential at this site.
+            phi (float):   Electrostatic potential at this site.
             temp (float):   Temperature of calculation.
 
         Returns: 
