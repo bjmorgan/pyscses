@@ -9,10 +9,11 @@ class Defect_at_Site:
     The overall equation takes traditional Boltzmann statistics (def Boltzmann one), and adds normalisation so that each site cannot have a probability of being occupied that is any higher than 1 (at 1 the site is fully occupied) and accounts for any competition of like charged defects.
     There is also an option to fix any defect at their sites which is appropriate for defects which are not mobile.   
     """
-    def __init__( self, label, valence, mole_fraction, energy, site, fixed = False ):
+    def __init__( self, label, valence, mole_fraction, mobility, energy, site, fixed = False ):
         self.label = label
         self.valence = valence
         self.mole_fraction = mole_fraction
+        self.mobility = mobility
         self.energy = energy
         self.site = site
         self.fixed = fixed 
