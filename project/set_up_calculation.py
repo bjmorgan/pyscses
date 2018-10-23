@@ -88,29 +88,29 @@ def load_site_data( filename, x_min, x_max, site_charge, offset = 0.0 ):
 #        print(i[0], i[2], flush=True)
     return input_data
 
-def average_similar_sites( d ):
-    a = []
-    b = []
-    c = []
-#    d = sorted(d, key=lambda x: x[2])
-    for i in d:
-        a.append(i[2])
+def average_similar_sites( input_data ):
+    x_coords = []
+    similar_x = []
+    updated_x_coords = []
+#    input_data = sorted(input_data, key=lambda x: x[2])
+    for i in input_data:
+        x_coords.append(i[2])
 
-    for i in range(len(a)):
-        b.append([])
-    for j in range(len(a)):
-        for k in range(len(a)):
-            if abs(a[j] - a[k]) < 2e-11:
-                b[j].append(a[k])
-    for m in range(len(b)):
-        if len(b[m]) == 1:
-            c.append(b[m][0])
+    for i in range(len(x_coords)):
+        similar_x.append([])
+    for j in range(len(x_coords)):
+        for k in range(len(x_coords)):
+            if abs(x_coords[j] - x_coords[k]) < 2e-11:
+                similar_x[j].append(x_coords[k])
+    for m in range(len(similar_x)):
+        if len(similar_x[m]) == 1:
+            updated_x_coords.append(similar_x[m][0])
         else:
-            c.append(sum(b[m])/len(b[m]))
+            updated_x_coords.append(sum(similar_x[m])/len(similar_x[m]))
 
-    for i, j in enumerate(d):
-        d[i][2] = c[i]
-    return d
+    for i, j in enumerate(input_data):
+        input_data[i][2] = updated_x_coords[i]
+    return input_data
 
 
 def mirror_site_data( site_data, condition = 'symmetrical' ):
