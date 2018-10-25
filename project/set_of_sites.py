@@ -112,39 +112,37 @@ class Set_of_Sites:
         return defect_density  
 
 
-    def form_continuum_sites( all_sites, x_min, x_max, n_points, b, c, defect_species, limits_for_laplacian ):
+    def form_continuum_sites( all_sites, x_min, x_max, n_points, b, c, defect_species, limits_for_laplacian, site_labels, defect_labels ):
         """
         NEEDS UPDATING TO WORK WITH NEW CODE FORMAT.
         INCLUDE DOCSTRING
         """
-        limits = [ x_min, x_max ]    
-
         grid_1 = np.linspace( x_min, x_max, n_points )
+        limits = [ grid_1[1]-grid_1[0], grid_1[1]-grid_1[0] ]
+        Gd_scaling = len( all_sites.subset( site_labels[1] ) ) / len( grid_1 )
+        Vo_scaling = len( all_sites.subset( site_labels[0] ) ) / len( grid_1 )
     
-        Gd_scaling = len( all_sites.subset( 'Ce' ) ) / len( grid_1 )
-        Vo_scaling = len( all_sites.subset( 'O' ) ) / len( grid_1 )
+        Vo_continuum_grid = Grid( grid_1, b, c, limits, limits_for_laplacian, all_sites.subset( site_labels[0] ) )
+        Gd_continuum_grid = Grid( grid_1, b, c, limits, limits_for_laplacian, all_sites.subset( site_labels[1] ) )
     
-        Vo_continuum_grid = Grid( grid_1, b, c, limits, limits_for_laplacian, all_sites.subset( 'O' ) )
-        Gd_continuum_grid = Grid( grid_1, b, c, limits, limits_for_laplacian, all_sites.subset( 'Ce' ) )
-    
-        Vo_average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( 'O' ) ] )
-        Gd_average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( 'Ce' ) ] )
-    
-    
-        Vo_new_energies = griddata( ( [ site.x for site in all_sites.subset( 'O' ) ] ), Vo_average_energies, grid_1, method = 'nearest' )
-        Gd_new_energies = griddata( ( [ site.x for site in all_sites.subset( 'Ce' ) ] ), Gd_average_energies, grid_1, method = 'nearest' )
+        Vo_average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( site_labels[0] ) ] )
+        Gd_average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( site_labels[1] ) ] )
     
     
-        Vo_new_sites = Set_of_Sites( [ Site( 'O', x, [ defect_species['Vo'] ], [e], scaling = np.array( Vo_scaling ) ) for x, e in zip( grid_1, Vo_new_energies ) ] )
-        Gd_new_sites = Set_of_Sites( [ Site( 'Ce', x, [ defect_species['Gd'] ], [e], scaling = np.array( Gd_scaling ) ) for x, e in zip( grid_1, Gd_new_energies ) ] )   
+        Vo_new_energies = griddata( ( [ site.x for site in all_sites.subset( site_labels[0] ) ] ), Vo_average_energies, grid_1, method = 'nearest' )
+        Gd_new_energies = griddata( ( [ site.x for site in all_sites.subset( site_labels[1] ) ] ), Gd_average_energies, grid_1, method = 'nearest' )
+    
+    
+        Vo_new_sites = Set_of_Sites( [ Site( site_labels[0], x, [ defect_species[defect_labels[0]] ], [e], scaling = np.array( Vo_scaling ) ) for x, e in zip( grid_1, Vo_new_energies ) ] )
+        Gd_new_sites = Set_of_Sites( [ Site( site_labels[1], x, [ defect_species[defect_labels[1]] ], [e], scaling = np.array( Gd_scaling ) ) for x, e in zip( grid_1, Gd_new_energies ) ] )   
     
         all_sites_new = Vo_new_sites + Gd_new_sites
     
-        return all_sites_new
+        return all_sites_new, limits
 
     @ classmethod
-    def set_of_sites_from_input_data( cls, input_data, limits, defect_species, site_charge, core, temperature ):
-        site_data = load_site_data( input_data, limits[0], limits[1], site_charge )
+    def set_of_sites_from_input_data( cls, input_data, limits, defect_species, site_charge, core, temperature, offset=0.0 ):
+        site_data = load_site_data( input_data, limits[0], limits[1], site_charge, offset )
         energies = [ line[4] for line in site_data ]
         min_energy = min(energies)
         if core == 'single':
