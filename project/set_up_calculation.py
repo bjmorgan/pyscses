@@ -80,22 +80,15 @@ def load_site_data( filename, x_min, x_max, site_charge, offset = 0.0 ):
         input_data = [ line.split() for line in f ]
     input_data = [ format_line( line, site_charge, offset ) for line in input_data if ( float(line[2]) > x_min and float(line[2]) < x_max ) ]
     input_data = sorted( input_data, key=lambda x: x[2] )
-#    for i in input_data:
-#        print(i[0], i[2], flush=True)
     input_data = average_similar_sites( input_data )
-#    print()
-#    for i in input_data:
-#        print(i[0], i[2], flush=True)
     return input_data
 
 def average_similar_sites( input_data ):
     x_coords = []
     similar_x = []
     updated_x_coords = []
-#    input_data = sorted(input_data, key=lambda x: x[2])
     for i in input_data:
         x_coords.append(i[2])
-
     for i in range(len(x_coords)):
         similar_x.append([])
     for j in range(len(x_coords)):
