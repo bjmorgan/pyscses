@@ -211,12 +211,13 @@ class Calculation:
         space_charge_region_sites = self.create_subregion_sites( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
         space_charge_region_grid = Grid.grid_from_set_of_sites( space_charge_region_sites, space_charge_region_limits, space_charge_region_limits, self.grid.b, self.grid.c )
         mobile_defect_density = Set_of_Sites( self.subgrids[species].set_of_sites ).subgrid_calculate_defect_density( self.subgrids[species], self.grid, self.phi, self.temp )
+        space_charge_region_mobile_defect_mf = space_charge_region_sites.calculate_probabilities( space_charge_region_grid, self.phi, self.temp )
         space_charge_region_mobile_defect_density = space_charge_region_sites.subgrid_calculate_defect_density( space_charge_region_grid, self.grid, self.phi, self.temp )
         for site in space_charge_region_sites:
             charge = site.defects[0].valence
             mobilities = site.defects[0].mobility
         if mobility_scaling:
-             mobile_defect_conductivity = space_charge_region_mobile_defect_density * ( 1 - space_charge_region_mobile_defect_density ) * charge * mobilities 
+             mobile_defect_conductivity = space_charge_region_mobile_defect_density * ( 1 - space_charge_region_mobile_defect_mf ) * charge * mobilities 
         else:
             mobile_defect_conductivity = space_charge_region_mobile_defect_density * charge * mobilities
         min_bulk_index, max_bulk_index = self.find_index( self.subgrids[species], self.bulk_x_min,  self.bulk_x_max )
