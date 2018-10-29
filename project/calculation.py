@@ -155,9 +155,9 @@ class Calculation:
             conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
             prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp )
             niter += 1
-            if niter % 1000 == 0.0:
+#            if niter % 1000 == 0.0:
 #            if niter == 1:
-                print(conv)
+#                print(conv)
 #                print(phi, rho)
 #                stop
         self.phi = phi
@@ -227,14 +227,14 @@ class Calculation:
         bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities
         space_charge_array = np.column_stack( ( mobile_defect_conductivity, space_charge_region_grid.x ) )
         bulk_array = np.column_stack( ( bulk_mobile_defect_conductivity, bulk_mobile_defect_grid.x ) )
-#        space_charge = sum(mobile_defect_conductivity / space_charge_region_grid.delta_x)
         if mobile_defect_conductivity.all() != 0.0:
             space_charge = sum( space_charge_region_grid.delta_x / mobile_defect_conductivity )
-            average_bulk = sum(bulk_mobile_defect_grid.delta_x * bulk_mobile_defect_conductivity) / sum(bulk_mobile_defect_grid.delta_x)
-            bulk_1 = [average_bulk] * len( mobile_defect_conductivity)
+            average_bulk_conductivity = sum(bulk_mobile_defect_grid.delta_x * bulk_mobile_defect_conductivity) / sum(bulk_mobile_defect_grid.delta_x)
+#            average_bulk_conductivity = self.calculate_average( bulk_mobile_defect_grid, self.bulk_x_min, self.bulk_x_max, bulk_mobile_defect_conductivity )
+#            self.average_bulk_mobile_defect_density = self.calculate_average( bulk_mobile_defect_grid, self.bulk_x_min, self.bulk_x_max, bulk_mobile_defect_density )
+            self.average_bulk_mobile_defect_density = sum(bulk_mobile_defect_grid.delta_x * bulk_mobile_defect_density ) / sum(bulk_mobile_defect_grid.delta_x)
+            bulk_1 = [average_bulk_conductivity] * len( mobile_defect_conductivity)
             bulk = sum(bulk_1 / space_charge_region_grid.delta_x)
-#        bulk = sum(bulk_mobile_defect_conductivity / bulk_mobile_defect_grid.delta_x) 
-#            ratio = space_charge / bulk        
             ratio = 1 / ( space_charge * bulk )
         else:
             ratio = 0.0 
@@ -268,7 +268,7 @@ class Calculation:
         Returns:
             debye_length( float ): Debye length as derived from Poisson-Boltzmann equation
         """
-        self.debye_length = math.sqrt( ( self.dielectric * vacuum_permittivity * boltzmann_eV * self.temp ) / ( 2 * ( fundamental_charge ** 2 ) * self.bulk_mobile_defect_density ) )
+        self.debye_length = np.sqrt( ( self.dielectric * vacuum_permittivity * boltzmann_eV * self.temp ) / ( 2 * ( fundamental_charge ** 2 ) * self.average_bulk_mobile_defect_density ) )
 
     def calculate_space_charge_width( self, valence ):
         """
