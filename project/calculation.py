@@ -13,7 +13,7 @@ class Calculation:
     Calculation class
     """
 
-    def __init__(self, grid, bulk_x_min, bulk_x_max, alpha, convergence, dielectric, temp, boundary_conditions, initial_guess=None ):
+    def __init__(self, grid, bulk_x_min, bulk_x_max, alpha, convergence, dielectric, temp, boundary_conditions ):
         self.grid = grid
         self.bulk_x_min = bulk_x_min
         self.bulk_x_max = bulk_x_max
@@ -22,7 +22,7 @@ class Calculation:
         self.dielectric = dielectric
         self.temp = temp 
         self.boundary_conditions = boundary_conditions
-        self.initial_guess = initial_guess
+
 
     def mole_fraction_error( self, input_mole_fractions, target_mole_fractions, approximation):
         """
@@ -78,7 +78,7 @@ class Calculation:
         return output_mole_fractions
 
         
-    def mole_fraction_correction( self, target_mole_fractions, approximation ):
+    def mole_fraction_correction( self, target_mole_fractions, approximation, initial_guess ):
         """
         Starting from an initial guess for the appropriate input mole fractions, minimises the error between the target bulk mole fraction and the output mole fraction from the iterative Poisson-Boltzmann solver. 
         Args:
@@ -87,8 +87,7 @@ class Calculation:
         Returns:
             opt_mole_fractions( list ): The optimum values to be used as the input mole fractions for the iterative Poisson-Boltzmann solver so that the output bulk mole fractions are the target bulk mole fractions. 
         """
-        if self.initial_guess == None:
-            self.initial_guess = target_mole_fractions
+        self.initial_guess = initial_guess
         bounds = [(0.0001, 1)]*len(target_mole_fractions)
         target_mole_fractions = np.array([target_mole_fractions])
         opt_mole_fractions = minimize( self.mole_fraction_error, self.initial_guess, args=(  target_mole_fractions, approximation ), bounds = (bounds) )
@@ -110,7 +109,10 @@ class Calculation:
     def calculate_offset( self, grid, min_cut_off, max_cut_off ):
         min_index, max_index = self.find_index( grid, min_cut_off, max_cut_off )
         min_offset = ( ( grid.x[ min_index + 1 ] - grid.x[ min_index ] ) / 2 ) + ( ( grid.x[ min_index ] - grid.x[ min_index - 1 ] ) / 2 )
-        max_offset = ( ( grid.x[ max_index + 1 ] - grid.x[ max_index ] ) / 2 ) + ( ( grid.x[ max_index ] - grid.x[ max_index - 1 ] ) / 2 )
+#        max_offset = ( ( grid.x[ max_index + 1 ] - grid.x[ max_index ] ) / 2 ) + ( ( grid.x[ max_index ] - grid.x[ max_index - 1 ] ) / 2 )
+#        min_offset = ( ( grid.x[ min_index + 2 ] - grid.x[ min_index + 1 ] ) / 2 ) + ( ( grid.x[ min_index + 1 ] - grid.x[ min_index ] ) / 2 )
+        max_offset = ( ( grid.x[ max_index ] - grid.x[ max_index - 1 ] ) / 2 ) + ( ( grid.x[ max_index - 1 ] - grid.x[ max_index -2 ] ) / 2 )
+     
         return min_offset, max_offset
 
     def calculate_delta_x( self, grid, min_cut_off, max_cut_off ):
@@ -209,13 +211,13 @@ class Calculation:
         space_charge_region = self.create_space_charge_region( self.subgrids[species], pos_or_neg_scr, scr_limit )
         space_charge_region_limits = self.calculate_offset( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
         space_charge_region_sites = self.create_subregion_sites( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
+        for site in space_charge_region_sites:
+            charge = site.defects[0].valence
+            mobilities = site.defects[0].mobility
         space_charge_region_grid = Grid.grid_from_set_of_sites( space_charge_region_sites, space_charge_region_limits, space_charge_region_limits, self.grid.b, self.grid.c )
         mobile_defect_density = Set_of_Sites( self.subgrids[species].set_of_sites ).subgrid_calculate_defect_density( self.subgrids[species], self.grid, self.phi, self.temp )
         space_charge_region_mobile_defect_mf = space_charge_region_sites.calculate_probabilities( space_charge_region_grid, self.phi, self.temp )
         space_charge_region_mobile_defect_density = space_charge_region_sites.subgrid_calculate_defect_density( space_charge_region_grid, self.grid, self.phi, self.temp )
-        for site in space_charge_region_sites:
-            charge = site.defects[0].valence
-            mobilities = site.defects[0].mobility
         if mobility_scaling:
              mobile_defect_conductivity = space_charge_region_mobile_defect_density * ( 1 - space_charge_region_mobile_defect_mf ) * charge * mobilities 
         else:
