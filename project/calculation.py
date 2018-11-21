@@ -211,26 +211,35 @@ class Calculation:
         space_charge_region = self.create_space_charge_region( self.subgrids[species], pos_or_neg_scr, scr_limit )
         space_charge_region_limits = self.calculate_offset( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
         space_charge_region_sites = self.create_subregion_sites( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
+#        print('sites',[site.x for site in space_charge_region_sites], flush=True)
         for site in space_charge_region_sites:
             charge = site.defects[0].valence
             mobilities = site.defects[0].mobility
         space_charge_region_grid = Grid.grid_from_set_of_sites( space_charge_region_sites, space_charge_region_limits, space_charge_region_limits, self.grid.b, self.grid.c )
         mobile_defect_density = Set_of_Sites( self.subgrids[species].set_of_sites ).subgrid_calculate_defect_density( self.subgrids[species], self.grid, self.phi, self.temp )
         space_charge_region_mobile_defect_mf = space_charge_region_sites.calculate_probabilities( space_charge_region_grid, self.phi, self.temp )
+#        print('mf', space_charge_region_mobile_defect_mf, flush=True)
         space_charge_region_mobile_defect_density = space_charge_region_sites.subgrid_calculate_defect_density( space_charge_region_grid, self.grid, self.phi, self.temp )
+#        print('defden', space_charge_region_mobile_defect_density, flush=True)
         if mobility_scaling:
              mobile_defect_conductivity = space_charge_region_mobile_defect_density * ( 1 - space_charge_region_mobile_defect_mf ) * charge * mobilities 
         else:
             mobile_defect_conductivity = space_charge_region_mobile_defect_density * charge * mobilities
+#        print('cond',mobile_defect_conductivity, flush=True)
         min_bulk_index, max_bulk_index = self.find_index( self.subgrids[species], self.bulk_x_min,  self.bulk_x_max )
         self.bulk_limits = self.calculate_offset( self.subgrids[species], self.bulk_x_min, self.bulk_x_max ) 
         bulk_mobile_defect_sites = self.create_subregion_sites( self.subgrids[species], self.bulk_x_min, self.bulk_x_max )
         bulk_mobile_defect_grid = Grid.grid_from_set_of_sites( bulk_mobile_defect_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c )
         bulk_mobile_defect_density = Set_of_Sites( bulk_mobile_defect_grid.set_of_sites ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )  
-        bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities
+        bulk_region_mobile_defect_mf = bulk_mobile_defect_sites.calculate_probabilities( bulk_mobile_defect_grid, self.phi, self.temp )
+        if mobility_scaling:
+            bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities
+        else:
+            bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities * (1-bulk_region_mobile_defect_mf)
+#        print('bulk_cond',bulk_mobile_defect_conductivity, flush=True)
         space_charge_array = np.column_stack( ( mobile_defect_conductivity, space_charge_region_grid.x ) )
         bulk_array = np.column_stack( ( bulk_mobile_defect_conductivity, bulk_mobile_defect_grid.x ) )
-        if mobile_defect_conductivity.all() != 0.0:
+        if mobile_defect_conductivity.any() != 0.0:
             space_charge = sum( space_charge_region_grid.delta_x / mobile_defect_conductivity )
             average_bulk_conductivity = sum(bulk_mobile_defect_grid.delta_x * bulk_mobile_defect_conductivity) / sum(bulk_mobile_defect_grid.delta_x)
 #            average_bulk_conductivity = self.calculate_average( bulk_mobile_defect_grid, self.bulk_x_min, self.bulk_x_max, bulk_mobile_defect_conductivity )
@@ -238,10 +247,12 @@ class Calculation:
             self.average_bulk_mobile_defect_density = sum(bulk_mobile_defect_grid.delta_x * bulk_mobile_defect_density ) / sum(bulk_mobile_defect_grid.delta_x)
             bulk_1 = [average_bulk_conductivity] * len( mobile_defect_conductivity)
             bulk = sum(bulk_1 / space_charge_region_grid.delta_x)
+#            print('bulk', bulk, flush=True)
             ratio = 1 / ( space_charge * bulk )
         else:
             ratio = 0.0 
 #        self.depletion_factor = 1 - ( mobile_defect_density / average_bulk )
+#        print('ratio', ratio, flush=True)
         return ratio
 
     def calculate_resistivity_ratio( self, pos_or_neg_scr, scr_limit, mobility_scaling=False ):
