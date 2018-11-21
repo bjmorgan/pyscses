@@ -140,6 +140,21 @@ class Set_of_Sites:
     
         return all_sites_new, limits
 
+def form_continuum_sites_new( all_sites, x_min, x_max, n_points, b, c, defect_species, limits_for_laplacian, site_labels, defect_labels ):
+    
+    limits = [ x_min, x_max ]
+    grid = np.linspace( x_min, x_max, n_points )
+    sites = []
+    for label, d_label in zip(site_labels, defect_labels):
+        scaling = len( all_sites.subset( label ) ) / len( grid )
+        continuum_grid = Grid( grid, b, c, limits, limits_for_laplacian, all_sites.subset( label ) )
+        average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( label ) ] )
+        new_energies = griddata( ( [ site.x for site in all_sites.subset( label ) ] ), Vo.average_energies, grid, method = 'nearest' )
+        for x, e in zip( grid, new_energies:
+            sites.append( Site( label, x, [ defect_species[ d_label ] ], [e], scaling = np.array( scaling ) ) )
+    return Set_of_Sites( sites )    
+
+
     @ classmethod
     def set_of_sites_from_input_data( cls, input_data, limits, defect_species, site_charge, core, temperature, offset=0.0 ):
         site_data = load_site_data( input_data, limits[0], limits[1], site_charge, offset )
