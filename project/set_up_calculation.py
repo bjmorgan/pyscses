@@ -8,15 +8,15 @@ from bisect import bisect_left, bisect_right
 def site_from_input_file( site, defect_species, site_charge, core, temperature ):
     """
     Takes the data from the input file and converts it into a site.
-    The input data file is a .txt file where each line in the file corresponds to a site.
+    The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site. 
 
     Args:
         site (str): A line in the input file.
         defect_species (cls): Class containing information about the defect species present in the system.
-        site_charge (bool): True if site charges are to be included in the calculation, false if they are not to be included.
+        site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
 
     Returns:
-        Site (object)
+        Site (cls)
     """
     label = site[0]
     if site_charge == True:
@@ -40,12 +40,12 @@ def site_from_input_file( site, defect_species, site_charge, core, temperature )
 
 def format_line( line, site_charge, offset = 0.0 ):
     """
-    Each line in the input file is formatted into separate components to form sites. 
+    Each line in the input file is formatted into separate site properties. 
     Args:
-        line(str): A line in the input file.
-        site_charge (bool): True if site charges are to be included in the calculation, false if they are not to be included.
+        line (str): A line in the input file.
+        site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
     Returns: 
-        line(list): Formatted line from the input file. 
+        line (list): line from the input file, split into individual values. 
     """
     # x coordinate
     if site_charge == True:
@@ -87,6 +87,16 @@ def load_site_data( filename, x_min, x_max, site_charge, offset = 0.0 ):
     return input_data
 
 def average_similar_sites( input_data ):
+    """
+    Corrects for rounding errors in the input data. Sites within 0.02nm are taken as the same site, therefore the x coordinate values are averaged to prevent the formation of separate sites. 
+
+    Args:
+	input_data (str): The input file.
+
+    Returns:
+	input_data (str): The input file, formatted with x coordinate values within 0.02nm averaged and set to the same value.
+    """
+
     x_coords = []
     similar_x = []
     updated_x_coords = []

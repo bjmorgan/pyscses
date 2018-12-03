@@ -5,9 +5,19 @@ class Defect_at_Site:
 
     """
     The Defect_at_Site class contains the information about each defect at each site, its valence, mole fraction and the segregation energy for that defect at that site. 
-    This functions in this class combine to give the correct statistics for site occupation in solid electrolytes. It is a 'Fermi-Dirac' like approach as described in 'Origin of Space Charge in Grain boundaries of Protoin-Conductibng BaZrO3' by Helgee, Lindmann and Wahnstrom in 2012 (published in Fuel Cells). 
-    The overall equation takes traditional Boltzmann statistics (def Boltzmann one), and adds normalisation so that each site cannot have a probability of being occupied that is any higher than 1 (at 1 the site is fully occupied) and accounts for any competition of like charged defects.
-    There is also an option to fix any defect at their sites which is appropriate for defects which are not mobile.   
+    This functions in this class combine to give the correct statistics for site occupation in solid electrolytes, derived from the electrochemical potentials of a Fermi-Dirac like distribution. The resulting equations take into account that the probability that a site is occupied by a defect can not exceed 1, and also accounts for competition of like charged defects. 
+    A Mott-Schottky approximation can be enforced. The defects can be fixed to their bulk mole fractions throughout the system, equivalent to assuming that the defects are immobile and not allowed to redistribute through the system.
+
+    Attributes:
+
+        label (string): refers to what the defect is called i.e. 'Vo' for an oxygen vacancy. 
+        valence (float): The charge of the defect, in atomic units.
+        mole_fraction (float): The bulk mole fraction of the defect present in the system. 
+        mobility (float): The bulk mobility of the defect species. Default = 0.0.
+	energy (float): The segregation energy for the defect when occupying the respective site.
+        site (cls): The site object that corresponding to each defect at each x coordinate. 
+	fixed (bool): set whether this defect species can redistribute to an equilibrium distriution. Default=False.
+     
     """
     def __init__( self, label, valence, mole_fraction, mobility, energy, site, fixed = False ):
         self.label = label

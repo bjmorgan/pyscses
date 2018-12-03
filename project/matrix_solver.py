@@ -13,12 +13,10 @@ class MatrixSolver:
         Create a MatrixSolver object.
 
         Args:
-            grid (object): class object.
+            grid (object): Grid class object which contains the information regarding the calculation grid.
             dielectric (float): dielectric constant for the studied material. 
-            temp (float): Temperature. Used to calculate the charge density.
-            boundary_conditions (String): Specify the boundary conditions for the matrix solver. 
-                                          Allowed values are `dirichlet` and `periodic`.
-                                          Default = `dirichlet`.
+            temp (float): Calculation temperature.
+            boundary_conditions (String): Specify the boundary conditions for the matrix solver. Allowed values are `dirichlet` and `periodic`. Default = `dirichlet`.
         Returns:
             None
         """
@@ -74,7 +72,7 @@ class MatrixSolver:
 
     def solve( self, phi_old ):
         """ 
-        Uses matrix inversion to solve the Poisson-Boltzmann equation through finite difference methods. The charge denisty is calculated from the elctrostatic potential, the elctrostatic potential is then updated using the updated charge density. If boundary_conditions are 'periodic', the charge density is minimised before the matrix inversion. 
+        Uses matrix inversion to solve the Poisson-Boltzmann equation through finite difference methods. The defect mole fractions are calculated from the elctrostatic potential, the charge density is calculated from the defect mole fractions and the elctrostatic potential is then updated using the updated charge density. If boundary_conditions are 'periodic', the charge density is minimised before the matrix inversion. 
     
         Args: 
             phi_old (array): Electrostatic potential on a one-dimensional grid.

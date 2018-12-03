@@ -164,7 +164,6 @@ def form_continuum_sites_new( all_sites, x_min, x_max, n_points, b, c, defect_sp
             for line in site_data:
                 if line[4] > min_energy:
                     line[4] = 0.0
-        #print(boltzmann_eV * temperature, flush=True)
         if core == 'multi_site':
             for line in site_data:
                 if ( -boltzmann_eV * temperature) <= line[4] <= ( boltzmann_eV * temperature ):

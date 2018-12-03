@@ -5,7 +5,19 @@ from project.constants import fundamental_charge, boltzmann_eV
 
 class Site:
     """ The site class contains all the information about a given site and the defect occupying that site.
-        This class contains functions for the calculations which correspond to each individual site, rather than the whole system. """
+        This class contains functions for the calculations which correspond to each individual site, rather than the system as a whole.
+    Args:
+        label (str): refers to what the defect is called i.e. 'Vo' for an oxygen vacancy. 
+        x (float): x coordinate of the site. 
+	defect_energies (list): List of segregation energies for all defects present at the site.
+        defect_species (list): List of defect species for all defects present at the site.
+	defects (list): List of Defect_at_Site objects, containing the properties of all individual defects at the site.
+	scaling (float):
+	valence (float): The charge of the defect present at the site (in atomic units).
+	defects (list): List of Defect_Species objects for all defects present at the site.
+	sites (list): List containing all x coordinates and corresponding  defect segregation energies.
+    """
+
     def __init__( self, label, x, defect_species, defect_energies, scaling = None, valence = 0 ):
         assert( len( defect_species) == len( defect_energies ) )
         self.label = label
@@ -23,7 +35,15 @@ class Site:
 #       self.sites = [ Data(x, energy) for ( x, energy ) in site_data ]
 
     def defect_with_label( self, label ):
-        """ Returns a list of defects which correspond to the given label """
+        """
+	Returns a list of defects which correspond to the given label
+	
+	Args:
+	    label (str): Label to identify defect species.
+    
+	Returns:
+	    (list): List of Defect_at_Site objects for a specific defect species. 
+	"""
         return [ d for d in self.defects if d.label == label ][0]
 
     def energies( self ):
@@ -61,7 +81,7 @@ class Site:
 
     def probabilities( self, phi, temp ):
         """
-        Calculates the probability of each site being occupied by a given defect using Fermi-Dirac like statistics.
+        Calculates the probability of each site being occupied. Derived from the chemical potential term for a Fermi-Dirac like distribution.
 
         Args:
             phi (float):   Electrostatic potential at this site.
@@ -85,7 +105,7 @@ class Site:
 
     def charge( self, phi, temp ):
         """
-        Calculates the charge in Coulombs at each site under Fermi-Dirac like statistics.
+        Calculates the overall charge in Coulombs at each site.
 
         Args:
             phi (float):  Electrostatic potential at this site.
@@ -100,7 +120,7 @@ class Site:
     def probabilities_boltz( self, phi, temp ):
         """
     
-        Calculates the probability of each site being occupied by a given defect using Boltzmann statistics.
+        Calculates the probability of each site being occupied by a given defect. Derived from the chemical potential including a Boltzmann distribution.
 
         Args:
             phi (float): Electrostatic potential at this site.
@@ -115,7 +135,7 @@ class Site:
 
     def charge_boltz( self, phi, temp ):
         """
-        Calculates the charge in Coulombs at each site under Boltzmann statistics.
+        Calculates the charge in Coulombs at each site using Boltzmann probabilities.
 
         Args:
             phi (float): Electrostatic potential at this site
