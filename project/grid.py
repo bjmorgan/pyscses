@@ -244,7 +244,7 @@ class Grid:
     def interpolated_energies( self ):
         """
         Returns:
-           (list): The average site energies linearly interpolated onto a regularly spaced grid
+           energies (list): The average site energies linearly interpolated onto a regularly spaced grid
         """
 
         energies = []
@@ -252,6 +252,7 @@ class Grid:
             x_new, e_new = np.array( [ ( x, e ) for x, e in zip( self.x, row ) if e ] ).T
             interpolated_energies = griddata( x_new, e_new, self.x, fill_value = 0.0 )
             energies.append( interpolated_energies )
+        return energies
 
     def subgrid( self, subset_species ):
         """
@@ -259,7 +260,7 @@ class Grid:
         Args:
             subset_species (str): Site species to separate into subgrid. 
         Returns:
-            (obj): Grid object for subset of data.
+            Grid (object): Grid object for subset of data.
         """
         return Grid.grid_from_set_of_sites( self.set_of_sites.subset(subset_species), self.limits, self.limits_for_laplacian, self.b, self.c ) 
 
@@ -268,10 +269,12 @@ class Grid:
         """
         Creates a grid from a given Set_of_Sites object.
         Args:
-            set_of_sites(obj): Set_of_Sites object containing a set of all Site objects. 
-            limits(list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. 
-            limits_for_laplacian(list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
+            set_of_sites (object): Set_of_Sites object containing a set of all Site objects. 
+            limits (list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. 
+            limits_for_laplacian (list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
             b (float):                b dimension for every grid-point.
             c (float):                c dimension for every grid-point.
+        Returns:
+            Grid (object): Grid object for the given set of sites. 
         """ 
         return cls( np.unique( [ site.x for site in set_of_sites ] ), b, c, limits, limits_for_laplacian, set_of_sites )

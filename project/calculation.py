@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np 
 from sympy import mpmath
 from bisect import bisect_left, bisect_right
 from project.set_of_sites import Set_of_Sites
@@ -10,7 +10,17 @@ from scipy.optimize import minimize
 
 class Calculation:
     """
-    Calculation class
+    The Calculation class contains all of the functions required to calculate all of the relevant space charge properties for any given system, such as electrostatic potential, charge density, defect mole fractions and parallel and perpendicular grain boundary resistivities. 
+    Args:
+	grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes.
+	bulk_x_min (float): The minimum x coordinate defining a region of bulk.
+	bulk_x_max (float): The maximum x coordinate defining a region of bulk.
+	alpha (float): A damping parameter for updating the potential at each iteration.
+	convergence (float): The convergence limit. The difference between the updated phi and the phi from the previous iteration must be below this for the calculation to be sufficently converged. 
+	dielectric (float): The dielectric constant for the studied material.
+	temp (float): The temperature that the calculation is run. 
+	boundary_conditions(str): Specified boundary conditions for the matrix solver. Allowed values are `dirichlet` and `periodic`. Default = `dirichlet`.
+ 
     """
 
     def __init__(self, grid, bulk_x_min, bulk_x_max, alpha, convergence, dielectric, temp, boundary_conditions ):
@@ -19,7 +29,7 @@ class Calculation:
         self.bulk_x_max = bulk_x_max
         self.alpha = alpha
         self.convergence = convergence
-        self.dielectric = dielectric
+        self.dielectric = dielectric 
         self.temp = temp 
         self.boundary_conditions = boundary_conditions
 
@@ -102,25 +112,64 @@ class Calculation:
         self.initial_guess = opt_mole_fractions.x
 
     def find_index( self, grid, min_cut_off, max_cut_off ):
+        """
+	Calculates the indices of the grid positions closest to a minimum and maximum value.
+        Args:
+	    grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
+	    min_cut_off (float): Minimum x coordinate value defining the calculation region. 
+	    max_cut_off (float): Maximum x coordinate value defining the calculation region.
+	Returns:
+	    min_index (int): Index for minimum cut off.
+	    max_index (int): Index for maximum cut off.
+
+	"""
         min_index = bisect_left( grid.x, min_cut_off )
         max_index = bisect_left( grid.x, max_cut_off )
         return min_index, max_index
 
     def calculate_offset( self, grid, min_cut_off, max_cut_off ):
+        """
+        Calculates the offset between the midpoint of the last x coordinate in the calculation region and the x coordinate outside of the calulation region.
+        Args:
+            grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
+            min_cut_off (float): Minimum x coordinate value defining the calculation region. 
+	    max_cut_off (float): Maximum x coordinate value defining the calculation region.
+        Returns:
+            min_offset (float): Offset for the minimum x coordinate.
+	    max_offset (float): Offset fot the maximum x coordinate.
+        """
+ 
         min_index, max_index = self.find_index( grid, min_cut_off, max_cut_off )
         min_offset = ( ( grid.x[ min_index + 1 ] - grid.x[ min_index ] ) / 2 ) + ( ( grid.x[ min_index ] - grid.x[ min_index - 1 ] ) / 2 )
-#        max_offset = ( ( grid.x[ max_index + 1 ] - grid.x[ max_index ] ) / 2 ) + ( ( grid.x[ max_index ] - grid.x[ max_index - 1 ] ) / 2 )
-#        min_offset = ( ( grid.x[ min_index + 2 ] - grid.x[ min_index + 1 ] ) / 2 ) + ( ( grid.x[ min_index + 1 ] - grid.x[ min_index ] ) / 2 )
         max_offset = ( ( grid.x[ max_index ] - grid.x[ max_index - 1 ] ) / 2 ) + ( ( grid.x[ max_index - 1 ] - grid.x[ max_index -2 ] ) / 2 )
      
         return min_offset, max_offset
 
     def calculate_delta_x( self, grid, min_cut_off, max_cut_off ):
+        """
+        Calculates the distance between the midpoints of each consecutive site. Inserts the calculated distance to the next grid point outside of the calculation region to the first and last position as the delta_x value for the endmost sites. 
+        Args:
+            grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
+            min_cut_off (float): Minimum x coordinate value defining the calculation region. 
+	    max_cut_off (float): Maximum x coordinate value defining the calculation region.
+	Returns:
+	    delta_x_from_grid (list): Distance between consecutive sites. 
+	"""
         min_index, max_index = self.find_index( grid, min_cut_off, max_cut_off )
         min_offset, max_offset = self.calculate_offset( grid, min_cut_off, max_cut_off )
         return delta_x_from_grid( grid.x[ min_index+1 : max_index ], [min_offset, max_offset] )
 
     def calculate_average( self, grid, min_cut_off, max_cut_off, sc_property ):
+	"""
+	Calculates the average of a given space chage property over a given region.
+        Args:
+            grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
+            min_cut_off (float): Minimum x coordinate value defining the calculation region. 
+	    max_cut_off (float): Maximum x coordinate value defining the calculation region.
+            sc_property (list): Value of space charge property at all sites.
+	Returns:
+	    average_sc_propery (float): The average value for the property over the given sites. 
+	"""
         min_index, max_index = self.find_index( grid, min_cut_off, max_cut_off )
         delta_x = self.calculate_delta_x( grid, min_cut_off, max_cut_off )
         return np.sum( sc_property[ min_index + 1 : max_index ] * delta_x ) / np.sum( delta_x )
@@ -173,7 +222,7 @@ class Calculation:
             site_labels( list ): List of strings for the different site species.
   
         Returns:
-            subgrids[name]( cls ): Separate Grid classes for the different site species (name). 
+            subgrids[name]( dict ): Dictionary of separate Grid classes for the different site species (name). 
         """
         self.site_labels = site_labels
         subgrids = {} 
@@ -187,6 +236,15 @@ class Calculation:
         self.subgrids = subgrids
 
     def create_subregion_sites( self, grid, min_cut_off, max_cut_off ):
+	"""
+	Creates a Set_of_Sites object for a defined region of the grid.
+        Args:
+            grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
+            min_cut_off (float): Minimum x coordinate value defining the calculation region. 
+	    max_cut_off (float): Maximum x coordinate value defining the calculation region.
+	Returns:
+	    sites (object): Set of Sites object for a given subregion of the grid.
+	"""
         sites = []
         for site in grid.set_of_sites:
             if site.x > min_cut_off and site.x < max_cut_off:
@@ -195,40 +253,61 @@ class Calculation:
         return sites
 
     def create_space_charge_region( self, grid, pos_or_neg_scr, scr_limit ):
-       space_charge_region = []
-       self.phi_on_mobile_defect_grid = [ phi_at_x( self.phi, self.grid.x, x ) for x in grid.x ] 
-       x_and_phi = np.column_stack( ( grid.x, self.phi_on_mobile_defect_grid ) )
-       for i in range( len( x_and_phi ) ):
-           if pos_or_neg_scr == 'positive':
-               if x_and_phi[i, 1]-x_and_phi[0,1] > scr_limit:
-                   space_charge_region.append( x_and_phi[i,0] )
-           if pos_or_neg_scr == 'negative': 
-               if  x_and_phi[i,1]-x_and_phi[0,1] < scr_limit:
-                   space_charge_region.append( x_and_phi[i,0] )
-       return space_charge_region
+        """
+	Finds the space charge region. The space charge region is defined as the region when the electrostatic potential is greater than a predefined limit.
+	Args:
+	    grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
+	    pos_or_neg_scr (str): 'positive' - for a positive space charge potential.
+				  'negative' - for a negative space charge potential.
+	    scr_limit (float): The minimum electrostatic potential that the electrostatic potential must exceed to be included in the space charge region.
+	Returns:
+	    space_charge_region (list): List of x coordinates for sites within the space charge region.
+	"""	
+        space_charge_region = []
+        self.phi_on_mobile_defect_grid = [ phi_at_x( self.phi, self.grid.x, x ) for x in grid.x ] 
+        x_and_phi = np.column_stack( ( grid.x, self.phi_on_mobile_defect_grid ) )
+        for i in range( len( x_and_phi ) ):
+            if pos_or_neg_scr == 'positive':
+                if x_and_phi[i, 1]-x_and_phi[0,1] > scr_limit:
+                    space_charge_region.append( x_and_phi[i,0] )
+            if pos_or_neg_scr == 'negative': 
+                if x_and_phi[i,1]-x_and_phi[0,1] < scr_limit:
+                    space_charge_region.append( x_and_phi[i,0] )
+        return space_charge_region
 
-    def calculate_mobile_defect_conductivities( self, pos_or_neg_scr, scr_limit, species, mobility_scaling ):
+    def calculate_mobile_defect_conductivities( self, pos_or_neg_scr, scr_limit, species, mobility_scaling=False ):
+	"""
+	Calculates the conductivity ratio between the space charge region and the bulk both perpendicular and parallel to the grain boundary.
+	A Set_of_Sites object is created for the sites in the space charge region, and the defect distributions calculated. The width of the space charge region is calculated and a bulk region of the same width is defined. A Set_of_Sites object for the bulk region is created and the defect distributions calculated. Taking each site as a resistor in series or parallel respectively, the conductivity is calculated and the ratio between the space charge region and the bulk is taken. 
+	Args:
+	    pos_or_neg_scr (str): 'positive' - for a positive space charge potential.
+				  'negative' - for a negative space charge potential.
+	    scr_limit (float): The minimum electrostatic potential that the electrostatic potential must exceed to be included in the space charge region.
+	    species (str): The species for which the conductivity is being calculated.
+	    mobility_scaling (bool): For particles on a lattice which only interact through volume exclusion, the mobility exhibits a blocking term. True if the blocking term is to be included, False if the blocking term is not to be included. Default = False.
+	Returns:
+	    perpendicular_conductivity_ratio (float): The conductivity ratio between the bulk and the space charge region perpendicular to the grain boundary.
+	    parallel_conductivity_ratio (float): The conductivity ratio between the bulk and the space charge region parallel to the grain boundary. 
+	"""
         space_charge_region = self.create_space_charge_region( self.subgrids[species], pos_or_neg_scr, scr_limit )
         space_charge_region_limits = self.calculate_offset( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
         space_charge_region_sites = self.create_subregion_sites( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
-#        print('sites',[site.x for site in space_charge_region_sites], flush=True)
         for site in space_charge_region_sites:
             charge = site.defects[0].valence
             mobilities = site.defects[0].mobility
         space_charge_region_grid = Grid.grid_from_set_of_sites( space_charge_region_sites, space_charge_region_limits, space_charge_region_limits, self.grid.b, self.grid.c )
+        space_charge_region_width = space_charge_region_grid.x[-1] - space_charge_region_grid.x[0]
         mobile_defect_density = Set_of_Sites( self.subgrids[species].set_of_sites ).subgrid_calculate_defect_density( self.subgrids[species], self.grid, self.phi, self.temp )
         space_charge_region_mobile_defect_mf = space_charge_region_sites.calculate_probabilities( space_charge_region_grid, self.phi, self.temp )
-#        print('mf', space_charge_region_mobile_defect_mf, flush=True)
         space_charge_region_mobile_defect_density = space_charge_region_sites.subgrid_calculate_defect_density( space_charge_region_grid, self.grid, self.phi, self.temp )
-#        print('defden', space_charge_region_mobile_defect_density, flush=True)
         if mobility_scaling:
              mobile_defect_conductivity = space_charge_region_mobile_defect_density * ( 1 - space_charge_region_mobile_defect_mf ) * charge * mobilities 
         else:
             mobile_defect_conductivity = space_charge_region_mobile_defect_density * charge * mobilities
-#        print('cond',mobile_defect_conductivity, flush=True)
-        min_bulk_index, max_bulk_index = self.find_index( self.subgrids[species], self.bulk_x_min,  self.bulk_x_max )
-        self.bulk_limits = self.calculate_offset( self.subgrids[species], self.bulk_x_min, self.bulk_x_max ) 
-        bulk_mobile_defect_sites = self.create_subregion_sites( self.subgrids[species], self.bulk_x_min, self.bulk_x_max )
+        bulk_x_max = self.bulk_x_min + space_charge_region_width
+        min_bulk_index, max_bulk_index = self.find_index( self.subgrids[species], self.bulk_x_min, bulk_x_max )
+        self.bulk_limits = self.calculate_offset( self.subgrids[species], self.bulk_x_min, bulk_x_max ) 
+        bulk_mobile_defect_sites = self.create_subregion_sites( self.subgrids[species], self.bulk_x_min, bulk_x_max )
         bulk_mobile_defect_grid = Grid.grid_from_set_of_sites( bulk_mobile_defect_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c )
         bulk_mobile_defect_density = Set_of_Sites( bulk_mobile_defect_grid.set_of_sites ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )  
         bulk_region_mobile_defect_mf = bulk_mobile_defect_sites.calculate_probabilities( bulk_mobile_defect_grid, self.phi, self.temp )
@@ -236,32 +315,42 @@ class Calculation:
             bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities
         else:
             bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities * (1-bulk_region_mobile_defect_mf)
-#        print('bulk_cond',bulk_mobile_defect_conductivity, flush=True)
         space_charge_array = np.column_stack( ( mobile_defect_conductivity, space_charge_region_grid.x ) )
         bulk_array = np.column_stack( ( bulk_mobile_defect_conductivity, bulk_mobile_defect_grid.x ) )
-        if mobile_defect_conductivity.any() != 0.0:
-            space_charge = sum( space_charge_region_grid.delta_x / mobile_defect_conductivity )
-            average_bulk_conductivity = sum(bulk_mobile_defect_grid.delta_x * bulk_mobile_defect_conductivity) / sum(bulk_mobile_defect_grid.delta_x)
-#            average_bulk_conductivity = self.calculate_average( bulk_mobile_defect_grid, self.bulk_x_min, self.bulk_x_max, bulk_mobile_defect_conductivity )
-#            self.average_bulk_mobile_defect_density = self.calculate_average( bulk_mobile_defect_grid, self.bulk_x_min, self.bulk_x_max, bulk_mobile_defect_density )
+        if mobilities != 0.0:
+            space_charge_perpendicular = sum( space_charge_region_grid.delta_x / mobile_defect_conductivity )
             self.average_bulk_mobile_defect_density = sum(bulk_mobile_defect_grid.delta_x * bulk_mobile_defect_density ) / sum(bulk_mobile_defect_grid.delta_x)
-            bulk_1 = [average_bulk_conductivity] * len( mobile_defect_conductivity)
-            bulk = sum(bulk_1 / space_charge_region_grid.delta_x)
-#            print('bulk', bulk, flush=True)
-            ratio = 1 / ( space_charge * bulk )
+            bulk_perpendicular = sum( bulk_mobile_defect_conductivity / bulk_mobile_defect_grid.delta_x )
+            space_charge_parallel = sum( mobile_defect_conductivity / space_charge_region_grid.delta_x )
+            bulk_parallel = sum( bulk_mobile_defect_grid.delta_x / bulk_mobile_defect_conductivity )
+            perpendicular_conductivity_ratio = 1 / ( space_charge_perpendicular * bulk_perpendicular )
+            parallel_conductivity_ratio = space_charge_parallel * bulk_parallel
         else:
-            ratio = 0.0 
+            perpendicular_conductivity_ratio = 0.0
+            parallel_conductivity_ratio = 0.0 
 #        self.depletion_factor = 1 - ( mobile_defect_density / average_bulk )
-#        print('ratio', ratio, flush=True)
-        return ratio
+        return perpendicular_conductivity_ratio, parallel_conductivity_ratio
 
     def calculate_resistivity_ratio( self, pos_or_neg_scr, scr_limit, mobility_scaling=False ):
-        full_conductivity_data = []
-        
+        """
+	Each species present in the system is looped over and the perpendicular and parallel conductivity ratios are calculated and appended to separate lists. Once all species have been added to the list, the conductivities are summed and the reciprocal taken to give the resistivity ratios perpendicular and parallel to the grain boundary.
+	Args:
+	    pos_or_neg_scr (str): 'positive' - for a positive space charge potential.
+				  'negative' - for a negative space charge potential.
+	    scr_limit (float): The minimum electrostatic potential that the electrostatic potential must exceed to be included in the space charge region.
+	    mobility_scaling (bool): For particles on a lattice which only interact through volume exclusion, the mobility exhibits a blocking term. True if the blocking term is to be included, False if the blocking term is not to be included. Default = False.
+	Returns:
+	    perpendicular_resistivity_ratio (float): The resistivity ratio between the bulk and the space charge region perpendicular to the grain boundary.
+	    parallel_resistivity_ratio (float): The resistivity ratio between the bulk and the space charge region parallel to the grain boundary. 
+	"""
+	full_parallel_conductivity_data = []
+        full_perpendicular_conductivity_data = []
         for label in self.site_labels:
-            c = ( self.calculate_mobile_defect_conductivities( pos_or_neg_scr, scr_limit, label, mobility_scaling  ))
-            full_conductivity_data.append(c)
-        self.resistivity_ratio = 1 / sum(full_conductivity_data)
+            c_per, c_par = ( self.calculate_mobile_defect_conductivities( pos_or_neg_scr, scr_limit, label, mobility_scaling  ))
+            full_parallel_conductivity_data.append(c_par)
+            full_perpendicular_conductivity_data.append(c_per)
+        self.perpendicular_resistivity_ratio = 1 / sum(full_perpendicular_conductivity_data)
+        self.parallel_resistivity_ratio = 1 / sum(full_parallel_conductivity_data)
             
     def solve_MS_approx_for_phi( self, valence ):
         """
@@ -273,9 +362,9 @@ class Calculation:
         Returns:
             ms_phi( float ): Space charge potential calculated from Mott-Schottky model
         """
-        if self.resistivity_ratio < 1.36:
+        if self.perpendicular_resistivity_ratio < 1.36:
             raise ValueError( "Resistivity ratio < 1.36. Solution not on a real branch." )
-        self.ms_phi = (-mpmath.lambertw(-1/(2*self.resistivity_ratio),k=-1)) * ( ( boltzmann_eV * self.temp ) / valence )
+        self.ms_phi = (-mpmath.lambertw(-1/(2*self.perpendicular_resistivity_ratio),k=-1)) * ( ( boltzmann_eV * self.temp ) / valence )
 
     def calculate_debye_length( self ):
         """
@@ -287,7 +376,8 @@ class Calculation:
     def calculate_space_charge_width( self, valence ):
         """
         Calculates the approximate space charge width from the debye length.
-   
+        Args:
+	    valence (float): The charge of the mobile defect species.
         Returns:
             space_charge_width( float ): Approximate space charge width.
         """
@@ -299,7 +389,7 @@ class Calculation:
         Calculates the mole fractions (probability of defects occupation ) for each site on the subgrid for each species.
  
         Returns:
-            mf( np.array ): defect species mole fractions for each site on the subgrid for each site species. 
+            mf( dict ): A dictionary of the defect species mole fractions for each site on the subgrid for each site species. 
         """
         mole_fractions = {}
         for label in self.site_labels:

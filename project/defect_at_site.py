@@ -5,7 +5,7 @@ class Defect_at_Site:
 
     """
     The Defect_at_Site class contains the information about each defect at each site, its valence, mole fraction and the segregation energy for that defect at that site. 
-    This functions in this class combine to give the correct statistics for site occupation in solid electrolytes, derived from the electrochemical potentials of a Fermi-Dirac like distribution. The resulting equations take into account that the probability that a site is occupied by a defect can not exceed 1, and also accounts for competition of like charged defects. 
+    This functions in this class combine to give the correct statistics for site occupation in solid electrolytes, derived from the electrochemical potentials of a Fermi-Dirac like distribution. This term has been split into three functions for simplicity. The resulting equations take into account that the probability that a site is occupied by a defect can not exceed 1, and also accounts for competition of like charged defects. 
     A Mott-Schottky approximation can be enforced. The defects can be fixed to their bulk mole fractions throughout the system, equivalent to assuming that the defects are immobile and not allowed to redistribute through the system.
 
     Attributes:
@@ -44,9 +44,10 @@ class Defect_at_Site:
 
     def boltzmann_one( self, phi, temp ):
         """
-        Boltzmann statistics calculation
+        Boltzmann statistics calculation - part one
 
-        (In LaTeX notation) \exp^{ \frac{ \Phi z + \Delta E }{ k_BT } }
+        .. math::
+	    \exp^{ \frac{ \Phi z + \Delta E }{ k_BT } }
 
         Args:
             phi (float): Electrostatic potential.
@@ -60,9 +61,10 @@ class Defect_at_Site:
 
     def boltzmann_two( self, phi, temp ):
         """
-        Boltzmann statistics calculation
+        Boltzmann statistics calculation - part two
  
-        (In LaTeX notation) x ( \exp^{\frac{\Phi z + \Delta E}{K_BT} } )
+        .. math::
+	     x ( \exp^{\frac{\Phi z + \Delta E}{K_BT} } )
 
         Args:
             phi (float): Electrostatic potential.
@@ -76,9 +78,10 @@ class Defect_at_Site:
 
     def boltzmann_three( self, phi, temp ):
         """
-        Boltzmann statistics calculation
+        Boltzmann statistics calculation - part three
 
-        ( In LaTeX notation ) x (\exp^{\frac{ \Phi z + \Delta E}{ K_BT} } - 1 )
+        .. math::
+	    x (\exp^{\frac{ \Phi z + \Delta E}{ K_BT} } - 1 )
 
         Args:
             phi (float): Electrostatic potential.

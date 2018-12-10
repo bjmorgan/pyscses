@@ -12,11 +12,11 @@ def site_from_input_file( site, defect_species, site_charge, core, temperature )
 
     Args:
         site (str): A line in the input file.
-        defect_species (cls): Class containing information about the defect species present in the system.
+        defect_species (object): Class object containing information about the defect species present in the system.
         site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
 
     Returns:
-        Site (cls)
+        Site (object)
     """
     label = site[0]
     if site_charge == True:
@@ -121,7 +121,7 @@ def average_similar_sites( input_data ):
 
 def mirror_site_data( site_data, condition = 'symmetrical' ):
     """
-    Formatted site data is offset so the maximum x coordinate is shifted to an x coordinate of 0.0. The site data with an x coordinate less than 0.0 is mirrored and the shifted and mirrored site data is concatenated to create a system with two grain boundaries. 
+    Formatted site data is offset so the maximum x coordinate is shifted to an x coordinate of 0.0. The site data with an x coordinate less than 0.0 is mirrored and the shifted and mirrored site data is concatenated to create a system with two grain boundaries. Currently designed to work with Gd-doped CeO2 only. 
     Args:
         site_data(list): Formatted site data.
     Returns:

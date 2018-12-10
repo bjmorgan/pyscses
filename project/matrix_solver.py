@@ -16,7 +16,7 @@ class MatrixSolver:
             grid (object): Grid class object which contains the information regarding the calculation grid.
             dielectric (float): dielectric constant for the studied material. 
             temp (float): Calculation temperature.
-            boundary_conditions (String): Specify the boundary conditions for the matrix solver. Allowed values are `dirichlet` and `periodic`. Default = `dirichlet`.
+            boundary_conditions (str): Specify the boundary conditions for the matrix solver. Allowed values are `dirichlet` and `periodic`. Default = `dirichlet`.
         Returns:
             None
         """

@@ -12,7 +12,7 @@ class Site:
 	defect_energies (list): List of segregation energies for all defects present at the site.
         defect_species (list): List of defect species for all defects present at the site.
 	defects (list): List of Defect_at_Site objects, containing the properties of all individual defects at the site.
-	scaling (float):
+	scaling (float): A scaling factor that can be applied in the charge calculation.
 	valence (float): The charge of the defect present at the site (in atomic units).
 	defects (list): List of Defect_Species objects for all defects present at the site.
 	sites (list): List containing all x coordinates and corresponding  defect segregation energies.
@@ -67,14 +67,16 @@ class Site:
 
     def sum_of_boltzmann_three( self, phi, temp ):
         """
-        Calculates the sum of the calculated boltzmann_three values for each defect at each site.  
+        Calculates the sum of the calculated boltzmann_three values for each defect at each site.  i
+	.. math::
+            \sum(x_i \exp( - \Phi_x * z / kT ) -1 )
 
         Args: 
             phi (float): Electrostatic potential at the site.
             temp (float): Temperature of calculation in Kelvin.
 
         Returns:
-            The sum of ( mole fraction * exp ^ -( ( phi * z )/kBT ) - 1 ) for each defect at each site. 
+            (float): The sum of Boltzmann terms.
         
         """
         return sum( [ d.boltzmann_three( phi, temp ) for d in self.defects ] )

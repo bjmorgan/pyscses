@@ -34,7 +34,13 @@ class Set_of_Sites:
         return [ s for s in self.sites if s.label == label ] 
 
     def get_coords( self, label ):
-        """ Returns a list of the x coordinates for all the sites wich contain a particular defect """
+        """ 
+        Returns a list of the x coordinates for all the sites wich contain a particular defect 
+	Args:
+	    label (str): Label identifying the required defect species.
+	Returns:
+	    sites (list): List of sites for a specific defect species.
+	"""
         return [ s.x for s in self.sites if s.label == label ]
 
     def calculate_energies_on_grid( self, grid, phi ):
@@ -112,51 +118,82 @@ class Set_of_Sites:
         return defect_density  
 
 
-    def form_continuum_sites( all_sites, x_min, x_max, n_points, b, c, defect_species, limits_for_laplacian, site_labels, defect_labels ):
-        """
-        NEEDS UPDATING TO WORK WITH NEW CODE FORMAT.
-        INCLUDE DOCSTRING
-        """
-        grid_1 = np.linspace( x_min, x_max, n_points )
-        limits = [ grid_1[1]-grid_1[0], grid_1[1]-grid_1[0] ]
-        Gd_scaling = len( all_sites.subset( site_labels[1] ) ) / len( grid_1 )
-        Vo_scaling = len( all_sites.subset( site_labels[0] ) ) / len( grid_1 )
-    
-        Vo_continuum_grid = Grid( grid_1, b, c, limits, limits_for_laplacian, all_sites.subset( site_labels[0] ) )
-        Gd_continuum_grid = Grid( grid_1, b, c, limits, limits_for_laplacian, all_sites.subset( site_labels[1] ) )
-    
-        Vo_average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( site_labels[0] ) ] )
-        Gd_average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( site_labels[1] ) ] )
-    
-    
-        Vo_new_energies = griddata( ( [ site.x for site in all_sites.subset( site_labels[0] ) ] ), Vo_average_energies, grid_1, method = 'nearest' )
-        Gd_new_energies = griddata( ( [ site.x for site in all_sites.subset( site_labels[1] ) ] ), Gd_average_energies, grid_1, method = 'nearest' )
-    
-    
-        Vo_new_sites = Set_of_Sites( [ Site( site_labels[0], x, [ defect_species[defect_labels[0]] ], [e], scaling = np.array( Vo_scaling ) ) for x, e in zip( grid_1, Vo_new_energies ) ] )
-        Gd_new_sites = Set_of_Sites( [ Site( site_labels[1], x, [ defect_species[defect_labels[1]] ], [e], scaling = np.array( Gd_scaling ) ) for x, e in zip( grid_1, Gd_new_energies ) ] )   
-    
-        all_sites_new = Vo_new_sites + Gd_new_sites
-    
-        return all_sites_new, limits
+#    def form_continuum_sites( all_sites, x_min, x_max, n_points, b, c, defect_species, limits_for_laplacian, site_labels, defect_labels ):
+#        """
+#        """
+#        grid_1 = np.linspace( x_min, x_max, n_points )
+#        limits = [ grid_1[1]-grid_1[0], grid_1[1]-grid_1[0] ]
+#        Gd_scaling = len( all_sites.subset( site_labels[1] ) ) / len( grid_1 )
+#        Vo_scaling = len( all_sites.subset( site_labels[0] ) ) / len( grid_1 )
+#    
+#        Vo_continuum_grid = Grid( grid_1, b, c, limits, limits_for_laplacian, all_sites.subset( site_labels[0] ) )
+#        Gd_continuum_grid = Grid( grid_1, b, c, limits, limits_for_laplacian, all_sites.subset( site_labels[1] ) )
+#    
+#        Vo_average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( site_labels[0] ) ] )
+#        Gd_average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( site_labels[1] ) ] )
+#   
+#    
+#        Vo_new_energies = griddata( ( [ site.x for site in all_sites.subset( site_labels[0] ) ] ), Vo_average_energies, grid_1, method = 'nearest' )
+#        Gd_new_energies = griddata( ( [ site.x for site in all_sites.subset( site_labels[1] ) ] ), Gd_average_energies, grid_1, method = 'nearest' )
+#    
+#    
+#        Vo_new_sites = Set_of_Sites( [ Site( site_labels[0], x, [ defect_species[defect_labels[0]] ], [e], scaling = np.array( Vo_scaling ) ) for x, e in zip( grid_1, Vo_new_energies ) ] )
+#        Gd_new_sites = Set_of_Sites( [ Site( site_labels[1], x, [ defect_species[defect_labels[1]] ], [e], scaling = np.array( Gd_scaling ) ) for x, e in zip( grid_1, Gd_new_energies ) ] )   
+#    
+#        all_sites_new = Vo_new_sites + Gd_new_sites
+#    
+#        return all_sites_new, limits
 
-def form_continuum_sites_new( all_sites, x_min, x_max, n_points, b, c, defect_species, limits_for_laplacian, site_labels, defect_labels ):
-    
-    limits = [ x_min, x_max ]
-    grid = np.linspace( x_min, x_max, n_points )
-    sites = []
-    for label, d_label in zip(site_labels, defect_labels):
-        scaling = len( all_sites.subset( label ) ) / len( grid )
-        continuum_grid = Grid( grid, b, c, limits, limits_for_laplacian, all_sites.subset( label ) )
-        average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( label ) ] )
-        new_energies = griddata( ( [ site.x for site in all_sites.subset( label ) ] ), Vo.average_energies, grid, method = 'nearest' )
-        for x, e in zip( grid, new_energies:
-            sites.append( Site( label, x, [ defect_species[ d_label ] ], [e], scaling = np.array( scaling ) ) )
-    return Set_of_Sites( sites )    
-
+    def form_continuum_sites_new( all_sites, x_min, x_max, n_points, b, c, defect_species, limits_for_laplacian, site_labels, defect_labels ):
+  
+	"""
+	Creates a Set_of_Sites object for sites interpolated onto a regular grid, this is equivalent to assuming a continuum approximation.
+	Args:
+	    all_sites (object): Orginal Set_of_Sites object from full data.
+            x_min (float): Minimum x coordinate value defining the calculation region.
+            x_max (float): Maximum x coordinate value defining the calculation region. 
+	    n_points (int): Number of points that the data should be interpolated on to.
+	    b (float): b dimension for every grid point.
+	    c (float): c dimension for every grid point.
+	    defect_species (object): Class object containing information about the defect species present in the system. 
+	    limits for laplacian (list): distance between the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. 
+	    site_labels( list ): List of strings for the different site species.
+  	    defect_labels (list): List of strings for the different defect species.
+	Returns:
+	    Set_of_Sites (object): Sites interpolated onto a regular grid.
+	"""	    
+  
+        limits = [ x_min, x_max ]
+        grid = np.linspace( x_min, x_max, n_points )
+        sites = []
+        for label, d_label in zip(site_labels, defect_labels):
+            scaling = len( all_sites.subset( label ) ) / len( grid )
+            continuum_grid = Grid( grid, b, c, limits, limits_for_laplacian, all_sites.subset( label ) )
+            average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( label ) ] )
+            new_energies = griddata( ( [ site.x for site in all_sites.subset( label ) ] ), Vo.average_energies, grid, method = 'nearest' )
+            for x, e in zip( grid, new_energies):
+                sites.append( Site( label, x, [ defect_species[ d_label ] ], [e], scaling = np.array( scaling ) ) )
+        return Set_of_Sites( sites )    
 
     @ classmethod
     def set_of_sites_from_input_data( cls, input_data, limits, defect_species, site_charge, core, temperature, offset=0.0 ):
+        """
+        Takes the data from the input file and creates a Set_of_Sites object for those sites. 
+	The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
+        Args:
+	    input_data (file): A .txt file where each line includes the information about a site. 
+	    limits (list): Minimum and maximum x coordinated defining the calculation region. 
+            defect_species (object): Class object containing information about the defect species present in the system.
+            site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
+	    core (str): Core definition.
+			'single' = Single segregation energy used to define the core.
+			'multi-site' = Layered segreagtion energies used to define the core while the energies fall in the region of positive and negative kT.
+			'all' = All sites between a minimum and maximum x coordinate used in calculation.
+	    temperature (float): Temperature that the calculation is being run at.
+
+	Returns:
+	    Set_of_Sites (object): Set of Sites object for the input data.
+ 	"""
         site_data = load_site_data( input_data, limits[0], limits[1], site_charge, offset )
         energies = [ line[4] for line in site_data ]
         min_energy = min(energies)
@@ -172,12 +209,37 @@ def form_continuum_sites_new( all_sites, x_min, x_max, n_points, b, c, defect_sp
 
     @ classmethod
     def mirrored_set_of_sites_from_input_data( cls, input_data, limits, defect_species ):
-        site_data = load_site_data( input_data, limits[0], limits[1] )
+        """
+        Takes the data from the input file, mirrors the data  and creates a Set_of_Sites object for the mirrored sites. 
+	The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
+        Args:
+	    input_data (file): A .txt file where each line includes information about a site.
+	    limits (list): Minimum and maximum x coordinates defining the calculation region.
+	    defect_species (object): Class object containing information about the defect species present in the system.
+	Returns:
+	    Ser_of_Sites (object): Set of Sites object for the mirrored input data.
+ 	"""
+	site_data = load_site_data( input_data, limits[0], limits[1] )
         mirrored_data = mirror_site_data( site_data )
 
 
     @ classmethod
     def core_width_analysis( cls, input_data, limits, defect_species, site_charge, core, temperature ):
+        """
+	Calculated the width of the 'core' region. This is given as the region where the segreagtion energies in the system are within a region of positive to negative kT.
+        Args:
+	    input_data (file): A .txt file where each line includes information about a site.
+	    limits (list): Minimum and maximum x coordinates defining the calculation region.
+	    defect_species (object): Class object containing information about the defect species present in the system.
+            site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
+	    core (str): Core definition.
+			'single' = Single segregation energy used to define the core.
+			'multi-site' = Layered segreagtion energies used to define the core while the energies fall in the region of positive and negative kT.
+			'all' = All sites between a minimum and maximum x coordinate used in calculation.
+	    temperature (float): Temperature that the calculation is being run at.
+	Returns:
+	    core_width (float): Distance between the minimum and maximum x coordinates where the segregation energy is in the range of positive to negative kT. 
+	"""
         site_data = load_site_data( input_data, limits[0], limits[1], site_charge )
         energies = [ line[4] for line in site_data ]
         min_energy = min(energies)
