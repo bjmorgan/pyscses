@@ -27,7 +27,7 @@ python setup.py install
 
 Some limited unit testing is available and can be run manually. First enter the directory with the test files
 ```
-cd tests/unit_tests
+cd PYSCSES/tests/unit_tests
 ```
 and then the tests can be run using
 ```
@@ -36,7 +36,7 @@ python -m unittest discover
 
 Jupyter notebooks that can be used to check the output of the calculations can be found in
 ```
-/tests/test_notebooks
+PYSCSES/tests/test_notebooks
 ```
 The test notebooks can be found on github [here](https://github.com/georgiewellock/PYSCSES/tree/master/tests/test_notebooks).
 
@@ -46,7 +46,7 @@ There are four directories with varying conditions. In each there is a Jupyter n
 Once installed, the `pyscses` code is imported into, and run using a [Jupyter notebook](http://jupyter-notebook.readthedocs.io/en/latest/#).
 An overview of the capabilities of `pyscses`, along with example code for running the code and varying the simulation conditions can be found in
 ```
-pyscses/userguides/userguide.ipynb
+PYSCSES/userguides/userguide.ipynb
 ```
 or the Jupyter notebook can be found on github[here](https://github.com/georgiewellock/PYSCSES/blob/master/userguides/notebooks/userguide.ipynb) .
 
