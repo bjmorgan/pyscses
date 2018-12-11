@@ -1,5 +1,5 @@
 import unittest
-from project.set_of_sites import Set_of_Sites
+from pyscses.set_of_sites import Set_of_Sites
 
 class TestSetOfSites( unittest.TestCase ):
 
