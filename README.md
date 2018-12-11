@@ -2,6 +2,11 @@
 
 # `pyscses` - PYthon Space Charge Site Explicit Solver
 
+`pyscses` is a Python module that implements a one-dimensional Poisson-Boltzmann solver, used for modelling space charge properties in solid materials. 
+In polycrystalline solid materials, grain boundaries and interfaces exist separating different crystalline domains. The structural distortion at these interfaces causes segregation of charge carriers to, or away from the grain boundary core. Due to this, the grain boundary core carries a net charge which causes the depletion or accumulation of charge carriers in the regions adjacent, known as space charge regions. Due to the variation on charge carrier concentrations, the ionic conductivity of the material can be strongly affected by the presence of grain boundaries.
+
+Taking input of defect segregation energies and atomically resolved charge carrier positions, `pyscses` can calculate space charge properties including the potential, charge density and charge carrier distributions over the space charge region using the Poisson-Boltzmann equation. Using the calculated charge carrier distributions, the grain boundary resistivity and activation energies can be calculated. Full mathematical derivations and example code can be found in the [userguide](https://github.com/georgiewellock/PYSCSES/blob/master/userguides/notebooks/userguide.ipynb).
+  
 ## Installation
 
 ```
