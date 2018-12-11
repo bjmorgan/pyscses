@@ -1,11 +1,11 @@
 import numpy as np
-from PYSCSES_source_code.grid import Grid
+from pyscses.grid import Grid
 from scipy.interpolate import griddata
 import math
-from PYSCSES_source_code.set_up_calculation import site_from_input_file, load_site_data, mirror_site_data
-from PYSCSES_source_code.grid import index_of_grid_at_x, phi_at_x, energy_at_x
-from PYSCSES_source_code.site import Site
-from PYSCSES_source_code.constants import boltzmann_eV
+from pyscses.set_up_calculation import site_from_input_file, load_site_data, mirror_site_data
+from pyscses.grid import index_of_grid_at_x, phi_at_x, energy_at_x
+from pyscses.site import Site
+from pyscses.constants import boltzmann_eV
 from bisect import bisect_left
 
 class Set_of_Sites:

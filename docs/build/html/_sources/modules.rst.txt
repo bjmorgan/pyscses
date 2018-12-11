@@ -1,7 +1,7 @@
-project
+pyscses
 =======
 
 .. toctree::
    :maxdepth: 4
 
-   project
+   pyscses

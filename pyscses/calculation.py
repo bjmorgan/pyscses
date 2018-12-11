@@ -1,11 +1,11 @@
 import numpy as np 
 from sympy import mpmath
 from bisect import bisect_left, bisect_right
-from PYSCSES_source_code.set_of_sites import Set_of_Sites
-from PYSCSES_source_code.matrix_solver import MatrixSolver
-from PYSCSES_source_code.set_up_calculation import calculate_grid_offsets
-from PYSCSES_source_code.constants import *
-from PYSCSES_source_code.grid import delta_x_from_grid, Grid, phi_at_x
+from pyscses.set_of_sites import Set_of_Sites
+from pyscses.matrix_solver import MatrixSolver
+from pyscses.set_up_calculation import calculate_grid_offsets
+from pyscses.constants import *
+from pyscses.grid import delta_x_from_grid, Grid, phi_at_x
 from scipy.optimize import minimize
 
 class Calculation:

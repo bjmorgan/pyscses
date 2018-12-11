@@ -1,77 +1,77 @@
-project package
+pyscses package
 ===============
 
 Submodules
 ----------
 
-project.calculation module
+pyscses.calculation module
 --------------------------
 
-.. automodule:: project.calculation
+.. automodule:: pyscses.calculation
     :members:
     :undoc-members:
     :show-inheritance:
 
-project.constants module
+pyscses.constants module
 ------------------------
 
-.. automodule:: project.constants
+.. automodule:: pyscses.constants
     :members:
     :undoc-members:
     :show-inheritance:
 
-project.defect\_at\_site module
+pyscses.defect\_at\_site module
 -------------------------------
 
-.. automodule:: project.defect_at_site
+.. automodule:: pyscses.defect_at_site
     :members:
     :undoc-members:
     :show-inheritance:
 
-project.defect\_species module
+pyscses.defect\_species module
 ------------------------------
 
-.. automodule:: project.defect_species
+.. automodule:: pyscses.defect_species
     :members:
     :undoc-members:
     :show-inheritance:
 
-project.grid module
+pyscses.grid module
 -------------------
 
-.. automodule:: project.grid
+.. automodule:: pyscses.grid
     :members:
     :undoc-members:
     :show-inheritance:
 
-project.matrix\_solver module
+pyscses.matrix\_solver module
 -----------------------------
 
-.. automodule:: project.matrix_solver
+.. automodule:: pyscses.matrix_solver
     :members:
     :undoc-members:
     :show-inheritance:
 
-project.set\_of\_sites module
+pyscses.set\_of\_sites module
 -----------------------------
 
-.. automodule:: project.set_of_sites
+.. automodule:: pyscses.set_of_sites
     :members:
     :undoc-members:
     :show-inheritance:
 
-project.set\_up\_calculation module
+pyscses.set\_up\_calculation module
 -----------------------------------
 
-.. automodule:: project.set_up_calculation
+.. automodule:: pyscses.set_up_calculation
     :members:
     :undoc-members:
     :show-inheritance:
 
-project.site module
+pyscses.site module
 -------------------
 
-.. automodule:: project.site
+.. automodule:: pyscses.site
     :members:
     :undoc-members:
     :show-inheritance:
@@ -80,7 +80,7 @@ project.site module
 Module contents
 ---------------
 
-.. automodule:: project
+.. automodule:: pyscses
     :members:
     :undoc-members:
     :show-inheritance:

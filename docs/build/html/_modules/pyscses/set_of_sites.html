@@ -1,0 +1,454 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pyscses.set_of_sites &mdash; Python  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Python  documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Python
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">pyscses</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Python</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pyscses.set_of_sites</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pyscses.set_of_sites</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyscses.grid</span> <span class="k">import</span> <span class="n">Grid</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">griddata</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">pyscses.set_up_calculation</span> <span class="k">import</span> <span class="n">site_from_input_file</span><span class="p">,</span> <span class="n">load_site_data</span><span class="p">,</span> <span class="n">mirror_site_data</span>
+<span class="kn">from</span> <span class="nn">pyscses.grid</span> <span class="k">import</span> <span class="n">index_of_grid_at_x</span><span class="p">,</span> <span class="n">phi_at_x</span><span class="p">,</span> <span class="n">energy_at_x</span>
+<span class="kn">from</span> <span class="nn">pyscses.site</span> <span class="k">import</span> <span class="n">Site</span>
+<span class="kn">from</span> <span class="nn">pyscses.constants</span> <span class="k">import</span> <span class="n">boltzmann_eV</span>
+<span class="kn">from</span> <span class="nn">bisect</span> <span class="k">import</span> <span class="n">bisect_left</span>
+
+<div class="viewcode-block" id="Set_of_Sites"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites">[docs]</a><span class="k">class</span> <span class="nc">Set_of_Sites</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; The Set_of_Sites object groups together all of the Site objects into one object and contains functions for the calculations that provide properties of all of the sites together rather than individually. &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">sites</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sites</span> <span class="o">=</span> <span class="n">sites</span>
+    
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">other</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Allows the concatenation of multiple Set_of_Sites objects&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span> <span class="n">other</span> <span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Set_of_Sites</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span>
+        <span class="k">return</span> <span class="n">Set_of_Sites</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">sites</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">index</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the site corresponding to a given index &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span> <span class="n">index</span> <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterator over self.sites</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span> <span class="p">)</span>
+
+<div class="viewcode-block" id="Set_of_Sites.subset"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites.subset">[docs]</a>    <span class="k">def</span> <span class="nf">subset</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">label</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a list of all the sites which contain a particular defect &quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="p">[</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">label</span> <span class="p">]</span> 
+
+<div class="viewcode-block" id="Set_of_Sites.get_coords"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites.get_coords">[docs]</a>    <span class="k">def</span> <span class="nf">get_coords</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">label</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Returns a list of the x coordinates for all the sites wich contain a particular defect </span>
+<span class="sd">	Args:</span>
+<span class="sd">	    label (str): Label identifying the required defect species.</span>
+<span class="sd">	Returns:</span>
+<span class="sd">	    sites (list): List of sites for a specific defect species.</span>
+<span class="sd">	&quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="p">[</span> <span class="n">s</span><span class="o">.</span><span class="n">x</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">label</span> <span class="p">]</span>
+
+<div class="viewcode-block" id="Set_of_Sites.calculate_energies_on_grid"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites.calculate_energies_on_grid">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_energies_on_grid</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">phi</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Returns an array of energies at their points on a one-dimensional grid.</span>
+<span class="sd">    </span>
+<span class="sd">        Args: </span>
+<span class="sd">            grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.</span>
+<span class="sd">            phi (array): electrostatic potential on a one-dimensional grid. </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            energies_on_grid (array): energies at their grid points</span>
+<span class="sd"> </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">energies_on_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span> <span class="n">grid</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">:</span>
+            <span class="n">energies_on_grid</span><span class="p">[</span><span class="n">index_of_grid_at_x</span><span class="p">(</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="p">)]</span> <span class="o">=+</span> <span class="n">energy_at_x</span><span class="p">(</span> <span class="n">site</span><span class="o">.</span><span class="n">defect_energies</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">energies_on_grid</span>
+
+<div class="viewcode-block" id="Set_of_Sites.calculate_probabilities"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites.calculate_probabilities">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_probabilities</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Calculates the probability of a site being occupied by its corresponding defect.</span>
+<span class="sd">    </span>
+<span class="sd">        Args: </span>
+<span class="sd">            grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.</span>
+<span class="sd">            phi (array): electrostatic potential on a one-dimensional grid. </span>
+<span class="sd">            temp (float): Absolute temperature.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            probability (array): probabilities of defects occupying each site using their grid points</span>
+<span class="sd"> </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">:</span>
+            <span class="n">probability</span><span class="p">[</span><span class="n">index_of_grid_at_x</span><span class="p">(</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span> <span class="n">site</span><span class="o">.</span><span class="n">probabilities</span><span class="p">(</span> <span class="n">phi_at_x</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="p">),</span> <span class="n">temp</span> <span class="p">)</span> <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">probability</span> 
+
+<div class="viewcode-block" id="Set_of_Sites.calculate_defect_density"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites.calculate_defect_density">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_defect_density</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Calculates the defect density at each site.</span>
+<span class="sd">    </span>
+<span class="sd">        Args: </span>
+<span class="sd">            grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.</span>
+<span class="sd">            phi (array): electrostatic potential on a one-dimensional grid. </span>
+<span class="sd">            temp (float): Absolute temperature.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            defect_density (array): defect density for each site using their grid points</span>
+<span class="sd"> </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">defect_density</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">index_of_grid_at_x</span><span class="p">(</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="p">)</span>
+            <span class="n">defect_density</span><span class="p">[</span> <span class="n">i</span> <span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span> <span class="n">site</span><span class="o">.</span><span class="n">probabilities</span><span class="p">(</span> <span class="n">phi_at_x</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="p">),</span> <span class="n">temp</span> <span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="n">grid</span><span class="o">.</span><span class="n">volumes</span><span class="p">[</span> <span class="n">i</span> <span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">defect_density</span>  
+
+<div class="viewcode-block" id="Set_of_Sites.subgrid_calculate_defect_density"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites.subgrid_calculate_defect_density">[docs]</a>    <span class="k">def</span> <span class="nf">subgrid_calculate_defect_density</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">sub_grid</span><span class="p">,</span> <span class="n">full_grid</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Calculates the defect density at each site for a given subset of sites.</span>
+<span class="sd">    </span>
+<span class="sd">        Args: </span>
+<span class="sd">            subgrid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates. For a given subset of sites. </span>
+<span class="sd">            full_grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates. For all sites.</span>
+<span class="sd">            phi (array): electrostatic potential on a one-dimensional grid. </span>
+<span class="sd">            temp (float): Absolute temperature.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            defect_density (array): defect density for each site using their grid points</span>
+<span class="sd"> </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">defect_density</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span> <span class="n">sub_grid</span><span class="o">.</span><span class="n">x</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">index_of_grid_at_x</span><span class="p">(</span> <span class="n">sub_grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="p">)</span>
+            <span class="n">defect_density</span><span class="p">[</span> <span class="n">i</span> <span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span> <span class="n">site</span><span class="o">.</span><span class="n">probabilities</span><span class="p">(</span> <span class="n">phi_at_x</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">full_grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="p">),</span> <span class="n">temp</span> <span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="n">sub_grid</span><span class="o">.</span><span class="n">volumes</span><span class="p">[</span> <span class="n">i</span> <span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">defect_density</span>  
+
+<div class="viewcode-block" id="Set_of_Sites.form_continuum_sites"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites.form_continuum_sites">[docs]</a>    <span class="k">def</span> <span class="nf">form_continuum_sites</span><span class="p">(</span> <span class="n">all_sites</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">n_points</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">defect_species</span><span class="p">,</span> <span class="n">limits_for_laplacian</span><span class="p">,</span> <span class="n">site_labels</span><span class="p">,</span> <span class="n">defect_labels</span> <span class="p">):</span>
+  
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a Set_of_Sites object for sites interpolated onto a regular grid, this is equivalent to assuming a continuum approximation.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            all_sites (object): Orginal Set_of_Sites object from full data.</span>
+<span class="sd">            x_min (float): Minimum x coordinate value defining the calculation region.</span>
+<span class="sd">            x_max (float): Maximum x coordinate value defining the calculation region. </span>
+<span class="sd">            n_points (int): Number of points that the data should be interpolated on to.</span>
+<span class="sd">            b (float): b dimension for every grid point.</span>
+<span class="sd">            c (float): c dimension for every grid point.</span>
+<span class="sd">            defect_species (object): Class object containing information about the defect species present in the system. </span>
+<span class="sd">            limits for laplacian (list): distance between the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. </span>
+<span class="sd">            site_labels( list ): List of strings for the different site species.</span>
+<span class="sd">            defect_labels (list): List of strings for the different defect species.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Set_of_Sites (object): Sites interpolated onto a regular grid.</span>
+<span class="sd">	&quot;&quot;&quot;</span>	    
+  
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">n_points</span> <span class="p">)</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">sites</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">d_label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">site_labels</span><span class="p">,</span> <span class="n">defect_labels</span><span class="p">):</span>
+            <span class="n">scaling</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="n">label</span> <span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span> <span class="n">grid</span> <span class="p">)</span>
+            <span class="n">continuum_grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span> <span class="n">grid</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">limits</span><span class="p">,</span> <span class="n">limits_for_laplacian</span><span class="p">,</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="n">label</span> <span class="p">)</span> <span class="p">)</span>
+            <span class="n">average_energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span> <span class="n">site</span><span class="o">.</span><span class="n">average_local_energy</span><span class="p">(</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;mean&#39;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="n">label</span> <span class="p">)</span> <span class="p">]</span> <span class="p">)</span>
+            <span class="n">new_energies</span> <span class="o">=</span> <span class="n">griddata</span><span class="p">(</span> <span class="p">(</span> <span class="p">[</span> <span class="n">site</span><span class="o">.</span><span class="n">x</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">all_sites</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span> <span class="n">label</span> <span class="p">)</span> <span class="p">]</span> <span class="p">),</span> <span class="n">average_energies</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;nearest&#39;</span> <span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span> <span class="n">grid</span><span class="p">,</span> <span class="n">new_energies</span><span class="p">):</span>
+                <span class="n">sites</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">Site</span><span class="p">(</span> <span class="n">label</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span> <span class="n">defect_species</span><span class="p">[</span> <span class="n">d_label</span> <span class="p">]</span> <span class="p">],</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">scaling</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">scaling</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Set_of_Sites</span><span class="p">(</span> <span class="n">sites</span> <span class="p">),</span> <span class="n">limits</span>    
+
+<div class="viewcode-block" id="Set_of_Sites.set_of_sites_from_input_data"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites.set_of_sites_from_input_data">[docs]</a>    <span class="o">@</span> <span class="nb">classmethod</span>
+    <span class="k">def</span> <span class="nf">set_of_sites_from_input_data</span><span class="p">(</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">limits</span><span class="p">,</span> <span class="n">defect_species</span><span class="p">,</span> <span class="n">site_charge</span><span class="p">,</span> <span class="n">core</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">0.0</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes the data from the input file and creates a Set_of_Sites object for those sites. </span>
+<span class="sd">	The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.</span>
+<span class="sd">        Args:</span>
+<span class="sd">	    input_data (file): A .txt file where each line includes the information about a site. </span>
+<span class="sd">	    limits (list): Minimum and maximum x coordinated defining the calculation region. </span>
+<span class="sd">            defect_species (object): Class object containing information about the defect species present in the system.</span>
+<span class="sd">            site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.</span>
+<span class="sd">	    core (str): Core definition.</span>
+<span class="sd">			&#39;single&#39; = Single segregation energy used to define the core.</span>
+<span class="sd">			&#39;multi-site&#39; = Layered segreagtion energies used to define the core while the energies fall in the region of positive and negative kT.</span>
+<span class="sd">			&#39;all&#39; = All sites between a minimum and maximum x coordinate used in calculation.</span>
+<span class="sd">	    temperature (float): Temperature that the calculation is being run at.</span>
+
+<span class="sd">	Returns:</span>
+<span class="sd">	    Set_of_Sites (object): Set of Sites object for the input data.</span>
+<span class="sd"> 	&quot;&quot;&quot;</span>
+        <span class="n">site_data</span> <span class="o">=</span> <span class="n">load_site_data</span><span class="p">(</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">site_charge</span><span class="p">,</span> <span class="n">offset</span> <span class="p">)</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span> <span class="p">]</span>
+        <span class="n">min_energy</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">core</span> <span class="o">==</span> <span class="s1">&#39;single&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_energy</span><span class="p">:</span>
+                    <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">core</span> <span class="o">==</span> <span class="s1">&#39;multi_site&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span> <span class="o">-</span><span class="n">boltzmann_eV</span> <span class="o">*</span> <span class="n">temperature</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="p">(</span> <span class="n">boltzmann_eV</span> <span class="o">*</span> <span class="n">temperature</span> <span class="p">):</span>
+                    <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span></div>
+        <span class="k">return</span> <span class="n">Set_of_Sites</span><span class="p">(</span> <span class="p">[</span> <span class="n">site_from_input_file</span><span class="p">(</span> <span class="n">line</span><span class="p">,</span> <span class="n">defect_species</span><span class="p">,</span> <span class="n">site_charge</span><span class="p">,</span> <span class="n">core</span><span class="p">,</span> <span class="n">temperature</span> <span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span> <span class="p">]</span> <span class="p">)</span>
+
+<div class="viewcode-block" id="Set_of_Sites.mirrored_set_of_sites_from_input_data"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites.mirrored_set_of_sites_from_input_data">[docs]</a>    <span class="o">@</span> <span class="nb">classmethod</span>
+    <span class="k">def</span> <span class="nf">mirrored_set_of_sites_from_input_data</span><span class="p">(</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">limits</span><span class="p">,</span> <span class="n">defect_species</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes the data from the input file, mirrors the data  and creates a Set_of_Sites object for the mirrored sites. </span>
+<span class="sd">	The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.</span>
+<span class="sd">        Args:</span>
+<span class="sd">	    input_data (file): A .txt file where each line includes information about a site.</span>
+<span class="sd">	    limits (list): Minimum and maximum x coordinates defining the calculation region.</span>
+<span class="sd">	    defect_species (object): Class object containing information about the defect species present in the system.</span>
+<span class="sd">	Returns:</span>
+<span class="sd">	    Set_of_Sites (object): Set of Sites object for the mirrored input data.</span>
+<span class="sd"> 	&quot;&quot;&quot;</span>
+        <span class="n">site_data</span> <span class="o">=</span> <span class="n">load_site_data</span><span class="p">(</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span></div>
+        <span class="n">mirrored_data</span> <span class="o">=</span> <span class="n">mirror_site_data</span><span class="p">(</span> <span class="n">site_data</span> <span class="p">)</span>
+
+
+<div class="viewcode-block" id="Set_of_Sites.core_width_analysis"><a class="viewcode-back" href="../../pyscses.html#pyscses.set_of_sites.Set_of_Sites.core_width_analysis">[docs]</a>    <span class="o">@</span> <span class="nb">classmethod</span>
+    <span class="k">def</span> <span class="nf">core_width_analysis</span><span class="p">(</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">limits</span><span class="p">,</span> <span class="n">defect_species</span><span class="p">,</span> <span class="n">site_charge</span><span class="p">,</span> <span class="n">core</span><span class="p">,</span> <span class="n">temperature</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Calculated the width of the &#39;core&#39; region. This is given as the region where the segreagtion energies in the system are within a region of positive to negative kT.</span>
+<span class="sd">        Args:</span>
+<span class="sd">	    input_data (file): A .txt file where each line includes information about a site.</span>
+<span class="sd">	    limits (list): Minimum and maximum x coordinates defining the calculation region.</span>
+<span class="sd">	    defect_species (object): Class object containing information about the defect species present in the system.</span>
+<span class="sd">            site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.</span>
+<span class="sd">	    core (str): Core definition.</span>
+<span class="sd">			&#39;single&#39; = Single segregation energy used to define the core.</span>
+<span class="sd">			&#39;multi-site&#39; = Layered segreagtion energies used to define the core while the energies fall in the region of positive and negative kT.</span>
+<span class="sd">			&#39;all&#39; = All sites between a minimum and maximum x coordinate used in calculation.</span>
+<span class="sd">	    temperature (float): Temperature that the calculation is being run at.</span>
+<span class="sd">	Returns:</span>
+<span class="sd">	    core_width (float): Distance between the minimum and maximum x coordinates where the segregation energy is in the range of positive to negative kT. </span>
+<span class="sd">	&quot;&quot;&quot;</span>
+        <span class="n">site_data</span> <span class="o">=</span> <span class="n">load_site_data</span><span class="p">(</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">site_charge</span> <span class="p">)</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span> <span class="p">]</span>
+        <span class="n">min_energy</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">core</span> <span class="o">==</span> <span class="s1">&#39;single&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_energy</span><span class="p">:</span>
+                    <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c1">#print(boltzmann_eV * temperature, flush=True)</span>
+        <span class="k">if</span> <span class="n">core</span> <span class="o">==</span> <span class="s1">&#39;multi_site&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span> <span class="o">-</span><span class="n">boltzmann_eV</span> <span class="o">*</span> <span class="n">temperature</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="p">(</span> <span class="n">boltzmann_eV</span> <span class="o">*</span> <span class="n">temperature</span> <span class="p">):</span>
+                    <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span> <span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">site_data</span> <span class="p">]</span>
+        <span class="n">x_seg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span> <span class="n">x</span><span class="p">,</span> <span class="n">energies</span> <span class="p">))</span>
+        <span class="n">minval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_seg</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">x_seg</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])])</span>
+        <span class="n">maxval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_seg</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">x_seg</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])])</span>
+        <span class="n">core_width</span> <span class="o">=</span> <span class="n">maxval</span><span class="o">-</span><span class="n">minval</span></div></div>
+        <span class="k">return</span><span class="p">(</span><span class="n">core_width</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Georgina Wellock.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

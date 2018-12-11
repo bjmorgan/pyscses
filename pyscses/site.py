@@ -1,7 +1,7 @@
-from PYSCSES_source_code.defect_at_site import Defect_at_Site
+from pyscses.defect_at_site import Defect_at_Site
 import numpy as np
 import math
-from PYSCSES_source_code.constants import fundamental_charge, boltzmann_eV
+from pyscses.constants import fundamental_charge, boltzmann_eV
 
 class Site:
     """ The site class contains all the information about a given site and the defect occupying that site.

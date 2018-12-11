@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from PYSCSES_source_code.constants import boltzmann_eV
+from pyscses.constants import boltzmann_eV
 from bisect import bisect_left
 from scipy.interpolate import griddata
 

@@ -1,5 +1,5 @@
 import math
-from PYSCSES_source_code.constants import boltzmann_eV
+from pyscses.constants import boltzmann_eV
 
 class Defect_at_Site:
 
