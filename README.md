@@ -1,5 +1,6 @@
 [![Documentation Status](https://readthedocs.org/projects/gwpb/badge/?version=latest)](https://gwpb.readthedocs.io/en/latest/?badge=latest)
 
+# `pyscses` - PYthon Space Charge Site Explicit Solver
 
 ## Installation
 
