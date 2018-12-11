@@ -200,18 +200,15 @@ class Calculation:
                 predicted_phi -= average_phi
             if approximation == 'mott-schottky':
                 vo_predicted_phi = [ phi_at_x( predicted_phi, self.grid.x, x ) for x in self.grid.subgrid(self.site_labels[0]).x ]
-                average_vo_predicted_phi = self.calculate_average( self.grid.subgrid( self.site_labels[0] ), self.bulk_x_min, self.bulk_x_max, predicted_phi )
+                average_vo_predicted_phi = self.calculate_average( self.grid.subgrid( self.site_labels[0] ), self.bulk_x_min, self.bulk_x_max, vo_predicted_phi )
                 predicted_phi -= average_vo_predicted_phi
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
             conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
             prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp )
             niter += 1
-            if niter % 500 == 0.0:
+#            if niter % 500 == 0.0:
 #            if niter == 1:
 #                print(conv)
-                 print(vo_predicted_phi, flush=True)
-                 print(average_vo_predicted_phi, flush=True)
-                 print(predicted_phi, flush=True)
 #                print(phi, rho)
 #                stop
         self.phi = phi
