@@ -1,4 +1,4 @@
-[![Documentation Status](https://gwpb.readthedocs.io/en/latest/)](https://gwpb.readthedocs.io/en/latest/)
+[![Documentation Status](https://readthedocs.org/projects/gwpb/badge/?version=latest)](https://gwpb.readthedocs.io/en/latest/?badge=latest)
 
 
 ## Installation
