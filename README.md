@@ -8,6 +8,7 @@ In polycrystalline solid materials, grain boundaries and interfaces exist separa
 Taking input of defect segregation energies and atomically resolved charge carrier positions, `pyscses` can calculate space charge properties including the electrostatic potential, charge density and charge carrier distributions over the space charge region using the Poisson-Boltzmann equation. Using the calculated charge carrier distributions, the grain boundary resistivity and activation energy can be calculated. `pyscses` also accounts for different approximations typically assumed when space charge formation is considered. Full mathematical derivations, definitions and example code can be found in the [userguide](https://github.com/georgiewellock/PYSCSES/blob/master/userguides/notebooks/userguide.ipynb).
 
 API documentation can be found [here](https://gwpb.readthedocs.io/en/latest/)
+
 Source code is available as a git repository at [https://github.com/georgiewellock/PYSCSES/tree/master/pyscses](https://github.com/georgiewellock/PYSCSES/tree/master/pyscses)
   
 ## Installation
