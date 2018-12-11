@@ -42,7 +42,11 @@ There are four directories with varying conditions. In each there is a Jupyter n
 
 ## Documentation
 Once installed, the `pyscses` code is imported into, and run using a [Jupyter notebook](http://jupyter-notebook.readthedocs.io/en/latest/#).
-An overview of the capabilities of `pyscses`, along with example code for running the code and varying the simulation conditions can be found [here](https://github.com/georgiewellock/PYSCSES/blob/master/userguides/notebooks/userguide.ipynb) .
+An overview of the capabilities of `pyscses`, along with example code for running the code and varying the simulation conditions can be found in
+```
+pyscses/userguides/userguide.ipynb
+```
+or the Jupyter notebook can be found on github[here](https://github.com/georgiewellock/PYSCSES/blob/master/userguides/notebooks/userguide.ipynb) .
 
 API documentation is available [here](https://gwpb.readthedocs.io/en/latest/) .
 ## Citing `pyscses`
