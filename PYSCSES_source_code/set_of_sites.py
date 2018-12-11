@@ -117,7 +117,7 @@ class Set_of_Sites:
             defect_density[ i ] += np.asarray( site.probabilities( phi_at_x( phi, full_grid.x, site.x ), temp ) ) / sub_grid.volumes[ i ]
         return defect_density  
 
-    def form_continuum_sites_new( all_sites, x_min, x_max, n_points, b, c, defect_species, limits_for_laplacian, site_labels, defect_labels ):
+    def form_continuum_sites( all_sites, x_min, x_max, n_points, b, c, defect_species, limits_for_laplacian, site_labels, defect_labels ):
   
         """
         Creates a Set_of_Sites object for sites interpolated onto a regular grid, this is equivalent to assuming a continuum approximation.
@@ -146,7 +146,7 @@ class Set_of_Sites:
             new_energies = griddata( ( [ site.x for site in all_sites.subset( label ) ] ), average_energies, grid, method = 'nearest' )
             for x, e in zip( grid, new_energies):
                 sites.append( Site( label, x, [ defect_species[ d_label ] ], [e], scaling = np.array( scaling ) ) )
-        return Set_of_Sites( sites )    
+        return Set_of_Sites( sites ), limits    
 
     @ classmethod
     def set_of_sites_from_input_data( cls, input_data, limits, defect_species, site_charge, core, temperature, offset=0.0 ):
