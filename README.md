@@ -1,3 +1,6 @@
+[![Documentation Status](https://gwpb.readthedocs.io/en/latest/)](https://gwpb.readthedocs.io/en/latest/)
+
+
 ## Installation
 
 ```
