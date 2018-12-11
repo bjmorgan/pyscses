@@ -36,7 +36,7 @@ python -m unittest discover
 
 Jupyter notebooks that can be used to check the output of the calculations can be found in
 ```
-pyscses/tests/test_notebooks
+/tests/test_notebooks
 ```
 The test notebooks can be found on github [here](https://github.com/georgiewellock/PYSCSES/tree/master/tests/test_notebooks).
 
