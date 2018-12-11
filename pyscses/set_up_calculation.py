@@ -118,63 +118,6 @@ def average_similar_sites( input_data ):
         input_data[i][2] = updated_x_coords[i]
     return input_data
 
-
-def mirror_site_data( site_data, condition = 'symmetrical' ):
-    """
-    Formatted site data is offset so the maximum x coordinate is shifted to an x coordinate of 0.0. The site data with an x coordinate less than 0.0 is mirrored and the shifted and mirrored site data is concatenated to create a system with two grain boundaries. Currently designed to work with Gd-doped CeO2 only. 
-    Args:
-        site_data(list): Formatted site data.
-    Returns:
-        site_data_mirrored(list): Formatted site data for a mirrored system. 
-    """
-
-    site_data = sorted(site_data, key=itemgetter(2))
-    for line in site_data:
-        line[2] = np.round( line[2], 14 )
-    if site_data[-1][0] == 'Ce':
-        condition = 'symmetrical'
-    elif site_data[-1][0] == 'O' and site_data[-5][0] == 'O':
-        condition = 'non_symmetrical'
-    else:
-        raise ValueError('data cannot be mirrored with this end site') 
-
-    if condition == 'symmetrical':
-        midpoint = max( [ line[2] for line in site_data ] )
-        for line in site_data:
-            line[2] -= midpoint
-        site_data_mirrored = [ copy(l) for l in site_data if l[2] < 0 ]
-        for l in site_data_mirrored:
-            l[2] = float(l[2]) * -1 
-    if condition == 'non_symmetrical':
-        i_list = []
-        insert_o_site = copy(site_data[-1])
-        offset = site_data[-1][2] - site_data[-5][2]
-    
-        for i in range( 0, len(site_data) ):
-            if round(site_data[i][2], 14) == round(site_data[-1][2], 14):
-                i_list.append(i)
-        for i in reversed(i_list):
-            del site_data[i]
-        
-        insert_o_site[2] = copy(offset)
-        midpoint = max( [ line[2] for line in site_data ] )
-        for l in site_data:
-            l[2] -= midpoint
-    
-        site_data_mirrored = [ copy(l) for l in site_data if l[2] < 0 ]
-        for l in site_data_mirrored:
-            l[2] = float(l[2]) * -1 
-        site_data_mirrored = sorted(site_data_mirrored, key=itemgetter(2))
-        for l in site_data_mirrored:
-            l[2] += offset
-        
-        site_data_mirrored.insert(0, insert_o_site )
-        site_data_mirrored.insert(0, insert_o_site )
-        site_data_mirrored.insert(0, insert_o_site )
-        site_data_mirrored.insert(0, insert_o_site )
-
-    return site_data + site_data_mirrored
-
 def calculate_grid_offsets( filename, x_min, x_max, system ):
     """
     Reads in the input data calculates the distance to the next site outside of the defined calculation region. Allows calculation of the delta_x and volume values for the endmost grid points.
