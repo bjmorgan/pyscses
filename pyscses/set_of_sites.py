@@ -2,7 +2,7 @@ import numpy as np
 from pyscses.grid import Grid
 from scipy.interpolate import griddata
 import math
-from pyscses.set_up_calculation import site_from_input_file, load_site_data, mirror_site_data
+from pyscses.set_up_calculation import site_from_input_file, load_site_data 
 from pyscses.grid import index_of_grid_at_x, phi_at_x, energy_at_x
 from pyscses.site import Site
 from pyscses.constants import boltzmann_eV
@@ -179,22 +179,6 @@ class Set_of_Sites:
                 if ( -boltzmann_eV * temperature) <= line[4] <= ( boltzmann_eV * temperature ):
                     line[4] = 0.0
         return Set_of_Sites( [ site_from_input_file( line, defect_species, site_charge, core, temperature ) for line in site_data ] )
-
-    @ classmethod
-    def mirrored_set_of_sites_from_input_data( cls, input_data, limits, defect_species ):
-        """
-        Takes the data from the input file, mirrors the data  and creates a Set_of_Sites object for the mirrored sites. 
-	The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
-        Args:
-	    input_data (file): A .txt file where each line includes information about a site.
-	    limits (list): Minimum and maximum x coordinates defining the calculation region.
-	    defect_species (object): Class object containing information about the defect species present in the system.
-	Returns:
-	    Set_of_Sites (object): Set of Sites object for the mirrored input data.
- 	"""
-        site_data = load_site_data( input_data, limits[0], limits[1] )
-        mirrored_data = mirror_site_data( site_data )
-
 
     @ classmethod
     def core_width_analysis( cls, input_data, limits, defect_species, site_charge, core, temperature ):
