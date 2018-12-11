@@ -25,13 +25,13 @@ python setup.py install
 ```
 ## Tests
 
-Some limited unit testing is available and can be run manually
+Some limited unit testing is available and can be run manually. First enter the directory with the test files
 ```
 cd tests/unit_tests
 ```
-using
+and then the tests can be run using
 ```
-python -m unittest discover
+python -m unittest discover.
 ```
 
 Jupyter notebooks that can be used to check the output of the calculations can be found in
