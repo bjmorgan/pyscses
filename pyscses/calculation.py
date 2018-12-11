@@ -206,9 +206,12 @@ class Calculation:
             conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
             prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp )
             niter += 1
-#            if niter % 1000 == 0.0:
+            if niter % 500 == 0.0:
 #            if niter == 1:
 #                print(conv)
+                 print(vo_predicted_phi, flush=True)
+                 print(average_vo_predicted_phi, flush=True)
+                 print(predicted_phi, flush=True)
 #                print(phi, rho)
 #                stop
         self.phi = phi
