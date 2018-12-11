@@ -35,7 +35,9 @@ python -m unittest discover
 ```
 
 Jupyter notebooks that can be used to check the output of the calculations can be found in
-`pyscses/tests/test_notebooks`
+```
+pyscses/tests/test_notebooks
+```
 The test notebooks can be found on github [here](https://github.com/georgiewellock/PYSCSES/tree/master/tests/test_notebooks).
 
 There are four directories with varying conditions. In each there is a Jupyter notebook which can be run. The input for the calculations is stored in the `input_data` directory and the output for the calculations will be stored in the `generated_data` directory and can be compared to the verified data in the `expected_outputs` directory. A list of the input parameters used in the notebooks is reiterated in each of the four test folders in the `input_parameters` file. 
