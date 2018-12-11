@@ -48,7 +48,7 @@ An overview of the capabilities of `pyscses`, along with example code for runnin
 ```
 PYSCSES/userguides/userguide.ipynb
 ```
-or the Jupyter notebook can be found on github[here](https://github.com/georgiewellock/PYSCSES/blob/master/userguides/notebooks/userguide.ipynb) .
+or the Jupyter notebook can be found on github [here](https://github.com/georgiewellock/PYSCSES/blob/master/userguides/notebooks/userguide.ipynb) .
 
 API documentation is available [here](https://gwpb.readthedocs.io/en/latest/) .
 ## Citing `pyscses`
