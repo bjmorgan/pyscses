@@ -8,7 +8,7 @@ pyscses - PYthon Space Charge Site Explicit Solver
 
 ``pyscses`` is a Python module that implements a site-explicit, one-dimensional Poisson-Boltzmann solver, used for modelling ionic space charge properties in solid materials. Space charge properties such as electrostatic potential, charge density and charge carrier distributions over the space charge region can be calculated using the Poisson-Boltzmann equation from the input of defect segregation energies and atomically resolved charge carrier positions. The grain boundary resistivity and activation energy can be calculated by extending the model using the calculated charge carrier distributions. ``pyscses`` also accounts for different approximations typically assumed when space charge formation is considered. These approximations include site explicit vs. continuum modelling, Mott-Schokkty (single mobile defect species) and Gouy-Chapman (all defect species mobile) conditions, and whether the charge of the non-defective species should be considered. Full mathematical derivations, definitions and example code can be found on github in the `userguide <https://github.com/georgiewellock/PYSCSES/blob/master/userguides/notebooks/userguide.ipynb>`__.
 
-API documentation can be found `here <https://gwpb.readthedocs.io/en/latest/>`__.
+API documentation can be found `here <https://gwpb.readthedocs.io/en/latest/modules.html>`__.
 
 Source code is available as a git repository at `https://github.com/georgiewellock/PYSCSES/tree/master/pyscses <https://github.com/georgiewellock/PYSCSES/tree/master/pyscses>`__.
 
