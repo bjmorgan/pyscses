@@ -12,10 +12,6 @@ API documentation can be found `here <https://gwpb.readthedocs.io/en/latest/modu
 
 Source code is available as a git repository at `https://github.com/georgiewellock/PYSCSES/tree/master/pyscses <https://github.com/georgiewellock/PYSCSES/tree/master/pyscses>`__.
 
-Scientific context
-------------------
-In polycrystalline solid materials, grain boundaries and interfaces exist separating different crystalline domains. The structural distortion at these interfaces causes segregation of charge carriers to, or away from the grain boundary core. Due to this, the grain boundary core carries a net charge which causes the depletion or accumulation of charge carriers in the regions adjacent, known as space charge regions. Due to the variation on charge carrier concentrations, the ionic conductivity of the material can be strongly affected by the presence of grain boundaries.
-
 Tests
 -----
 
@@ -33,6 +29,9 @@ The test notebooks can be found on github `here <https://github.com/georgiewello
 
    modules
 
+Scientific context
+------------------
+In polycrystalline solid materials, grain boundaries and interfaces exist separating different crystalline domains. The structural distortion at these interfaces causes segregation of charge carriers to, or away from the grain boundary core. Due to this, the grain boundary core carries a net charge which causes the depletion or accumulation of charge carriers in the regions adjacent, known as space charge regions. Due to the variation on charge carrier concentrations, the ionic conductivity of the material can be strongly affected by the presence of grain boundaries.
 
 Indices and tables
 ==================
