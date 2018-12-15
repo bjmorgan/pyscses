@@ -22,44 +22,62 @@ bibliography: paper.bib
 ---
 
 ``pyscses`` is a python module that implements a site-explicit, one dimensional Poisson-Boltzmann solver that can be used to model ionic space charge formation in solid materials. 
-Space charge analyses typically treat space charge formation using continuum modelling [@ cite wahnstrom maier norby ] whereas `pyscses` takes explicitly calculated defect segregation energies and atomically resolved defect positions to calculate space charge properties. These properties include the electrostatic potential, charge density and defect distributions over the space charge region. The use of site explicit modelling allows the calculation of grain boundary resistivities and activation energies, which take into account the explicit grain boundary structure.
+Space charge analyses typically treat space charge formation using continuum modelling [@ cite wahnstrom maier norby ] whereas ``pyscses`` takes explicitly calculated defect segregation energies and atomically resolved defect positions to calculate space charge properties. These properties include the electrostatic potential, charge density and defect distributions over the space charge region. The use of site explicit modelling allows the calculation of grain boundary resistivities and activation energies, which take into account the explicit grain boundary structure.
 
 ## Space charge formation
 In polycrystalline solid materials, grain boundaries and interfaces exist separating different crystalline domains. The structural distortion means that defect concentrations and mobilities may deviate from their bulk values in localised regions of space, such as those close to grain boundaries. Defects typically segregate to, or away from the core of the grain boundary. This results in a grain boundary core which carries a net charge and an accumulation or depletion in defects in the regions adjacent to the grain boundary core, known as the space charge regions. Due to the relationship between conductivity and concentration, $ \sigma_i = c_i \mu_i z_i $, variation in defect concentration in these regions can strongly affect the the ionic conductivity of the material.  
 
 ## ``pyscses``
-``pyscses`` implements a one dimensional Poisson-Boltzmann solver to model ionic space charge formation. The approach combines Boltzmann statistics with Poisson's equation to give a self-consistent method for calculating the electrostatic potential, charge density and defect distributions across the space charge region at equilibrium. This approach is available in ```pyscses``, however due to the site-explicit nature of crystalline materials, the default method in ``pyscses`` uses Fermi-Dirac statistics to give a more realistic expression of defect distributions in boundary layers. 
+``pyscses`` implements a one dimensional Poisson-Boltzmann solver to model ionic space charge formation. The approach combines Boltzmann statistics with Poisson's equation to give a self-consistent method for calculating the electrostatic potential, charge density and defect distributions across the space charge region at equilibrium. This approach is available in ``pyscses``, however due to the site-explicit nature of crystalline materials, the default method in ``pyscses`` uses Fermi-Dirac statistics to give a more realistic expression of defect distributions in boundary layers. 
 By equating the electrochemical potentials between the bulk and boundary layer at equilibrium, 
+
 $$
 \mu^o_{i,x} + RT\ln \left( \frac{c_{i,x}}{1-c_{i,x}} \right) + z_i F \Phi_x = \mu^o_{i,\infty} + RT\ln \left(\frac{c_{i,\infty}}{1- c_{i,\infty}}\right) + z_i F \Phi_{\infty},
 $$
+
 the defect concentrations can be described,
+
 $$
 c_i = \frac{c_\infty \exp\left(\frac{-z_i\Phi_x + \mu_i}{kT}\right)}{1+ c_{\infty} \left(\exp\left( \frac{-z_i\Phi_x + \mu_i}{kT} \right) -1 \right) } . 
 $$
+
 The charge density is proportional to the charge density given by
+
 $$
 \rho = \sum_i c_i z_i F,
 $$
+
 and then the electrostatic potential can be calculated as given in Poisson's equation,
+
 $$
 \nabla^2 \Phi = \frac{ -\rho } { \epsilon \epsilon_0 }.
 $$
 
 ``pyscses`` solves this as a second order partial differential equation using a second order finite difference approximation for each site,
+
 $$
 -\rho = \frac{ -2( \Delta x_2 \Phi_{x-1} - ( \Delta x_1 + \Delta x_2 ) \Phi_0 + \Delta x_1 \Phi_{x+1} ) } { \Delta x_1 \Delta x_2 ( \Delta x_1 + \Delta x_2 )  },
 $$
+
 combined with taking the sites as a set of linear equations,
+
 $$
 A = \Delta x_2 \Phi_{i-1} - ( \Delta x_1 + \Delta x_2 ) \Phi_0 + \Delta x_1 \Phi_{i+1}
+$$
 
+$$
 p = \frac{2} {\Delta x_1 \Delta x_2 ( \Delta x_1 + \Delta x_2 )}
+$$
 
+$$
 b = - \rho
+$$
 
+$$
 L =( A^T \cdot p )^T
+$$
 
+$$
 \Phi = L^{-1}\vec{b}
 
 $$
