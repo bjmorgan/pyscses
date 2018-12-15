@@ -4,11 +4,11 @@
 
 <img src="logo.png" width="200px"/>
 
-`pyscses` is a Python module that implements a site-explicit, one-dimensional Poisson-Boltzmann solver, used for modelling ionic space charge properties in solid materials. Space charge properties such as electrostatic potential, charge density and charge carrier distributions over the space charge region can be calculated using the Poisson-Boltzmann equation from the input of defect segregation energies and atomically resolved charge carrier positions. The grain boundary resistivity and activation energy can be calculated by extending the model using the calculated charge carrier distributions. `pyscses` also accounts for different approximations typically assumed when space charge formation is considered. These approximations include site explicit vs. continuum modelling, Mott-Schokkty (single mobile defect species) and Gouy-Chapman (all defect species mobile) conditions, and whether the charge of the non-defective species should be considered. Full mathematical derivations, definitions and example code can be found in the [userguide](https://github.com/georgiewellock/PYSCSES/blob/master/userguides/notebooks/userguide.ipynb).
+`pyscses` is a Python module that implements a site-explicit, one-dimensional Poisson-Boltzmann solver, used for modelling ionic space charge properties in solid materials. Space charge properties such as electrostatic potential, charge density and charge carrier distributions over the space charge region can be calculated using the Poisson-Boltzmann equation from the input of defect segregation energies and atomically resolved charge carrier positions. The grain boundary resistivity and activation energy can be calculated by extending the model using the calculated charge carrier distributions. `pyscses` also accounts for different approximations typically assumed when space charge formation is considered. These approximations include site explicit vs. continuum modelling, Mott-Schokkty (single mobile defect species) and Gouy-Chapman (all defect species mobile) conditions, and whether the charge of the non-defective species should be considered. Full mathematical derivations, definitions and example code can be found in the [userguide](https://github.com/georgiewellock/pyscses/blob/master/userguides/notebooks/userguide.ipynb).
 
 API documentation can be found [here](https://gwpb.readthedocs.io/en/latest/)
 
-Source code is available as a git repository at [https://github.com/georgiewellock/PYSCSES/tree/master/pyscses](https://github.com/georgiewellock/PYSCSES/tree/master/pyscses)
+Source code is available as a git repository at [https://github.com/georgiewellock/pyscses/tree/master/pyscses](https://github.com/georgiewellock/pyscses/tree/master/pyscses)
   
 ## Installation
 
@@ -16,7 +16,7 @@ Source code is available as a git repository at [https://github.com/georgiewello
 pip install pyscses
 ```
 
-Or download the latest release from [GitHub](https://github.com/georgiewellock/PYSCSES/releases), and install
+Or download the latest release from [GitHub](https://github.com/georgiewellock/pyscses/releases), and install
 ```
 cd PYSCSES
 python setup.py install
@@ -24,7 +24,7 @@ python setup.py install
 
 Or clone the latest development version
 ```
-git clone git@github.com:georgiewellock/PYSCSES.git
+git clone git@github.com:georgiewellock/pyscses.git
 ```
 and install the same way.
 ```
@@ -37,7 +37,7 @@ Jupyter notebooks that can be used to check the output of the calculations can b
 ```
 PYSCSES/tests/test_notebooks
 ```
-The test notebooks can be found on github [here](https://github.com/georgiewellock/PYSCSES/tree/master/tests/test_notebooks).
+The test notebooks can be found on github [here](https://github.com/georgiewellock/pyscses/tree/master/tests/test_notebooks).
 
 There are four directories with varying conditions. In each there is a Jupyter notebook which can be run. The input for the calculations is stored in the `input_data` directory and the output for the calculations will be stored in the `generated_data` directory and can be compared to the verified data in the `expected_outputs` directory. A list of the input parameters used in the notebooks is reiterated in each of the four test folders in the `input_parameters` file. 
 
@@ -47,7 +47,7 @@ An overview of the capabilities of `pyscses`, along with example code for runnin
 ```
 PYSCSES/userguides/userguide.ipynb
 ```
-or the Jupyter notebook can be found on github [here](https://github.com/georgiewellock/PYSCSES/blob/master/userguides/notebooks/userguide.ipynb) .
+or the Jupyter notebook can be found on github [here](https://github.com/georgiewellock/pyscses/blob/master/userguides/notebooks/userguide.ipynb) .
 
 API documentation is available [here](https://gwpb.readthedocs.io/en/latest/) .
 
