@@ -92,6 +92,7 @@ $$
 $$
 
 Taking each site as a resistor in parallel the parallel grain boundary is calculated by taking the inverse of the ratio of the sum of the conductivity in the space charge region to the conductivity in the bulk,
+
 $$
 \r_{GB}^{=} = \frac{1}{\frac{ c_{i,x}\mu{i,x}z_i}{c_{i,\infty}mu_{i,\infty}z_i}}
 $$
