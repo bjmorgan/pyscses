@@ -46,7 +46,7 @@ class Defect_at_Site:
         """
         Boltzmann statistics calculation - part one
 
-        .. math:: \exp^{ \frac{ \Phi z + \Delta E }{ k_BT } }
+        .. math:: \exp^{\frac{\Phi z+\Delta E}{k_BT}}
 
         Args:
             phi (float): Electrostatic potential.
@@ -56,13 +56,13 @@ class Defect_at_Site:
             (float): Boltzmann statistics
    
         """
-        return math.exp( - self.potential_energy( phi ) / ( boltzmann_eV * temp ) )
+        return math.exp(-self.potential_energy(phi ) / ( boltzmann_eV * temp ) )
 
     def boltzmann_two( self, phi, temp ):
         """
         Boltzmann statistics calculation - part two
  
-        .. math:: x ( \exp^{\frac{\Phi z + \Delta E}{K_BT} } )
+        .. math:: x(\exp^{\frac{\Phi z+\Delta E}{K_BT}})
 
         Args:
             phi (float): Electrostatic potential.
@@ -78,7 +78,7 @@ class Defect_at_Site:
         """
         Boltzmann statistics calculation - part three
 
-        .. math:: x (\exp^{\frac{ \Phi z + \Delta E}{ K_BT} } - 1 )
+        .. math:: x(\exp^{\frac{\Phi z+\Delta E}{K_BT}}-1)
 
         Args:
             phi (float): Electrostatic potential.
