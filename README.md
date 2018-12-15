@@ -18,7 +18,7 @@ pip install pyscses
 
 Or download the latest release from [GitHub](https://github.com/georgiewellock/pyscses/releases), and install
 ```
-cd PYSCSES
+cd pyscses
 python setup.py install
 ```
 
@@ -28,14 +28,14 @@ git clone git@github.com:georgiewellock/pyscses.git
 ```
 and install the same way.
 ```
-cd PYSCSES
+cd pyscses
 python setup.py install 
 ```
 ## Tests
 
 Jupyter notebooks that can be used to check the output of the calculations can be found in
 ```
-PYSCSES/tests/test_notebooks
+pyscses/tests/test_notebooks
 ```
 The test notebooks can be found on github [here](https://github.com/georgiewellock/pyscses/tree/master/tests/test_notebooks).
 
@@ -45,7 +45,7 @@ There are four directories with varying conditions. In each there is a Jupyter n
 Once installed, the `pyscses` code is imported into, and run using a [Jupyter notebook](http://jupyter-notebook.readthedocs.io/en/latest/#).
 An overview of the capabilities of `pyscses`, along with example code for running the code and varying the simulation conditions can be found in
 ```
-PYSCSES/userguides/userguide.ipynb
+pyscses/userguides/userguide.ipynb
 ```
 or the Jupyter notebook can be found on github [here](https://github.com/georgiewellock/pyscses/blob/master/userguides/notebooks/userguide.ipynb) .
 
