@@ -68,8 +68,7 @@ class Site:
     def sum_of_boltzmann_three( self, phi, temp ):
         """
         Calculates the sum of the calculated boltzmann_three values for each defect at each site.  i
-	.. math::
-            \sum(x_i \exp( - \Phi_x * z / kT ) -1 )
+	.. math:: \sum(x_i \exp( - \Phi_x * z / kT ) -1 )
 
         Args: 
             phi (float): Electrostatic potential at the site.
