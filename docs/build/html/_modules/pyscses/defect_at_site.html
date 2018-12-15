@@ -1,0 +1,314 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pyscses.defect_at_site &mdash; Python  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Python  documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Python
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">pyscses</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Python</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pyscses.defect_at_site</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pyscses.defect_at_site</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">pyscses.constants</span> <span class="k">import</span> <span class="n">boltzmann_eV</span>
+
+<div class="viewcode-block" id="Defect_at_Site"><a class="viewcode-back" href="../../pyscses.html#pyscses.defect_at_site.Defect_at_Site">[docs]</a><span class="k">class</span> <span class="nc">Defect_at_Site</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Defect_at_Site class contains the information about each defect at each site, its valence, mole fraction and the segregation energy for that defect at that site. </span>
+<span class="sd">    This functions in this class combine to give the correct statistics for site occupation in solid electrolytes, derived from the electrochemical potentials of a Fermi-Dirac like distribution. This term has been split into three functions for simplicity. The resulting equations take into account that the probability that a site is occupied by a defect can not exceed 1, and also accounts for competition of like charged defects. </span>
+<span class="sd">    A Mott-Schottky approximation can be enforced. The defects can be fixed to their bulk mole fractions throughout the system, equivalent to assuming that the defects are immobile and not allowed to redistribute through the system.</span>
+
+<span class="sd">    Attributes:</span>
+
+<span class="sd">        label (string): refers to what the defect is called i.e. &#39;Vo&#39; for an oxygen vacancy. </span>
+<span class="sd">        valence (float): The charge of the defect, in atomic units.</span>
+<span class="sd">        mole_fraction (float): The bulk mole fraction of the defect present in the system. </span>
+<span class="sd">        mobility (float): The bulk mobility of the defect species. Default = 0.0.</span>
+<span class="sd">	energy (float): The segregation energy for the defect when occupying the respective site.</span>
+<span class="sd">        site (cls): The site object that corresponding to each defect at each x coordinate. </span>
+<span class="sd">	fixed (bool): set whether this defect species can redistribute to an equilibrium distriution. Default=False.</span>
+<span class="sd">     </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">valence</span><span class="p">,</span> <span class="n">mole_fraction</span><span class="p">,</span> <span class="n">mobility</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">site</span><span class="p">,</span> <span class="n">fixed</span> <span class="o">=</span> <span class="kc">False</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valence</span> <span class="o">=</span> <span class="n">valence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mole_fraction</span> <span class="o">=</span> <span class="n">mole_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mobility</span> <span class="o">=</span> <span class="n">mobility</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy</span> <span class="o">=</span> <span class="n">energy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">site</span> <span class="o">=</span> <span class="n">site</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span> <span class="o">=</span> <span class="n">fixed</span> 
+   
+
+<div class="viewcode-block" id="Defect_at_Site.potential_energy"><a class="viewcode-back" href="../../pyscses.html#pyscses.defect_at_site.Defect_at_Site.potential_energy">[docs]</a>    <span class="k">def</span> <span class="nf">potential_energy</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Potential energy for the defect at this site.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            phi (float): electrostatic potential at this site</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): The electrochemical potential</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="p">(</span> <span class="n">phi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">valence</span> <span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy</span>
+
+
+<div class="viewcode-block" id="Defect_at_Site.boltzmann_one"><a class="viewcode-back" href="../../pyscses.html#pyscses.defect_at_site.Defect_at_Site.boltzmann_one">[docs]</a>    <span class="k">def</span> <span class="nf">boltzmann_one</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Boltzmann statistics calculation - part one</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">	    \exp^{ \frac{ \Phi z + \Delta E }{ k_BT } }</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            phi (float): Electrostatic potential.</span>
+<span class="sd">            temp (float): Temperature of calculation.</span>
+<span class="sd">    </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): Boltzmann statistics</span>
+<span class="sd">   </span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">potential_energy</span><span class="p">(</span> <span class="n">phi</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span> <span class="n">boltzmann_eV</span> <span class="o">*</span> <span class="n">temp</span> <span class="p">)</span> <span class="p">)</span>
+
+<div class="viewcode-block" id="Defect_at_Site.boltzmann_two"><a class="viewcode-back" href="../../pyscses.html#pyscses.defect_at_site.Defect_at_Site.boltzmann_two">[docs]</a>    <span class="k">def</span> <span class="nf">boltzmann_two</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Boltzmann statistics calculation - part two</span>
+<span class="sd"> </span>
+<span class="sd">        .. math::</span>
+<span class="sd">	     x ( \exp^{\frac{\Phi z + \Delta E}{K_BT} } )</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            phi (float): Electrostatic potential.</span>
+<span class="sd">            temp (float): Temperature of calculation.</span>
+<span class="sd">    </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): Boltzmann statistics * mole fraction</span>
+<span class="sd">   </span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mole_fraction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">boltzmann_one</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span>
+
+<div class="viewcode-block" id="Defect_at_Site.boltzmann_three"><a class="viewcode-back" href="../../pyscses.html#pyscses.defect_at_site.Defect_at_Site.boltzmann_three">[docs]</a>    <span class="k">def</span> <span class="nf">boltzmann_three</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Boltzmann statistics calculation - part three</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">	    x (\exp^{\frac{ \Phi z + \Delta E}{ K_BT} } - 1 )</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            phi (float): Electrostatic potential.</span>
+<span class="sd">            temp (float): Temperature of calculation.</span>
+<span class="sd">    </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): ( Boltzmann statistics - 1 ) * mole fraction.</span>
+<span class="sd">   </span>
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mole_fraction</span> <span class="o">*</span> <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">boltzmann_one</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="p">)</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Georgina Wellock.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -8,9 +8,9 @@ except ImportError:
 readme = 'README.md'
 
 config = {
-    'name': 'gwpb',
+    'name': 'pyscses',
     'author': 'Georgina L. Wellock',
-    'packages': ['project'],
+    'packages': ['pyscses'],
     'install_requires': [ 'scipy', 'sympy', 'numpy' ]
 }
 

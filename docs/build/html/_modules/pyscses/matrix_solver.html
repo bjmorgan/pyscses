@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pyscses.matrix_solver &mdash; Python  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Python  documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Python
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">pyscses</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Python</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pyscses.matrix_solver</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pyscses.matrix_solver</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">dia_matrix</span><span class="p">,</span> <span class="n">diags</span><span class="p">,</span> <span class="n">spdiags</span><span class="p">,</span> <span class="n">csc_matrix</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">linalg</span> 
+<span class="kn">from</span> <span class="nn">scipy.constants</span> <span class="k">import</span> <span class="n">epsilon_0</span>
+
+<div class="viewcode-block" id="MatrixSolver"><a class="viewcode-back" href="../../pyscses.html#pyscses.matrix_solver.MatrixSolver">[docs]</a><span class="k">class</span> <span class="nc">MatrixSolver</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Contains the functions for the finite difference methods used to solve the Poisson-Boltzmann equation on a one-dimensional grid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">dielectric</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">boundary_conditions</span><span class="o">=</span><span class="s1">&#39;dirichlet&#39;</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a MatrixSolver object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            grid (object): Grid class object which contains the information regarding the calculation grid.</span>
+<span class="sd">            dielectric (float): dielectric constant for the studied material. </span>
+<span class="sd">            temp (float): Calculation temperature.</span>
+<span class="sd">            boundary_conditions (str): Specify the boundary conditions for the matrix solver. Allowed values are `dirichlet` and `periodic`. Default = `dirichlet`.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">dielectric</span> <span class="o">*</span> <span class="n">epsilon_0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span> 
+        <span class="n">allowed_boundary_conditions</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;dirichlet&#39;</span><span class="p">,</span> <span class="s1">&#39;periodic&#39;</span> <span class="p">]</span>
+        <span class="k">if</span> <span class="n">boundary_conditions</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_boundary_conditions</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span> <span class="n">boundary_conditions</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boundary_conditions</span> <span class="o">=</span> <span class="n">boundary_conditions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">laplacian_sparse</span><span class="p">()</span> 
+
+<div class="viewcode-block" id="MatrixSolver.laplacian_new_fullmatrix"><a class="viewcode-back" href="../../pyscses.html#pyscses.matrix_solver.MatrixSolver.laplacian_new_fullmatrix">[docs]</a>    <span class="k">def</span> <span class="nf">laplacian_new_fullmatrix</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the full tridiagonal matrix used to solve the Poisson-Boltzmann equation using a finite element method.</span>
+<span class="sd">        deltax is taken as the width of each grid point, from the center point between itself and the next grid point on either side.</span>
+<span class="sd">        Using a finite difference approximation the diagonal becomes -2.0 / (deltax_1 * deltax_2 ), </span>
+<span class="sd">        the upper diagonal becomes 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x2 ) </span>
+<span class="sd">        and the lower diagonal becomes 2.0 / ( ( delta_x1 + delta_x2 ) * delta_x1 ).</span>
+<span class="sd">        If boundary_conditions are &#39;periodic&#39;, the corner elements of the matrix are filled. </span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A (matrix): Full tridiagonal matrix. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">deltax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">deltax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span> <span class="n">deltax</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">deltax</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">limits_for_laplacian</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">deltax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span> <span class="n">deltax</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">limits_for_laplacian</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">delta_x1</span> <span class="o">=</span> <span class="n">deltax</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">delta_x2</span> <span class="o">=</span> <span class="n">deltax</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">diag</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">delta_x1</span> <span class="o">*</span> <span class="n">delta_x2</span><span class="p">)</span>
+        <span class="n">ldiag</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span> <span class="p">(</span> <span class="n">delta_x1</span> <span class="o">+</span> <span class="n">delta_x2</span> <span class="p">)</span> <span class="o">*</span> <span class="n">delta_x1</span> <span class="p">)</span>
+        <span class="n">udiag</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span> <span class="p">(</span> <span class="n">delta_x1</span> <span class="o">+</span> <span class="n">delta_x2</span> <span class="p">)</span> <span class="o">*</span> <span class="n">delta_x2</span> <span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">diags</span><span class="p">(</span> <span class="p">[</span> <span class="n">diag</span><span class="p">,</span> <span class="n">udiag</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ldiag</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">],</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="p">]</span> <span class="p">)</span><span class="o">.</span><span class="n">A</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary_conditions</span> <span class="ow">is</span> <span class="s1">&#39;periodic&#39;</span><span class="p">:</span>
+            <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ldiag</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">A</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">udiag</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">A</span>
+
+<div class="viewcode-block" id="MatrixSolver.laplacian_sparse"><a class="viewcode-back" href="../../pyscses.html#pyscses.matrix_solver.MatrixSolver.laplacian_sparse">[docs]</a>    <span class="k">def</span> <span class="nf">laplacian_sparse</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a sparse matrix from a full matrix by taking only the tridiagonal values.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A (matrix): Sparse tridiagonal matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L_sparse</span> <span class="o">=</span> <span class="n">csc_matrix</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">laplacian_new_fullmatrix</span><span class="p">())</span> </div>
+        <span class="k">return</span> <span class="n">L_sparse</span>
+
+<div class="viewcode-block" id="MatrixSolver.solve"><a class="viewcode-back" href="../../pyscses.html#pyscses.matrix_solver.MatrixSolver.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">phi_old</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Uses matrix inversion to solve the Poisson-Boltzmann equation through finite difference methods. The defect mole fractions are calculated from the elctrostatic potential, the charge density is calculated from the defect mole fractions and the elctrostatic potential is then updated using the updated charge density. If boundary_conditions are &#39;periodic&#39;, the charge density is minimised before the matrix inversion. </span>
+<span class="sd">    </span>
+<span class="sd">        Args: </span>
+<span class="sd">            phi_old (array): Electrostatic potential on a one-dimensional grid.</span>
+<span class="sd"> </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            predicted_phi (array): Updated electrostatic potential on a one-dimensional grid.</span>
+<span class="sd">            rho (array): Updated charge density on a one-dimensional grid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">rho</span><span class="p">(</span> <span class="n">phi_old</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary_conditions</span> <span class="ow">is</span> <span class="s1">&#39;periodic&#39;</span><span class="p">:</span>
+            <span class="n">rho_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">rho</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">delta_x</span> <span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">delta_x</span> <span class="p">)</span> 
+            <span class="n">rho</span> <span class="o">-=</span> <span class="n">rho_prime</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span> <span class="n">rho</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="p">)</span>
+        <span class="n">predicted_phi</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">spsolve</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span> <span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">predicted_phi</span><span class="p">,</span> <span class="n">rho</span>
+
+    
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Georgina Wellock.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
