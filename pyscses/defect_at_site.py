@@ -46,7 +46,7 @@ class Defect_at_Site:
         """
         Boltzmann statistics calculation - part one
 
-        .. math:: $$\exp^{\frac{\Phi z+\Delta E}{k_BT}}$$
+        .. math:: $$\exp^{\dfrac{\Phi z+\Delta E}{k_BT}}$$
 
         Args:
             phi (float): Electrostatic potential.
