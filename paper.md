@@ -21,6 +21,8 @@ date: 15 December 2018
 bibliography: paper.bib
 ---
 
+# Summary
+
 ``pyscses`` is an open-source python package for numerical modelling of ionic space-charge regions in crystalline solids. Ionic space-charges are microscopic regions with a local excess or deficiency of charged point defects, giving these regions a net electrostatic charge. Space-charge regions form at crystallographic interfaces, such as grain boundaries or heterointerfaces between two different materials. The formation of space-charges is due to segregation of charged defects to, or from, these interfaces, and the associated redistribution of defects in adjacent regions of the crystal, due to defect&endash;defect electrostatic interactions. 
 
 The segregation of defects to, or from, space-charge regions can produce local defect concentrations that strongly deviate from the average &ldquo;bulk&rdquo; values in a material. This can have significant consequences for key material properties. For example, in solid electrolytes, where ionic defects act as mobile charge carriers, space-charge formation at grain boundaries is associated with large changes in ionic conductivity both parallel and perpendicular to the grain boundaries, due to phenomena such as enhanced defect concentrations in grain bounday cores, or reduced defect concentrations in adjacent &ldquo;depletion&rquod; space-charge regions. In the case of solid electrolytes, understanding space-charge formation at grain boundaries and interfaces is a key challenge in developing a theoretical description of the role of crystalline microstructure on macroscopic ion transport (ionic conductivities).
@@ -31,7 +33,7 @@ TODO: GEORGIE, can you add the equation for the segregation energies?
 
 These defect segregation energies are typically obtained from standard first-principles or classical atomistic calculations, and are then used as inputs for calculations performed with ``pyscses``. ``pyscses`` can solve conventional ``continuum`` models, using a regular 1D grid, and ``site-explicit`` models, using an irregular 1D grid, where grid points correspond to explicit crystallographic site positions for the material being modelled. Each site can have an associated segregation energy for one or more defect species, which avoids the need to define arbitrary &ldquo;core&rdquo; and &ldquo;bulk&rdquo; regions in the model.
 
-## The numerical model
+# The numerical model
 The default model implemented in ``pyscses`` calculates the equilibrium distribution of point charge defect species distributed on a 1D grid, with a defect electrochemical potential `$\mu^o_{i,x}$` of
 $$
 \mu^o_{i,x} + RT\ln \left( \frac{c_{i,x}}{1-c_{i,x}} \right) + z_i F \Phi_x.
@@ -58,15 +60,15 @@ $$
 
 TODO: Add the various model types you can solve that have not yet been discussed, e.g. Dirichlet vs. Periodic boundary conditions. Ability to selevtively fix specific defects, allowing modelling of &ldquo;Mott-Schottky&rdquo; and &ldquo;Gouy-Chapman&rdquo; conditions. Anything else I have forgotten?
 
-## Typical workflow
+# Typical workflow
 
 TODO: GEORGIE, can you briefly describe here how you run a standard GB calculation. I would include figures from your poster showing the segregation energies arranged on the 1D grid, and some example outputs, e.g. space-charge potential, defect concentrations, and charge densities.
 
-## Calculated properties
+# Calculated properties
 
 In addition to allowing calculation of defect, charge, and potential across an interface, ``pyscses`` can calculate interface (grain boundary) resistivities and activation energies. 
 
-### Grain boundary resistivities
+## Grain boundary resistivities
 
 Perpendicular grain boundary resistivities are calculated by modelling the system as a set of resistors in series:
 $$
@@ -80,18 +82,18 @@ TODO: is the parallel equation missing a sum?
  
 The temperature dependance of these resistivity ratios is then used to calculate the grain boundary activation energy by applying an Arrhenius equation.
 
-### Activation energies
+## Activation energies
 TODO: say something about these
 
-## Approximations and limitations
+# Approximations and limitations
 ``pyscses`` implements a modification of the Poisson-Boltzmann equation, which assumes that defects are non-interacting except for point-charge electrostatics and site exclusion.
 
 TODO:
 - resistivitity and activation energy calculations assume fixed mobilities for defects
 
-## Acknowledgements
+# Acknowledgements
 
 TODO: G. L. W. Acknowledgements (EPSRC grant code?)
 B. J. M. acknowledges support from the Royal Society (Grant No. UF130329).
 
-
+# References
