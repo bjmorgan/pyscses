@@ -1,2 +1,6 @@
 project/__pycache__
 .DS_Store
+dist/
+pyscses.egg-info/
+pyscses/__pycache__
+build/
