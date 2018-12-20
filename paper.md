@@ -77,16 +77,7 @@ The Poisson-Boltzmann equation is solved self-consistently, giving the electrost
 
 In addition to allowing calculation of defect, charge, and potential across an interface, ``pyscses`` can calculate interface (grain boundary) resistivities and activation energies. 
 
-
-
-### Grain boundary resistivities
-=======
-# Calculated properties
-
-In addition to allowing calculation of defect, charge, and potential across an interface, ``pyscses`` can calculate interface (grain boundary) resistivities and activation energies. 
-
 ## Grain boundary resistivities
->>>>>>> ecc64695130197123e3c7d7acd5ee03dcacce6a5
 
 Perpendicular grain boundary resistivities are calculated by modelling the system as a set of resistors in series:
 $$
