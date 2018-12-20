@@ -21,90 +21,79 @@ date: 15 December 2018
 bibliography: paper.bib
 ---
 
-``pyscses`` is a python module that implements a site-explicit, one dimensional Poisson-Boltzmann solver that can be used to model ionic space charge formation in solid materials. 
-Space charge analyses typically treat space charge formation using continuum modelling [@ cite wahnstrom maier norby ]. ``pyscses`` takes explicitly calculated defect segregation energies and atomically resolved defect positions to calculate space charge properties. These properties include the electrostatic potential, charge density and defect distributions over the space charge region. The use of site explicit modelling allows the calculation of grain boundary resistivities and activation energies, which take into account the explicit grain boundary structure.
+``pyscses`` is an open-source python package for numerical modelling of ionic space-charge regions in crystalline solids. Ionic space-charges are microscopic regions with a local excess or deficiency of charged point defects, giving these regions a net electrostatic charge. Space-charge regions form at crystallographic interfaces, such as grain boundaries or heterointerfaces between two differnt materials. The formation of space-charges is due to segregation of charged defects to, or from, these interfaces, and the associated redistribution of defects in adjacent regions of the crystal, due to defect&endash;defect electrostatic interactions. 
 
-## Space charge formation
-In polycrystalline solid materials, grain boundaries and interfaces exist separating different crystalline domains. The structural distortion means that defect concentrations and mobilities may deviate from their bulk values in localised regions of space, such as those close to grain boundaries. Defects typically segregate to, or away from the core of the grain boundary. This results in a grain boundary core which carries a net charge and an accumulation or depletion of defects in the regions adjacent to the grain boundary core, known as the space charge regions. Due to the relationship between conductivity and concentration, $ \sigma_i = c_i \mu_i z_i $, variation in defect concentration in these regions can strongly affect the the ionic conductivity of the material.  
+The segregation of defects to, or from, space-charge regions can produce local defect concentrations that strongly deviate from the average &ldquo;bulk&rdquo; values in a material. This can have significant consequences for key material properties. For example, in solid electrolytes, where ionic defects act as mobile charge carriers, space-charge formation at grain boundaries is associated with large changes in ionic conductivity both parallel and perpendicular to the grain boundaries, due to phenomena such as enhanced defect concentrations in grain bounday cores, or reduced defect concentrations in adjacent &ldquo;depletion&rquod; space-charge regions. In the case of solid electrolytes, understanding space-charge formation at grain boundaries and interfaces is a key challenge in developing a theoretical description of the role of crystalline microstructure on macroscopic ion transport (ionic conductivities).
 
-## ``pyscses``
-``pyscses`` implements a one dimensional Poisson-Boltzmann solver to model ionic space charge formation. The approach combines Boltzmann statistics with Poisson's equation to give a self-consistent method for calculating the electrostatic potential, charge density and defect distributions across the space charge region at equilibrium. This approach is available in ``pyscses``, however due to the site-explicit nature of crystalline materials, the default method in ``pyscses`` uses Fermi-Dirac statistics to give a more realistic expression of defect distributions in boundary layers. 
-By equating the electrochemical potentials between the bulk and boundary layer at equilibrium, 
+``pyscses`` considers simple one-dimensional models of crystallographic interfaces, and calculates equilibrium defect distributions by solving a modified Poisson-Boltzmann equation. The driving force for defect segregation to or from the interface is described by defect segregation energies, which are defined as
 
+TODO: GEORGIE, can you add the equation for the segregation energies?
+
+These defect segregation energies are typically obtained from standard first-principles or classical atomistic calculations, and are then used as inputs for calculations performed with ``pyscses``. ``pyscses`` can solve conventional ``continuum`` models, using a regular 1D grid, and ``site-explicit`` models, using an irregular 1D grid, where grid points correspond to explicit crystallographic site positions for the material being modelled. Each site can have an associated segregation energy for one or more defect species, which avoids the need to define arbitrary &ldquo;core&rdquo; and &ldquo;bulk&rdquo; regions in the model.
+
+## The numerical model
+The default model implemented in ``pyscses`` calculates the equilibrium distribution of point charge defect species distributed on a 1D grid, with a defect electrochemical potential `$\mu^o_{i,x}$` of
+$$
+\mu^o_{i,x} + RT\ln \left( \frac{c_{i,x}}{1-c_{i,x}} \right) + z_i F \Phi_x.
+$$
+The `$RT\ln \left( \frac{c_{i,x}}{1-c_{i,x}}$` term gives the chemical potential for a non-interacting lattice-gas with site exclusion (maximum site occupancy of 1).
+
+Finding the equilibrium distribution of defects is equivalent to solving a modified Poisson-Boltzmann equation, which can be derived by requiring the electrochemical potentials at each site to be equal to a set of reference bulk electrochemical potentials.
 $$
 \mu^o_{i,x} + RT\ln \left( \frac{c_{i,x}}{1-c_{i,x}} \right) + z_i F \Phi_x = \mu^o_{i,\infty} + RT\ln \left(\frac{c_{i,\infty}}{1- c_{i,\infty}}\right) + z_i F \Phi_{\infty},
 $$
-
 the defect concentrations can be described,
-
 $$
 c_i = \frac{c_\infty \exp\left(\frac{-z_i\Phi_x + \mu_i}{kT}\right)}{1+ c_{\infty} \left(\exp\left( \frac{-z_i\Phi_x + \mu_i}{kT} \right) -1 \right) } . 
 $$
-
 The charge density is proportional to the concentration given by
-
 $$
-\rho = \sum_i c_i z_i F,
+\rho = \sum_i c_i z_i F.
 $$
-
-and then the electrostatic potential can be calculated as given in Poisson's equation,
-
+The electrostatic potential can be calculated using Poisson's equation,
 $$
 \nabla^2 \Phi = \frac{ -\rho } { \epsilon \epsilon_0 }.
 $$
+``pyscses`` solves this as a second order partial differential equation using a second order finite difference approximation for each site.
 
-``pyscses`` solves this as a second order partial differential equation using a second order finite difference approximation for each site,
+TODO: Add the various model types you can solve that have not yet been discussed, e.g. Dirichlet vs. Periodic boundary conditions. Ability to selevtively fix specific defects, allowing modelling of &ldquo;Mott-Schottky&rdquo; and &ldquo;Gouy-Chapman&rdquo; conditions. Anything else I have forgotten?
 
-$$
--\rho = \frac{ -2( \Delta x_2 \Phi_{x-1} - ( \Delta x_1 + \Delta x_2 ) \Phi_0 + \Delta x_1 \Phi_{x+1} ) } { \Delta x_1 \Delta x_2 ( \Delta x_1 + \Delta x_2 )  },
-$$
+## Typical workflow
 
-combined with taking the sites as a set of linear equations,
+TODO: GEORGIE, can you briefly describe here how you run a standard GB calculation. I would include figures from your poster showing the segregation energies arranged on the 1D grid, and some example outputs, e.g. space-charge potential, defect concentrations, and charge densities.
 
-$$
-A = \Delta x_2 \Phi_{i-1} - ( \Delta x_1 + \Delta x_2 ) \Phi_0 + \Delta x_1 \Phi_{i+1},
-$$
+## Calculated properties
 
-$$
-p = \frac{2} {\Delta x_1 \Delta x_2 ( \Delta x_1 + \Delta x_2 )},
-$$
+In addition to allowing calculation of defect, charge, and potential across an interface, ``pyscses`` can calculate interface (grain boundary) resistivities and activation energies. 
 
-$$
-b = - \rho,
-$$
+### Grain boundary resistivities
 
+Perpendicular grain boundary resistivities are calculated by modelling the system as a set of resistors in series:
 $$
-L =( A^T \cdot p )^T,
+r_{GB}^\perp = \frac{c_{i,\infty}\mu_{i,\infty}z_i}{\sum_{i} c_{i,x}\mu_{i,x}z_i}.
 $$
-
+Parallel grain boundary resistivities are calculated by modelling the system as a set of resistors in parallel:
 $$
-\Phi = L^{-1}\vec{b},
+r_{GB}^\parallel = \frac{1}{\frac{ c_{i,x}\mu{i,x}z_i}{c_{i,\infty}mu_{i,\infty}z_i}}
 $$
-
-which is solved using matrix inversion implemented with ``scipy.sparse``.
-
-``pyscses`` extends the model by calculating the grain boundary resistivity and activation energies from the calculated defect distributions. 
-
-Taking each site as a resistor in series, the perpendicular grain boundary resistivity is calculated by taking the ratio of the sum of the resistivity in the space charge region to the resistivity in the bulk,
-
-$$
-\r_{GB}^{+} = \frac{c_{i,\infty}\mu_{i,\infty}z_i}{\sum{i} c_{i,x}\mu_{i,x}z_i}.
-$$
-
-Taking each site as a resistor in parallel the parallel grain boundary is calculated by taking the inverse of the ratio of the sum of the conductivity in the space charge region to the conductivity in the bulk,
-
-$$
-\r_{GB}^{=} = \frac{1}{\frac{ c_{i,x}\mu{i,x}z_i}{c_{i,\infty}mu_{i,\infty}z_i}}
-$$
+TODO: is the parallel equation missing a sum?
  
 The temperature dependance of these resistivity ratios is then used to calculate the grain boundary activation energy by applying an Arrhenius equation.
 
-## Approximations
-``pyscses`` accounts for a number of different approximations typically assumed when space charge formation is considered. These approximations include applying site-explicit modelling, where each site is taken at the atomically resolved defect position; or continuum modelling where the explicitly calculated defect segregation energies are interpolated onto a regular grid, and it is assumed that defects exist at all points. Another approximation considered is applying  Mott-Schottky conditions, where only one defect species is considered mobile in the system or Gouy-Chapman conditions, where all defect species are considered mobile in the system. ``pyscses`` can also consider the effect of the charge of the non-defective species being included when calculating the charge density over the space charge region and the boundary conditions of the calculation can be defined as either periodic or Dirichlet when the calculation is set up. 
+### Activation energies
+TODO: say something about these
 
-## Limitations
+## Approximations and limitations
+``pyscses`` accounts for a number of different approximations typically assumed when space charge formation is considered. These approximations include applying site-explicit modelling, where each site is taken at the atomically resolved defect position; or continuum modelling where the explicitly calculated defect segregation energies are interpolated onto a regular grid, and it is assumed that defects exist at all points. Another approximation considered is applying Mott-Schottky conditions, where only one defect species is considered mobile in the system or Gouy-Chapman conditions, where all defect species are considered mobile in the system. ``pyscses`` can also consider the effect of the charge of the non-defective species being included when calculating the charge density over the space charge region and the boundary conditions of the calculation can be defined as either periodic or Dirichlet when the calculation is set up. 
+
 While ``pyscses`` executes a computationally inexpensive and conceptually simple method to calculating space charge properties the model involves some assumptions about the defect behaviour. These assumptions include that the system is in the dilute limit, including only electrostatic interactions and that defects are point charges with no mass. 
 
+TODO:
+- resistivitity and activation energy calculations assume fixed mobilities for defects
+
 ## Acknowledgements
+
+TODO: G. L. W. Acknowledgements (EPSRC grant code?)
+B. J. M. acknowledges support from the Royal Society (Grant No. UF130329).
 
 
