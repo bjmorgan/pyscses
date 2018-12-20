@@ -9,6 +9,7 @@ authors:
  - name: Georgina L. Wellock
  - email: g.l.wellock@bath.ac.uk
  - email: georgiewellock@gmail.com
+ - orcid: 0000-0002-1068-5889
  - affiliation: "1"
  - name: Benjamin J. Morgan
  - email: b.j.morgan@bath.ac.uk
@@ -27,7 +28,12 @@ The segregation of defects to, or from, space-charge regions can produce local d
 
 ``pyscses`` considers simple one-dimensional models of crystallographic interfaces, and calculates equilibrium defect distributions by solving a modified Poisson-Boltzmann equation. The driving force for defect segregation to or from the interface is described by defect segregation energies, which are defined as
 
-TODO: GEORGIE, can you add the equation for the segregation energies?
+$$
+\Delta E_{seg}^{i,x} = E_{f}^{i,x} - E_{f}^{i, \infty}
+$$
+
+where $E_{f}^{i,x} = E_{tot}^{i,lattice} - E_{tot}^{lattice}$.
+
 
 These defect segregation energies are typically obtained from standard first-principles or classical atomistic calculations, and are then used as inputs for calculations performed with ``pyscses``. ``pyscses`` can solve conventional ``continuum`` models, using a regular 1D grid, and ``site-explicit`` models, using an irregular 1D grid, where grid points correspond to explicit crystallographic site positions for the material being modelled. Each site can have an associated segregation energy for one or more defect species, which avoids the need to define arbitrary &ldquo;core&rdquo; and &ldquo;bulk&rdquo; regions in the model.
 
@@ -62,9 +68,19 @@ TODO: Add the various model types you can solve that have not yet been discussed
 
 TODO: GEORGIE, can you briefly describe here how you run a standard GB calculation. I would include figures from your poster showing the segregation energies arranged on the 1D grid, and some example outputs, e.g. space-charge potential, defect concentrations, and charge densities.
 
+To run a standard calculation on a grain boundary, the input file is processed to create a set of defective sites, stored as a ``Set_of_Sites`` object. The calculated defect segregation energies and explicit atomic positions, stored in the ``Set_of_Sites`` object are projected onto a one-dimensional grid. If the calculation is run using a continuum approximation, the defect segregation energies and atomic positions are interpolated onto a regular grid, and a new ``Set_of_Sites`` object and grid are created. 
+
+![Defect positions projected onto a one-dimensional grid](Figures/segregation_energies.pdf)
+
+Following this, a ``Calculation`` object is created and the Poisson-Boltzmann equation is solved self-consistently, giving the electrostatic potential, charge density and defect mole fractions across the space charge region. 
+
+![Example output for Gd-doped ceria. Comparison between the output from the Poisson-Boltzmann solver using continuum and site-explicit modelling](Figures/continuum_vs_se_joss.pdf)
+
 ## Calculated properties
 
 In addition to allowing calculation of defect, charge, and potential across an interface, ``pyscses`` can calculate interface (grain boundary) resistivities and activation energies. 
+
+
 
 ### Grain boundary resistivities
 
