@@ -30,6 +30,11 @@ The segregation of defects to, or from, space-charge regions can produce local d
 
 ``pyscses`` considers simple one-dimensional models of crystallographic interfaces, and calculates equilibrium defect distributions by solving a modified Poisson-Boltzmann equation. The driving force for defect segregation to or from the interface is described by defect segregation energies, which are defined as
 
+$$
+\Delta E_{seg}^{i,x} = E_{f}^{i,x} - E_{f}^{i, \infty}
+$$
+
+where $E_{f}^{i,x} = E_{tot}^{i,lattice} - E_{tot}^{lattice}$.
 
 # The numerical model
 The default model implemented in ``pyscses`` calculates the equilibrium distribution of point charge defect species distributed on a 1D grid, with a defect electrochemical potential `$\mu^o_{i,x}$` of
@@ -60,7 +65,13 @@ TODO: Add the various model types you can solve that have not yet been discussed
 
 # Typical workflow
 
-TODO: GEORGIE, can you briefly describe here how you run a standard GB calculation. I would include figures from your poster showing the segregation energies arranged on the 1D grid, and some example outputs, e.g. space-charge potential, defect concentrations, and charge densities.
+To run a standard calculation on a grain boundary, the calculated defect segregation energies and explicit atomic position are projected onto a one-dimensional grid. If the calculation is run using a continuum approximation, the defect segregation energies and atomic positions are interpolated onto a regular grid.
+
+![Defect positions projected onto a one-dimensional grid](Figures/segregation_energies.pdf)
+
+The Poisson-Boltzmann equation is solved self-consistently, giving the electrostatic potential, charge density and defect mole fractions across the space charge region.
+
+![Example output for Gd-doped ceria. Comparison between the output from the Poisson-Boltzmann solver using continuum and site-explicit modelling](Figures/continuum_vs_se_joss.pdf)
 
 ## Calculated properties
 
