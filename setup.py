@@ -6,6 +6,8 @@ long_description = open( readme ).read()
 
 config = {
     'description': 'PYthon Space-Charge Site Explicit Solver',
+    'long_description': long_description,
+    'long_description_content_type': 'text/markdown',
     'name': 'pyscses',
     'author': 'Georgina L. Wellock',
     'packages': ['pyscses'],
