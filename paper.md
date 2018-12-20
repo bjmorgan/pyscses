@@ -71,7 +71,7 @@ To run a standard calculation on a grain boundary, the calculated defect segrega
 
 The Poisson-Boltzmann equation is solved self-consistently, giving the electrostatic potential, charge density and defect mole fractions across the space charge region.
 
-![Example output for Gd-doped ceria. Comparison between the output from the Poisson-Boltzmann solver using continuum and site-explicit modelling](Figures/continuum_vs_se_joss.pdf_MS)
+![Example output for Gd-doped ceria. Comparison between the output from the Poisson-Boltzmann solver using continuum and site-explicit modelling](Figures/continuum_vs_se_joss_MS.pdf)
 
 ## Calculated properties
 
