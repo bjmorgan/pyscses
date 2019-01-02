@@ -9,3 +9,5 @@ paper/joss-logo.png
 paper/latex.template
 **/__pycache__
 **/*.swp
+**/*.swo
+
