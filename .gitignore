@@ -1,6 +1,9 @@
 project/__pycache__
-.DS_Store
+**/.DS_Store
 dist/
 pyscses.egg-info/
 pyscses/__pycache__
 build/
+paper/apa.csl
+paper/joss-logo.png
+paper/latex.template
