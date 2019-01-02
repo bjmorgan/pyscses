@@ -7,3 +7,5 @@ build/
 paper/apa.csl
 paper/joss-logo.png
 paper/latex.template
+**/__pycache__
+**/*.swp
