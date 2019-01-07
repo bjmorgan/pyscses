@@ -77,7 +77,7 @@ $$
 
 To run a standard calculation on a grain boundary, the calculated defect segregation energies and explicit atomic position are projected onto a one-dimensional grid. If the calculation is run using a continuum approximation, the defect segregation energies and atomic positions are interpolated onto a regular grid.
 
-![Defect positions projected onto a one-dimensional grid](Figures/segregation_energies.pdf)
+![A crystal structure is generated and the explicit site positions are projected to create a one-dimensional grid. The segregation energy of each defect can then be associated with the appropriate grid point.](Figures/seg_energies_joss.pdf)
 
 The Poisson-Boltzmann equation is solved self-consistently, giving the electrostatic potential, charge density and defect mole fractions across the space charge region.
 
