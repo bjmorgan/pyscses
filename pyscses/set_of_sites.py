@@ -159,7 +159,7 @@ class Set_of_Sites:
             continuum_grid = Grid( grid, b, c, limits, limits_for_laplacian, all_sites.subset( label ) )
             average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( label ) ] )
             new_energies = griddata( ( [ site.x for site in all_sites.subset( label ) ] ), Vo.average_energies, grid, method = 'nearest' )
-            for x, e in zip( grid, new_energies:
+            for x, e in zip( grid, new_energies ):
                 sites.append( Site( label, x, [ defect_species[ d_label ] ], [e], scaling = np.array( scaling ) ) )   
 
         return Set_of_Sites( sites )
