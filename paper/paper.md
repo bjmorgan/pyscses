@@ -1,5 +1,5 @@
 ---
-title: 'pyscses: A PYthon Space-Charge Site-Explicit Solver'
+title: 'pyscses: A python space-charge site-explicit solver'
 tags:
  - Python
  - poisson-boltzmann
