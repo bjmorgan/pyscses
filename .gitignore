@@ -10,4 +10,5 @@ paper/latex.template
 **/__pycache__
 **/*.swp
 **/*.swo
+userguides/notebooks/.ipynb_checkpoints
 
