@@ -1,5 +1,5 @@
 ---
-title: 'pyscses: A python space-charge site-explicit solver'
+title: 'pyscses: a python space-charge site-explicit solver'
 tags:
  - Python
  - poisson-boltzmann
@@ -20,7 +20,7 @@ affiliations:
    index: 1
  - name: The Faraday Institution, Quad One, Harwell Science and Innovation Campus, Didcot, UK
    index: 2
-date: 15 December 2018
+date: 8 January 2019
 bibliography: paper.bib
 ---
 
