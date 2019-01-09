@@ -12,24 +12,26 @@ Source code is available as a git repository at [https://github.com/georgiewello
   
 ## Installation
 
+The simplest way to install `pyscses` is to use `pip` to install from [PyPI](https://pypi.org/project/pyscses/)
 ```
 pip install pyscses
 ```
 
-Or download the latest release from [GitHub](https://github.com/georgiewellock/pyscses/releases), and install
+Alternatively, you can download the latest release from [GitHub](https://github.com/georgiewellock/pyscses/releases), and install directly:
 ```
 cd pyscses
-python setup.py install
+pip install -e .
 ```
+which installs an editable (-e) version of pyscses in your userspace.
 
-Or clone the latest development version
+Or clone the latest version from [GitHub](https://github.com/georgiewellock/pyscses/releases) with
 ```
 git clone git@github.com:georgiewellock/pyscses.git
 ```
 and install the same way.
 ```
 cd pyscses
-python setup.py install 
+pip install -e .
 ```
 ## Tests
 
