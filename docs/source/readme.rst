@@ -31,9 +31,8 @@ Or clone the latest version from `GitHub <https://github.com/bjmorgan/pyscses/re
 
 and install the same way::
 
-cd pyscses
-
-pip install -e .
+    cd pyscses
+    pip install -e .
 
 Tests
 -----
