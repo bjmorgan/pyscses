@@ -11,4 +11,5 @@ paper/latex.template
 **/*.swp
 **/*.swo
 userguides/notebooks/.ipynb_checkpoints
+docs/.DS_Store
 
