@@ -8,7 +8,7 @@ def remove_img_tags(data):
 readme = 'README.md'
 long_description = open( readme ).read()
 # Removing images seems easier than trying to get them to work on PyPI.
-long_description = remove_img_tags( long_desription )
+long_description = remove_img_tags( long_description )
 
 config = {
     'description': 'PYthon Space-Charge Site Explicit Solver',
