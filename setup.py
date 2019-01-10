@@ -1,5 +1,6 @@
 from setuptools import setup
 from pyscses import __version__ as VERSION
+import re
 
 def remove_img_tags(data):
     p = re.compile(r'<img.*?/>')
