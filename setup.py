@@ -10,6 +10,7 @@ config = {
     'long_description_content_type': 'text/markdown',
     'name': 'pyscses',
     'author': 'Georgina L. Wellock',
+    'author_email': 'g.l.wellock@bath.ac.uk',
     'packages': ['pyscses'],
     'url': 'https://github.com/bjmorgan/pyscses',
     'download_url': 'https://github.com/bjmorgan/pyscses/archive/%s.tar.gz' % (VERSION),
