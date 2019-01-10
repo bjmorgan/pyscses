@@ -1,8 +1,14 @@
 from setuptools import setup
 from pyscses import __version__ as VERSION
 
+def remove_img_tags(data):
+    p = re.compile(r'<img.*?/>')
+    return p.sub('', data)
+
 readme = 'README.md'
 long_description = open( readme ).read()
+# Removing images seems easier than trying to get them to work on PyPI.
+long_description = remove_img_tags( long_desription )
 
 config = {
     'description': 'PYthon Space-Charge Site Explicit Solver',
