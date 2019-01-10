@@ -3,15 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to pyscses's documentation!
-===================================
+pyscses - PYthon Space-Charge Site-Explicit Solver
+====================================================
+
+.. include:: readme.rst
 
 .. toctree::
    :caption: API documentation
    :maxdepth: 3
 
    modules
-
 
 Indices and tables
 ==================

@@ -174,10 +174,7 @@ class Set_of_Sites:
 	    limits (list): Minimum and maximum x coordinated defining the calculation region. 
             defect_species (object): Class object containing information about the defect species present in the system.
             site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
-	    core (str): Core definition.
-			'single' = Single segregation energy used to define the core.
-			'multi-site' = Layered segreagtion energies used to define the core while the energies fall in the region of positive and negative kT.
-			'all' = All sites between a minimum and maximum x coordinate used in calculation.
+	    core (str): Core definition. 'single' = Single segregation energy used to define the core. 'multi-site' = Layered segregation energies used to define the core while the energies fall in the region of positive and negative kT. 'all' = All sites between a minimum and maximum x coordinate used in calculation.
 	    temperature (float): Temperature that the calculation is being run at.
 
 	Returns:
@@ -199,16 +196,14 @@ class Set_of_Sites:
     @ classmethod
     def core_width_analysis( cls, input_data, limits, defect_species, site_charge, core, temperature ):
         """
-	Calculated the width of the 'core' region. This is given as the region where the segreagtion energies in the system are within a region of positive to negative kT.
+	Calculated the width of the 'core' region. This is given as the region where the segregation energies in the system are within a region of positive to negative kT.
         Args:
 	    input_data (file): A .txt file where each line includes information about a site.
 	    limits (list): Minimum and maximum x coordinates defining the calculation region.
 	    defect_species (object): Class object containing information about the defect species present in the system.
             site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
-	    core (str): Core definition.
-			'single' = Single segregation energy used to define the core.
-			'multi-site' = Layered segreagtion energies used to define the core while the energies fall in the region of positive and negative kT.
-			'all' = All sites between a minimum and maximum x coordinate used in calculation.
+	    core (str): Core definition. Allowed keywords: 'single' = Single segregation energy used to define the core. 'multi-site' = Layered segregation energies used to define the core while the energies fall in the region of positive and negative kT. 'all' = All sites between a minimum and maximum x coordinate used in calculation.
+
 	    temperature (float): Temperature that the calculation is being run at.
 	Returns:
 	    core_width (float): Distance between the minimum and maximum x coordinates where the segregation energy is in the range of positive to negative kT. 

@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="Python  documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -99,7 +90,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Python</a>
@@ -107,9 +98,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -139,8 +131,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -160,6 +150,7 @@
 <div class="viewcode-block" id="Site"><a class="viewcode-back" href="../../pyscses.html#pyscses.site.Site">[docs]</a><span class="k">class</span> <span class="nc">Site</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; The site class contains all the information about a given site and the defect occupying that site.</span>
 <span class="sd">        This class contains functions for the calculations which correspond to each individual site, rather than the system as a whole.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        label (str): refers to what the defect is called i.e. &#39;Vo&#39; for an oxygen vacancy. </span>
 <span class="sd">        x (float): x coordinate of the site. </span>
@@ -197,12 +188,12 @@
 <span class="sd">    </span>
 <span class="sd">	Returns:</span>
 <span class="sd">	    (list): List of Defect_at_Site objects for a specific defect species. </span>
-<span class="sd">	&quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="p">[</span> <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defects</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">label</span> <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span> <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defects</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">label</span> <span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Site.energies"><a class="viewcode-back" href="../../pyscses.html#pyscses.site.Site.energies">[docs]</a>    <span class="k">def</span> <span class="nf">energies</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a list of the segregation energies for each defect from self.defects &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="p">[</span> <span class="n">d</span><span class="o">.</span><span class="n">energy</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defects</span> <span class="p">]</span>
+        <span class="sd">&quot;&quot;&quot; Returns a list of the segregation energies for each defect from self.defects &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span> <span class="n">d</span><span class="o">.</span><span class="n">energy</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defects</span> <span class="p">]</span></div>
 
 <div class="viewcode-block" id="Site.average_local_energy"><a class="viewcode-back" href="../../pyscses.html#pyscses.site.Site.average_local_energy">[docs]</a>    <span class="k">def</span> <span class="nf">average_local_energy</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;mean&#39;</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; </span>
@@ -216,14 +207,14 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            average site energies (np.array): Average segregation energies on the site coordinates grid.</span>
 <span class="sd">  </span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_point</span><span class="o">.</span><span class="n">average_site_energy</span><span class="p">(</span> <span class="n">method</span> <span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_point</span><span class="o">.</span><span class="n">average_site_energy</span><span class="p">(</span> <span class="n">method</span> <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Site.sum_of_boltzmann_three"><a class="viewcode-back" href="../../pyscses.html#pyscses.site.Site.sum_of_boltzmann_three">[docs]</a>    <span class="k">def</span> <span class="nf">sum_of_boltzmann_three</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the sum of the calculated boltzmann_three values for each defect at each site.  i</span>
-<span class="sd">	.. math::</span>
-<span class="sd">            \sum(x_i \exp( - \Phi_x * z / kT ) -1 )</span>
+
+<span class="sd">	.. math:: \sum(x_i\exp(-\Phi_xz/kT)-1)</span>
 
 <span class="sd">        Args: </span>
 <span class="sd">            phi (float): Electrostatic potential at the site.</span>
@@ -232,8 +223,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): The sum of Boltzmann terms.</span>
 <span class="sd">        </span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span> <span class="p">[</span> <span class="n">d</span><span class="o">.</span><span class="n">boltzmann_three</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defects</span> <span class="p">]</span> <span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span> <span class="p">[</span> <span class="n">d</span><span class="o">.</span><span class="n">boltzmann_three</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defects</span> <span class="p">]</span> <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Site.probabilities"><a class="viewcode-back" href="../../pyscses.html#pyscses.site.Site.probabilities">[docs]</a>    <span class="k">def</span> <span class="nf">probabilities</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -251,12 +242,12 @@
             <span class="k">if</span> <span class="n">defect</span><span class="o">.</span><span class="n">fixed</span><span class="p">:</span>
                 <span class="n">probabilities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">defect</span><span class="o">.</span><span class="n">mole_fraction</span> <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>  
-                <span class="n">probabilities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">defect</span><span class="o">.</span><span class="n">boltzmann_two</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum_of_boltzmann_three</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span></div>
-        <span class="k">return</span> <span class="n">probabilities</span> 
+                <span class="n">probabilities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">defect</span><span class="o">.</span><span class="n">boltzmann_two</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum_of_boltzmann_three</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">probabilities</span> </div>
 
 <div class="viewcode-block" id="Site.defect_valences"><a class="viewcode-back" href="../../pyscses.html#pyscses.site.Site.defect_valences">[docs]</a>    <span class="k">def</span> <span class="nf">defect_valences</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns an array of valences for each defect from self.defects &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span> <span class="n">d</span><span class="o">.</span><span class="n">valence</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defects</span> <span class="p">]</span> <span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot; Returns an array of valences for each defect from self.defects &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span> <span class="n">d</span><span class="o">.</span><span class="n">valence</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defects</span> <span class="p">]</span> <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Site.charge"><a class="viewcode-back" href="../../pyscses.html#pyscses.site.Site.charge">[docs]</a>    <span class="k">def</span> <span class="nf">charge</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
@@ -270,8 +261,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            charge (np.array): The charge on a 1D grid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">charge</span> <span class="o">=</span>  <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">valence</span> <span class="o">+</span>  <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">defect_valences</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="p">)</span> <span class="p">)</span> <span class="o">*</span> <span class="n">fundamental_charge</span></div>
-        <span class="k">return</span> <span class="n">charge</span>
+        <span class="n">charge</span> <span class="o">=</span>  <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">valence</span> <span class="o">+</span>  <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">defect_valences</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="p">)</span> <span class="p">)</span> <span class="o">*</span> <span class="n">fundamental_charge</span>
+        <span class="k">return</span> <span class="n">charge</span></div>
 
 <div class="viewcode-block" id="Site.probabilities_boltz"><a class="viewcode-back" href="../../pyscses.html#pyscses.site.Site.probabilities_boltz">[docs]</a>    <span class="k">def</span> <span class="nf">probabilities_boltz</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -286,8 +277,8 @@
 <span class="sd">            boltzmann_probabilities (list): Probabilities of site occupation on a 1D grid. </span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">boltzmann_probabilities</span> <span class="o">=</span> <span class="p">[</span> <span class="n">defect</span><span class="o">.</span><span class="n">boltzmann_two</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="k">for</span> <span class="n">defect</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defects</span> <span class="p">]</span></div>
-        <span class="k">return</span> <span class="n">boltzmann_probabilities</span>
+        <span class="n">boltzmann_probabilities</span> <span class="o">=</span> <span class="p">[</span> <span class="n">defect</span><span class="o">.</span><span class="n">boltzmann_two</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="k">for</span> <span class="n">defect</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defects</span> <span class="p">]</span>
+        <span class="k">return</span> <span class="n">boltzmann_probabilities</span></div>
 
 <div class="viewcode-block" id="Site.charge_boltz"><a class="viewcode-back" href="../../pyscses.html#pyscses.site.Site.charge_boltz">[docs]</a>    <span class="k">def</span> <span class="nf">charge_boltz</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -300,16 +291,14 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            charge (np.array): The charge on a 1D grid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">charge</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities_boltz</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">defect_valences</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="p">)</span> <span class="o">*</span> <span class="n">fundamental_charge</span></div></div>
-        <span class="k">return</span> <span class="n">charge</span>
+        <span class="n">charge</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities_boltz</span><span class="p">(</span> <span class="n">phi</span><span class="p">,</span> <span class="n">temp</span> <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">defect_valences</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="p">)</span> <span class="o">*</span> <span class="n">fundamental_charge</span>
+        <span class="k">return</span> <span class="n">charge</span></div></div>
 
 
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -318,11 +307,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Georgina Wellock.
+        &copy; Copyright 2018, Georgina Wellock
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -337,36 +326,25 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

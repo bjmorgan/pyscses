@@ -6,6 +6,7 @@ from pyscses.constants import fundamental_charge, boltzmann_eV
 class Site:
     """ The site class contains all the information about a given site and the defect occupying that site.
         This class contains functions for the calculations which correspond to each individual site, rather than the system as a whole.
+
     Args:
         label (str): refers to what the defect is called i.e. 'Vo' for an oxygen vacancy. 
         x (float): x coordinate of the site. 

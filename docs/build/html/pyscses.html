@@ -24,27 +24,18 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Python  documentation" href="index.html"/>
-        <link rel="up" title="pyscses" href="modules.html"/>
-        <link rel="prev" title="pyscses" href="modules.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pyscses" href="modules.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -91,7 +82,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">pyscses</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">pyscses package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-pyscses.calculation">pyscses.calculation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyscses-calculation-module">pyscses.calculation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-pyscses.constants">pyscses.constants module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-pyscses.defect_at_site">pyscses.defect_at_site module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-pyscses.defect_species">pyscses.defect_species module</a></li>
@@ -116,7 +107,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Python</a>
@@ -124,9 +115,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -175,431 +167,8 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-pyscses.calculation">
-<span id="pyscses-calculation-module"></span><h2>pyscses.calculation module<a class="headerlink" href="#module-pyscses.calculation" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyscses.calculation.Calculation">
-<em class="property">class </em><code class="descclassname">pyscses.calculation.</code><code class="descname">Calculation</code><span class="sig-paren">(</span><em>grid</em>, <em>bulk_x_min</em>, <em>bulk_x_max</em>, <em>alpha</em>, <em>convergence</em>, <em>dielectric</em>, <em>temp</em>, <em>boundary_conditions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The Calculation class contains all of the functions required to calculate all of the relevant space charge properties for any given system, such as electrostatic potential, charge density, defect mole fractions and parallel and perpendicular grain boundary resistivities.
-:param grid: Grid object - contains properties of the grid including the x coordinates and the volumes.
-:type grid: object
-:param bulk_x_min: The minimum x coordinate defining a region of bulk.
-:type bulk_x_min: float
-:param bulk_x_max: The maximum x coordinate defining a region of bulk.
-:type bulk_x_max: float
-:param alpha: A damping parameter for updating the potential at each iteration.
-:type alpha: float
-:param convergence: The convergence limit. The difference between the updated phi and the phi from the previous iteration must be below this for the calculation to be sufficently converged.
-:type convergence: float
-:param dielectric: The dielectric constant for the studied material.
-:type dielectric: float
-:param temp: The temperature that the calculation is run.
-:type temp: float
-:param boundary_conditions: Specified boundary conditions for the matrix solver. Allowed values are <cite>dirichlet</cite> and <cite>periodic</cite>. Default = <cite>dirichlet</cite>.
-:type boundary_conditions: str</p>
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.calculate_average">
-<code class="descname">calculate_average</code><span class="sig-paren">(</span><em>grid</em>, <em>min_cut_off</em>, <em>max_cut_off</em>, <em>sc_property</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.calculate_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.calculate_average" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the average of a given space chage property over a given region.
-:param grid: Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-:type grid: object
-:param min_cut_off: Minimum x coordinate value defining the calculation region.
-:type min_cut_off: float
-:param max_cut_off: Maximum x coordinate value defining the calculation region.
-:type max_cut_off: float
-:param sc_property: Value of space charge property at all sites.
-:type sc_property: list</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The average value for the property over the given sites.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">average_sc_propery (float)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.calculate_debye_length">
-<code class="descname">calculate_debye_length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.calculate_debye_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.calculate_debye_length" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Debye length as derived from Poisson-Boltzmann equation</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">debye_length( float )</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.calculate_delta_x">
-<code class="descname">calculate_delta_x</code><span class="sig-paren">(</span><em>grid</em>, <em>min_cut_off</em>, <em>max_cut_off</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.calculate_delta_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.calculate_delta_x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the distance between the midpoints of each consecutive site. Inserts the calculated distance to the next grid point outside of the calculation region to the first and last position as the delta_x value for the endmost sites.
-:param grid: Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-:type grid: object
-:param min_cut_off: Minimum x coordinate value defining the calculation region.
-:type min_cut_off: float
-:param max_cut_off: Maximum x coordinate value defining the calculation region.
-:type max_cut_off: float</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Distance between consecutive sites.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">delta_x_from_grid (list)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.calculate_mobile_defect_conductivities">
-<code class="descname">calculate_mobile_defect_conductivities</code><span class="sig-paren">(</span><em>pos_or_neg_scr</em>, <em>scr_limit</em>, <em>species</em>, <em>mobility_scaling=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.calculate_mobile_defect_conductivities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.calculate_mobile_defect_conductivities" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the conductivity ratio between the space charge region and the bulk both perpendicular and parallel to the grain boundary.
-A Set_of_Sites object is created for the sites in the space charge region, and the defect distributions calculated. The width of the space charge region is calculated and a bulk region of the same width is defined. A Set_of_Sites object for the bulk region is created and the defect distributions calculated. Taking each site as a resistor in series or parallel respectively, the conductivity is calculated and the ratio between the space charge region and the bulk is taken.
-:param pos_or_neg_scr: ‘positive’ - for a positive space charge potential.</p>
-<blockquote>
-<div>‘negative’ - for a negative space charge potential.</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>scr_limit</strong> (<em>float</em>) – The minimum electrostatic potential that the electrostatic potential must exceed to be included in the space charge region.</li>
-<li><strong>species</strong> (<em>str</em>) – The species for which the conductivity is being calculated.</li>
-<li><strong>mobility_scaling</strong> (<em>bool</em>) – For particles on a lattice which only interact through volume exclusion, the mobility exhibits a blocking term. True if the blocking term is to be included, False if the blocking term is not to be included. Default = False.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The conductivity ratio between the bulk and the space charge region perpendicular to the grain boundary.
-parallel_conductivity_ratio (float): The conductivity ratio between the bulk and the space charge region parallel to the grain boundary.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">perpendicular_conductivity_ratio (float)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.calculate_offset">
-<code class="descname">calculate_offset</code><span class="sig-paren">(</span><em>grid</em>, <em>min_cut_off</em>, <em>max_cut_off</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.calculate_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.calculate_offset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the offset between the midpoint of the last x coordinate in the calculation region and the x coordinate outside of the calulation region.
-:param grid: Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-:type grid: object
-:param min_cut_off: Minimum x coordinate value defining the calculation region.
-:type min_cut_off: float
-:param max_cut_off: Maximum x coordinate value defining the calculation region.
-:type max_cut_off: float</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Offset for the minimum x coordinate.
-max_offset (float): Offset fot the maximum x coordinate.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">min_offset (float)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.calculate_resistivity_ratio">
-<code class="descname">calculate_resistivity_ratio</code><span class="sig-paren">(</span><em>pos_or_neg_scr</em>, <em>scr_limit</em>, <em>mobility_scaling=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.calculate_resistivity_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.calculate_resistivity_ratio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Each species present in the system is looped over and the perpendicular and parallel conductivity ratios are calculated and appended to separate lists. Once all species have been added to the list, the conductivities are summed and the reciprocal taken to give the resistivity ratios perpendicular and parallel to the grain boundary.
-:param pos_or_neg_scr: ‘positive’ - for a positive space charge potential.</p>
-<blockquote>
-<div>‘negative’ - for a negative space charge potential.</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>scr_limit</strong> (<em>float</em>) – The minimum electrostatic potential that the electrostatic potential must exceed to be included in the space charge region.</li>
-<li><strong>mobility_scaling</strong> (<em>bool</em>) – For particles on a lattice which only interact through volume exclusion, the mobility exhibits a blocking term. True if the blocking term is to be included, False if the blocking term is not to be included. Default = False.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The resistivity ratio between the bulk and the space charge region perpendicular to the grain boundary.
-parallel_resistivity_ratio (float): The resistivity ratio between the bulk and the space charge region parallel to the grain boundary.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">perpendicular_resistivity_ratio (float)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.calculate_space_charge_width">
-<code class="descname">calculate_space_charge_width</code><span class="sig-paren">(</span><em>valence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.calculate_space_charge_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.calculate_space_charge_width" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the approximate space charge width from the debye length.
-:param valence: The charge of the mobile defect species.
-:type valence: float</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Approximate space charge width.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">space_charge_width( float )</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.create_space_charge_region">
-<code class="descname">create_space_charge_region</code><span class="sig-paren">(</span><em>grid</em>, <em>pos_or_neg_scr</em>, <em>scr_limit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.create_space_charge_region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.create_space_charge_region" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds the space charge region. The space charge region is defined as the region when the electrostatic potential is greater than a predefined limit.
-:param grid: Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-:type grid: object
-:param pos_or_neg_scr: ‘positive’ - for a positive space charge potential.</p>
-<blockquote>
-<div>‘negative’ - for a negative space charge potential.</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scr_limit</strong> (<em>float</em>) – The minimum electrostatic potential that the electrostatic potential must exceed to be included in the space charge region.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of x coordinates for sites within the space charge region.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">space_charge_region (list)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.create_subregion_sites">
-<code class="descname">create_subregion_sites</code><span class="sig-paren">(</span><em>grid</em>, <em>min_cut_off</em>, <em>max_cut_off</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.create_subregion_sites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.create_subregion_sites" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a Set_of_Sites object for a defined region of the grid.
-:param grid: Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-:type grid: object
-:param min_cut_off: Minimum x coordinate value defining the calculation region.
-:type min_cut_off: float
-:param max_cut_off: Maximum x coordinate value defining the calculation region.
-:type max_cut_off: float</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Set of Sites object for a given subregion of the grid.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">sites (object)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.find_index">
-<code class="descname">find_index</code><span class="sig-paren">(</span><em>grid</em>, <em>min_cut_off</em>, <em>max_cut_off</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.find_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.find_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the indices of the grid positions closest to a minimum and maximum value.
-:param grid: Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-:type grid: object
-:param min_cut_off: Minimum x coordinate value defining the calculation region.
-:type min_cut_off: float
-:param max_cut_off: Maximum x coordinate value defining the calculation region.
-:type max_cut_off: float</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Index for minimum cut off.
-max_index (int): Index for maximum cut off.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">min_index (int)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.form_subgrids">
-<code class="descname">form_subgrids</code><span class="sig-paren">(</span><em>site_labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.form_subgrids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.form_subgrids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a Grid class for each species in the system.
-:param site_labels: List of strings for the different site species.
-:type site_labels: list</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of separate Grid classes for the different site species (name).</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">subgrids[name]( dict )</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.mole_fraction_correction">
-<code class="descname">mole_fraction_correction</code><span class="sig-paren">(</span><em>target_mole_fractions</em>, <em>approximation</em>, <em>initial_guess</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.mole_fraction_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.mole_fraction_correction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starting from an initial guess for the appropriate input mole fractions, minimises the error between the target bulk mole fraction and the output mole fraction from the iterative Poisson-Boltzmann solver.
-:param target_mole_fractions: The value that the mole fractions should be in the bulk.
-:type target_mole_fractions: list</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The optimum values to be used as the input mole fractions for the iterative Poisson-Boltzmann solver so that the output bulk mole fractions are the target bulk mole fractions.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">opt_mole_fractions( list )</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.mole_fraction_error">
-<code class="descname">mole_fraction_error</code><span class="sig-paren">(</span><em>input_mole_fractions</em>, <em>target_mole_fractions</em>, <em>approximation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.mole_fraction_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.mole_fraction_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the sum of sqaures error between the output mole fractions calculated from the input mole fractions, compared to the target mole fractions.
-:param input_mole_fractions: Mole fractions for each of the species used in the iterative Poisson-Boltzmann solver.
-:type input_mole_fractions: list
-:param target_mole_fractions: The value that the mole fractions should be in the bulk.
-:type target_mole_fractions: list</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Sum of squares error between output and target mole fractions.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.mole_fraction_output">
-<code class="descname">mole_fraction_output</code><span class="sig-paren">(</span><em>input_mole_fractions</em>, <em>approximation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.mole_fraction_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.mole_fraction_output" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the output mole fraction for a given input mole fraction when solving the Poisson-Boltzmann equation.
-:param input_mole_fractions: Mole fractions for each of the species used in the iterative Poisson-Boltzmann solver.
-:type input_mole_fractions: list</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Mole fractions that are calculated from the iterative Poisson-Boltzmann solver.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">output_mole_fractions( list )</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.mole_fractions">
-<code class="descname">mole_fractions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.mole_fractions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.mole_fractions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the mole fractions (probability of defects occupation ) for each site on the subgrid for each species.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dictionary of the defect species mole fractions for each site on the subgrid for each site species.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">mf( dict )</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.solve">
-<code class="descname">solve</code><span class="sig-paren">(</span><em>approximation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.solve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Self-consistent solving of the Poisson-Boltzmann equation. Iterates until the convergence is less than the convergence limit.
-:param approximation: Approximation used for the defect behaviour.</p>
-<blockquote>
-<div>‘mott-schottky’ - Some defects immobile / fixed to bulk mole fractions.
-‘gouy-chapman’ - All defects mobile / able to redistribute.</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Electrostatic potential on a one-dimensional grid.
-rho (float): Charge density on a one-dimensional grid.
-niter (int): Number of iterations performed to reach convergence.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">phi (array)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyscses.calculation.Calculation.solve_MS_approx_for_phi">
-<code class="descname">solve_MS_approx_for_phi</code><span class="sig-paren">(</span><em>valence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#Calculation.solve_MS_approx_for_phi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.Calculation.solve_MS_approx_for_phi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Using the calculated resistivity ratio, solves the Mott-Schottky model to calculate the space charge potential (analogous to experimental analysis).
-If the resistivity ratio calculated is less that 1.36, ValueError raised as solution to the Mott-Schottky model is not on a real branch.
-:param valence: Charge of species at site.
-:type valence: float</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Space charge potential calculated from Mott-Schottky model</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">ms_phi( float )</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyscses.calculation.calculate_activation_energies">
-<code class="descclassname">pyscses.calculation.</code><code class="descname">calculate_activation_energies</code><span class="sig-paren">(</span><em>ratios</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#calculate_activation_energies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.calculate_activation_energies" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solves the Arrhenius equation using the calculated resistivity ratio for a series of temperatures to calculate the activation energy for single defect segregation.
-Uses a central difference approach so endpoints filled in with NaN to create an array with the same length as the args.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ratios</strong> (<em>list</em>) – Resistivity ratios calculated for a range of temperatures.</li>
-<li><strong>temp</strong> (<em>list</em>) – Temperature (values used to calculate resistivity ratio values).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The activation energy calculated for different temperatures.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Ea2( np.array )</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyscses.calculation.diff_central">
-<code class="descclassname">pyscses.calculation.</code><code class="descname">diff_central</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/calculation.html#diff_central"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.calculation.diff_central" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the numerical derivative of x,y data using a central difference approximation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>y</strong> (<em>x</em><em>,</em>) – x,y data to be differentiated.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numerical derivative of x,y</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(array)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+<div class="section" id="pyscses-calculation-module">
+<h2>pyscses.calculation module<a class="headerlink" href="#pyscses-calculation-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-pyscses.constants">
 <span id="pyscses-constants-module"></span><h2>pyscses.constants module<a class="headerlink" href="#module-pyscses.constants" title="Permalink to this headline">¶</a></h2>
@@ -616,103 +185,177 @@ A Mott-Schottky approximation can be enforced. The defects can be fixed to their
 <dl class="attribute">
 <dt id="pyscses.defect_at_site.Defect_at_Site.label">
 <code class="descname">label</code><a class="headerlink" href="#pyscses.defect_at_site.Defect_at_Site.label" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>string</em> – refers to what the defect is called i.e. ‘Vo’ for an oxygen vacancy.</p>
+<dd><p>refers to what the defect is called i.e. ‘Vo’ for an oxygen vacancy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyscses.defect_at_site.Defect_at_Site.valence">
 <code class="descname">valence</code><a class="headerlink" href="#pyscses.defect_at_site.Defect_at_Site.valence" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – The charge of the defect, in atomic units.</p>
+<dd><p>The charge of the defect, in atomic units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyscses.defect_at_site.Defect_at_Site.mole_fraction">
 <code class="descname">mole_fraction</code><a class="headerlink" href="#pyscses.defect_at_site.Defect_at_Site.mole_fraction" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – The bulk mole fraction of the defect present in the system.</p>
+<dd><p>The bulk mole fraction of the defect present in the system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyscses.defect_at_site.Defect_at_Site.mobility">
 <code class="descname">mobility</code><a class="headerlink" href="#pyscses.defect_at_site.Defect_at_Site.mobility" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – The bulk mobility of the defect species. Default = 0.0.</p>
+<dd><p>The bulk mobility of the defect species. Default = 0.0.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyscses.defect_at_site.Defect_at_Site.energy">
 <code class="descname">energy</code><a class="headerlink" href="#pyscses.defect_at_site.Defect_at_Site.energy" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – The segregation energy for the defect when occupying the respective site.</p>
+<dd><p>The segregation energy for the defect when occupying the respective site.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyscses.defect_at_site.Defect_at_Site.site">
 <code class="descname">site</code><a class="headerlink" href="#pyscses.defect_at_site.Defect_at_Site.site" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>cls</em> – The site object that corresponding to each defect at each x coordinate.</p>
+<dd><p>The site object that corresponding to each defect at each x coordinate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">cls</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyscses.defect_at_site.Defect_at_Site.fixed">
 <code class="descname">fixed</code><a class="headerlink" href="#pyscses.defect_at_site.Defect_at_Site.fixed" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – set whether this defect species can redistribute to an equilibrium distriution. Default=False.</p>
+<dd><p>set whether this defect species can redistribute to an equilibrium distriution. Default=False.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyscses.defect_at_site.Defect_at_Site.boltzmann_one">
 <code class="descname">boltzmann_one</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/defect_at_site.html#Defect_at_Site.boltzmann_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.defect_at_site.Defect_at_Site.boltzmann_one" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>Boltzmann statistics calculation - part one</p>
-<div class="math notranslate">
-\[\exp^{\]</div>
-</div></blockquote>
-<p>rac{ Phi z + Delta E }{ k_BT } }</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>Args:</dt>
-<dd>phi (float): Electrostatic potential.
-temp (float): Temperature of calculation.</dd>
-<dt>Returns:</dt>
-<dd>(float): Boltzmann statistics</dd>
-</dl>
-</div></blockquote>
+<dd><p>Boltzmann statistics calculation - part one</p>
+<div class="math notranslate nohighlight">
+\[\exp^{\dfrac{\Phi z+\Delta E}{k_BT}}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>float</em>) – Electrostatic potential.</li>
+<li><strong>temp</strong> (<em>float</em>) – Temperature of calculation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Boltzmann statistics</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyscses.defect_at_site.Defect_at_Site.boltzmann_three">
 <code class="descname">boltzmann_three</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/defect_at_site.html#Defect_at_Site.boltzmann_three"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.defect_at_site.Defect_at_Site.boltzmann_three" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>Boltzmann statistics calculation - part three</p>
-<div class="math notranslate">
-\[x (\exp^{\]</div>
-</div></blockquote>
-<p>rac{ Phi z + Delta E}{ K_BT} } - 1 )</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>Args:</dt>
-<dd>phi (float): Electrostatic potential.
-temp (float): Temperature of calculation.</dd>
-<dt>Returns:</dt>
-<dd>(float): ( Boltzmann statistics - 1 ) * mole fraction.</dd>
-</dl>
-</div></blockquote>
+<dd><p>Boltzmann statistics calculation - part three</p>
+<div class="math notranslate nohighlight">
+\[x(\exp^{\dfrac{\Phi z+\Delta E}{K_BT}}-1)\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>float</em>) – Electrostatic potential.</li>
+<li><strong>temp</strong> (<em>float</em>) – Temperature of calculation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">( Boltzmann statistics - 1 ) * mole fraction.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyscses.defect_at_site.Defect_at_Site.boltzmann_two">
 <code class="descname">boltzmann_two</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/defect_at_site.html#Defect_at_Site.boltzmann_two"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.defect_at_site.Defect_at_Site.boltzmann_two" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>Boltzmann statistics calculation - part two</p>
-<div class="math notranslate">
-\[x ( \exp^{\]</div>
-</div></blockquote>
-<p>rac{Phi z + Delta E}{K_BT} } )</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>Args:</dt>
-<dd>phi (float): Electrostatic potential.
-temp (float): Temperature of calculation.</dd>
-<dt>Returns:</dt>
-<dd>(float): Boltzmann statistics * mole fraction</dd>
-</dl>
-</div></blockquote>
+<dd><p>Boltzmann statistics calculation - part two</p>
+<div class="math notranslate nohighlight">
+\[x(\exp^{\dfrac{\Phi z+\Delta E}{K_BT}})\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> (<em>float</em>) – Electrostatic potential.</li>
+<li><strong>temp</strong> (<em>float</em>) – Temperature of calculation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Boltzmann statistics * mole fraction</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1238,7 +881,7 @@ rho (array): Updated charge density on a one-dimensional grid.</td>
 <dl class="classmethod">
 <dt id="pyscses.set_of_sites.Set_of_Sites.core_width_analysis">
 <em class="property">classmethod </em><code class="descname">core_width_analysis</code><span class="sig-paren">(</span><em>input_data</em>, <em>limits</em>, <em>defect_species</em>, <em>site_charge</em>, <em>core</em>, <em>temperature</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/set_of_sites.html#Set_of_Sites.core_width_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.set_of_sites.Set_of_Sites.core_width_analysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculated the width of the ‘core’ region. This is given as the region where the segreagtion energies in the system are within a region of positive to negative kT.
+<dd><p>Calculated the width of the ‘core’ region. This is given as the region where the segregation energies in the system are within a region of positive to negative kT.
 :param input_data: A .txt file where each line includes information about a site.
 :type input_data: file
 :param limits: Minimum and maximum x coordinates defining the calculation region.
@@ -1247,20 +890,17 @@ rho (array): Updated charge density on a one-dimensional grid.</td>
 :type defect_species: object
 :param site_charge: The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
 :type site_charge: bool
-:param core: Core definition.</p>
-<blockquote>
-<div>‘single’ = Single segregation energy used to define the core.
-‘multi-site’ = Layered segreagtion energies used to define the core while the energies fall in the region of positive and negative kT.
-‘all’ = All sites between a minimum and maximum x coordinate used in calculation.</div></blockquote>
+:param core: Core definition. Allowed keywords: ‘single’ = Single segregation energy used to define the core. ‘multi-site’ = Layered segregation energies used to define the core while the energies fall in the region of positive and negative kT. ‘all’ = All sites between a minimum and maximum x coordinate used in calculation.
+:type core: str
+:param temperature: Temperature that the calculation is being run at.
+:type temperature: float</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>temperature</strong> (<em>float</em>) – Temperature that the calculation is being run at.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Distance between the minimum and maximum x coordinates where the segregation energy is in the range of positive to negative kT.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Distance between the minimum and maximum x coordinates where the segregation energy is in the range of positive to negative kT.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">core_width (float)</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">core_width (float)</td>
 </tr>
 </tbody>
 </table>
@@ -1303,6 +943,11 @@ rho (array): Updated charge density on a one-dimensional grid.</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyscses.set_of_sites.Set_of_Sites.form_continuum_sites_new">
+<code class="descname">form_continuum_sites_new</code><span class="sig-paren">(</span><em>x_min</em>, <em>x_max</em>, <em>n_points</em>, <em>b</em>, <em>c</em>, <em>defect_species</em>, <em>limits_for_laplacian</em>, <em>site_labels</em>, <em>defect_labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/set_of_sites.html#Set_of_Sites.form_continuum_sites_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.set_of_sites.Set_of_Sites.form_continuum_sites_new" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyscses.set_of_sites.Set_of_Sites.get_coords">
 <code class="descname">get_coords</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/set_of_sites.html#Set_of_Sites.get_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.set_of_sites.Set_of_Sites.get_coords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of the x coordinates for all the sites wich contain a particular defect
@@ -1321,29 +966,6 @@ rho (array): Updated charge density on a one-dimensional grid.</td>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="pyscses.set_of_sites.Set_of_Sites.mirrored_set_of_sites_from_input_data">
-<em class="property">classmethod </em><code class="descname">mirrored_set_of_sites_from_input_data</code><span class="sig-paren">(</span><em>input_data</em>, <em>limits</em>, <em>defect_species</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/set_of_sites.html#Set_of_Sites.mirrored_set_of_sites_from_input_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.set_of_sites.Set_of_Sites.mirrored_set_of_sites_from_input_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes the data from the input file, mirrors the data  and creates a Set_of_Sites object for the mirrored sites.
-The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
-:param input_data: A .txt file where each line includes information about a site.
-:type input_data: file
-:param limits: Minimum and maximum x coordinates defining the calculation region.
-:type limits: list
-:param defect_species: Class object containing information about the defect species present in the system.
-:type defect_species: object</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Set of Sites object for the mirrored input data.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pyscses.set_of_sites.Set_of_Sites" title="pyscses.set_of_sites.Set_of_Sites">Set_of_Sites</a> (object)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="classmethod">
 <dt id="pyscses.set_of_sites.Set_of_Sites.set_of_sites_from_input_data">
 <em class="property">classmethod </em><code class="descname">set_of_sites_from_input_data</code><span class="sig-paren">(</span><em>input_data</em>, <em>limits</em>, <em>defect_species</em>, <em>site_charge</em>, <em>core</em>, <em>temperature</em>, <em>offset=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/set_of_sites.html#Set_of_Sites.set_of_sites_from_input_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.set_of_sites.Set_of_Sites.set_of_sites_from_input_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes the data from the input file and creates a Set_of_Sites object for those sites.
@@ -1356,20 +978,17 @@ The input data file is a .txt file where each line in the file corresponds to a 
 :type defect_species: object
 :param site_charge: The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
 :type site_charge: bool
-:param core: Core definition.</p>
-<blockquote>
-<div>‘single’ = Single segregation energy used to define the core.
-‘multi-site’ = Layered segreagtion energies used to define the core while the energies fall in the region of positive and negative kT.
-‘all’ = All sites between a minimum and maximum x coordinate used in calculation.</div></blockquote>
+:param core: Core definition. ‘single’ = Single segregation energy used to define the core. ‘multi-site’ = Layered segregation energies used to define the core while the energies fall in the region of positive and negative kT. ‘all’ = All sites between a minimum and maximum x coordinate used in calculation.
+:type core: str
+:param temperature: Temperature that the calculation is being run at.
+:type temperature: float</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>temperature</strong> (<em>float</em>) – Temperature that the calculation is being run at.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Set of Sites object for the input data.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Set of Sites object for the input data.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pyscses.set_of_sites.Set_of_Sites" title="pyscses.set_of_sites.Set_of_Sites">Set_of_Sites</a> (object)</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pyscses.set_of_sites.Set_of_Sites" title="pyscses.set_of_sites.Set_of_Sites">Set_of_Sites</a> (object)</td>
 </tr>
 </tbody>
 </table>
@@ -1494,24 +1113,6 @@ limits_for_laplacian(list): distance between the endmost sites and the next site
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">formatted data for calculation.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">input_data(list)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyscses.set_up_calculation.mirror_site_data">
-<code class="descclassname">pyscses.set_up_calculation.</code><code class="descname">mirror_site_data</code><span class="sig-paren">(</span><em>site_data</em>, <em>condition='symmetrical'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/set_up_calculation.html#mirror_site_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.set_up_calculation.mirror_site_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Formatted site data is offset so the maximum x coordinate is shifted to an x coordinate of 0.0. The site data with an x coordinate less than 0.0 is mirrored and the shifted and mirrored site data is concatenated to create a system with two grain boundaries. Currently designed to work with Gd-doped CeO2 only.
-:param site_data: Formatted site data.
-:type site_data: list</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Formatted site data for a mirrored system.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">site_data_mirrored(list)</td>
 </tr>
 </tbody>
 </table>
@@ -1719,11 +1320,9 @@ The input data file is a .txt file where each line in the file corresponds to a 
 <dl class="method">
 <dt id="pyscses.site.Site.sum_of_boltzmann_three">
 <code class="descname">sum_of_boltzmann_three</code><span class="sig-paren">(</span><em>phi</em>, <em>temp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyscses/site.html#Site.sum_of_boltzmann_three"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyscses.site.Site.sum_of_boltzmann_three" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the sum of the calculated boltzmann_three values for each defect at each site.  i
-.. math:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="nb">sum</span><span class="p">(</span><span class="n">x_i</span> \<span class="n">exp</span><span class="p">(</span> <span class="o">-</span> \<span class="n">Phi_x</span> <span class="o">*</span> <span class="n">z</span> <span class="o">/</span> <span class="n">kT</span> <span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span>
-</pre></div>
-</div>
+<dd><p>Calculates the sum of the calculated boltzmann_three values for each defect at each site.  i</p>
+<div class="math notranslate nohighlight">
+\[\sum(x_i\exp(-\Phi_xz/kT)-1)\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1754,9 +1353,7 @@ The input data file is a .txt file where each line in the file corresponds to a 
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -1772,11 +1369,11 @@ The input data file is a .txt file where each line in the file corresponds to a 
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Georgina Wellock.
+        &copy; Copyright 2018, Georgina Wellock
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1791,36 +1388,25 @@ The input data file is a .txt file where each line in the file corresponds to a 
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
