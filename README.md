@@ -60,3 +60,23 @@ API documentation is available [here](https://pyscses.readthedocs.io/en/latest/)
 In polycrystalline solid materials, grain boundaries and interfaces exist separating different crystalline domains. The structural distortion at these interfaces causes segregation of charge carriers to, or away from the grain boundary core. Due to this, the grain boundary core carries a net charge which causes the depletion or accumulation of charge carriers in the regions adjacent, known as space charge regions. Due to the variation on charge carrier concentrations, the ionic conductivity of the material can be strongly affected by the presence of grain boundaries.
 
 ## Citing `pyscses`
+
+This code can be cited as:
+
+Wellock, Georgina L., & Morgan, Benjamin J. (2019). *pyscses - a PYthon Space-Charge Site-Explicit Solver* Zenodo. http://doi.org/10.5281/zenodo.2536867
+
+### BibTeX
+
+```
+@misc{wellock_georgina_l_2019_2536901,
+  author       = {Wellock, Georgina L. and
+                  Morgan, Benjamin J.},
+  title        = {{pyscses - a PYthon Space-Charge Site-Explicit 
+                   Solver}},
+  month        = jan,
+  year         = 2019,
+  doi          = {10.5281/zenodo.2536901},
+  url          = {https://doi.org/10.5281/zenodo.2536867}
+}
+```
+

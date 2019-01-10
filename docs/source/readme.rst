@@ -65,4 +65,19 @@ In polycrystalline solid materials, grain boundaries and interfaces exist separa
 Citing pyscses
 --------------
 
-To come.
+This code can be cited as:
+
+Wellock, Georgina L., & Morgan, Benjamin J. (2019). *pyscses - a PYthon Space-Charge Site-Explicit Solver* Zenodo. http://doi.org/10.5281/zenodo.2536867
+
+### BibTeX::
+
+    @misc{wellock_georgina_l_2019_2536901,
+      author       = {Wellock, Georgina L. and
+                      Morgan, Benjamin J.},
+      title        = {{pyscses - a PYthon Space-Charge Site-Explicit 
+                       Solver}},
+      month        = jan,
+      year         = 2019,
+      doi          = {10.5281/zenodo.2536901},
+      url          = {https://doi.org/10.5281/zenodo.2536867}
+    }
