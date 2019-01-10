@@ -26,5 +26,5 @@
   "keywords": "space-charge, grain-boundaries, solid-electrolytes, interfaces, defects, poisson-boltzmann",
   "license": "MIT",
   "title": "pyscses",
-  "version": "0.9.1"
+  "version": "0.9.2"
 }

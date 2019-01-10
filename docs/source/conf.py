@@ -20,7 +20,7 @@ import pyscses
 
 # -- Project information -----------------------------------------------------
 
-pyscses = 'pyscses'
+project = 'pyscses'
 copyright = '2018, Georgina Wellock'
 author = 'Georgina Wellock'
 
