@@ -1,4 +1,4 @@
-# `pyscses` - python space charge site explicit solver
+# `pyscses` - PYthon Space-Charge Site-Explicit Solver
 
 <img src="https://github.com/bjmorgan/pyscses/blob/master/logo.png" width="200px"/>
 
