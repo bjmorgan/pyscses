@@ -2,6 +2,7 @@
 
 <img src="https://github.com/bjmorgan/pyscses/blob/master/logo.png" width="200px"/>
 
+[![status](http://joss.theoj.org/papers/803ed6dd19f453819bdd3ed9ceadf3b3/status.svg)](http://joss.theoj.org/papers/803ed6dd19f453819bdd3ed9ceadf3b3)
 [![PyPI version](https://badge.fury.io/py/pyscses.svg)](https://badge.fury.io/py/pyscses)
 [![DOI](https://zenodo.org/badge/90385184.svg)](https://zenodo.org/badge/latestdoi/90385184)
 [![Documentation Status](https://readthedocs.org/projects/pyscses/badge/?version=latest)](https://pyscses.readthedocs.io/en/latest/?badge=latest)
