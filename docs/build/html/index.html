@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pyscses - PYthon Space-Charge Site-Explicit Solver &mdash; pyscses 0.9.1 documentation</title>
+  <title>pyscses - PYthon Space-Charge Site-Explicit Solver &mdash; pyscses 0.9.3.2 documentation</title>
   
 
   
@@ -148,7 +148,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="pyscses-python-space-charge-site-explicit-solver">
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="pyscses-python-space-charge-site-explicit-solver">
 <h1>pyscses - PYthon Space-Charge Site-Explicit Solver<a class="headerlink" href="#pyscses-python-space-charge-site-explicit-solver" title="Permalink to this headline">¶</a></h1>
 <a class="reference internal image-reference" href="_images/logo.png"><img alt="_images/logo.png" src="_images/logo.png" style="height: 200px;" /></a>
 <p><code class="docutils literal notranslate"><span class="pre">pyscses</span></code> is a Python module that implements a site-explicit, one-dimensional Poisson-Boltzmann solver, used for modelling ionic space charge properties in solid materials. Space charge properties such as electrostatic potential, charge density and charge carrier distributions over the space charge region can be calculated using the Poisson-Boltzmann equation from the input of defect segregation energies and atomically resolved charge carrier positions. The grain boundary resistivity and activation energy can be calculated by extending the model using the calculated charge carrier distributions. <code class="docutils literal notranslate"><span class="pre">pyscses</span></code> also accounts for different approximations typically assumed when space charge formation is considered. These approximations include site explicit vs. continuum modelling, Mott-Schottky (single mobile defect species) and Gouy-Chapman (all defect species mobile) conditions, and whether the charge of the non-defective species should be considered. Full mathematical derivations, definitions and example code can be found in the <a class="reference external" href="https://github.com/bjmorgan/pyscses/blob/master/userguides/notebooks/userguide.ipynb">userguide</a>.</p>
@@ -199,14 +223,28 @@ An overview of the capabilities of <code class="docutils literal notranslate"><s
 </div>
 <div class="section" id="citing-pyscses">
 <h2>Citing pyscses<a class="headerlink" href="#citing-pyscses" title="Permalink to this headline">¶</a></h2>
-<p>To come.</p>
+<p>This code can be cited as:</p>
+<p>Wellock, Georgina L., &amp; Morgan, Benjamin J. (2019). <em>pyscses - a PYthon Space-Charge Site-Explicit Solver</em> Zenodo. <a class="reference external" href="http://doi.org/10.5281/zenodo.2536867">http://doi.org/10.5281/zenodo.2536867</a></p>
+<p>### BibTeX:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@misc</span><span class="p">{</span><span class="n">wellock_georgina_l_2019_2536901</span><span class="p">,</span>
+  <span class="n">author</span>       <span class="o">=</span> <span class="p">{</span><span class="n">Wellock</span><span class="p">,</span> <span class="n">Georgina</span> <span class="n">L</span><span class="o">.</span> <span class="ow">and</span>
+                  <span class="n">Morgan</span><span class="p">,</span> <span class="n">Benjamin</span> <span class="n">J</span><span class="o">.</span><span class="p">},</span>
+  <span class="n">title</span>        <span class="o">=</span> <span class="p">{{</span><span class="n">pyscses</span> <span class="o">-</span> <span class="n">a</span> <span class="n">PYthon</span> <span class="n">Space</span><span class="o">-</span><span class="n">Charge</span> <span class="n">Site</span><span class="o">-</span><span class="n">Explicit</span>
+                   <span class="n">Solver</span><span class="p">}},</span>
+  <span class="n">month</span>        <span class="o">=</span> <span class="n">jan</span><span class="p">,</span>
+  <span class="n">year</span>         <span class="o">=</span> <span class="mi">2019</span><span class="p">,</span>
+  <span class="n">doi</span>          <span class="o">=</span> <span class="p">{</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="o">.</span><span class="mi">2536901</span><span class="p">},</span>
+  <span class="n">url</span>          <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">doi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="o">.</span><span class="mi">2536867</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">API documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">pyscses</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyscses.html">pyscses package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pyscses.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pyscses.html#pyscses-calculation-module">pyscses.calculation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyscses.html#module-pyscses.calculation">pyscses.calculation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyscses.html#module-pyscses.constants">pyscses.constants module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyscses.html#module-pyscses.defect_at_site">pyscses.defect_at_site module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyscses.html#module-pyscses.defect_species">pyscses.defect_species module</a></li>
@@ -278,6 +316,7 @@ An overview of the capabilities of <code class="docutils literal notranslate"><s
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
         <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
 
   

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pyscses &mdash; pyscses 0.9.1 documentation</title>
+  <title>pyscses &mdash; pyscses 0.9.3.2 documentation</title>
   
 
   
@@ -152,13 +152,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="pyscses">
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="pyscses">
 <h1>pyscses<a class="headerlink" href="#pyscses" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pyscses.html">pyscses package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyscses.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyscses.html#pyscses-calculation-module">pyscses.calculation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyscses.html#module-pyscses.calculation">pyscses.calculation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyscses.html#module-pyscses.constants">pyscses.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyscses.html#module-pyscses.defect_at_site">pyscses.defect_at_site module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyscses.html#module-pyscses.defect_species">pyscses.defect_species module</a></li>
@@ -221,6 +245,7 @@
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
         <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
 
   
