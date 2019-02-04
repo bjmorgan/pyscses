@@ -47,7 +47,7 @@ Finding the equilibrium distribution of defects described by this electrochemica
 $$
 \mu^o_{i,x} + RT\ln \left( \frac{c_{i,x}}{1-c_{i,x}} \right) + z_i F \Phi_x = \mu^o_{i,\infty} + RT\ln \left(\frac{c_{i,\infty}}{1- c_{i,\infty}}\right) + z_i F \Phi_{\infty}.
 $$
-This equilibrium condition can be rearranged to give the defect concentration (site occupancy) at site $x$ [@WellockAndMorgan_InPreparation]:
+This equilibrium condition can be rearranged to give the defect concentration (site occupancy) at site $x$:
 $$
 c_i = \frac{c_\infty \exp\left(\frac{-z_i\Phi_x + \mu_i}{kT}\right)}{1+ c_{\infty} \left(\exp\left( \frac{-z_i\Phi_x + \mu_i}{kT} \right) -1 \right) } . 
 $$
