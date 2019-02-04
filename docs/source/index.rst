@@ -11,7 +11,7 @@ pyscses - PYthon Space-Charge Site-Explicit Solver
 .. toctree::
    :caption: API documentation
    :maxdepth: 3
-
+   
    modules
 
 Indices and tables

@@ -1,5 +1,5 @@
 import numpy as np 
-from sympy import mpmath
+import mpmath
 from bisect import bisect_left, bisect_right
 from pyscses.set_of_sites import Set_of_Sites
 from pyscses.matrix_solver import MatrixSolver
