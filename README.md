@@ -49,6 +49,8 @@ Limited unit tests are contained in the top `tests` directory. These can be run 
 cd tests
 python -m unittest discover
 ```
+Automated unit testing of the latest commit happens [here](https://travis-ci.org/bjmorgan/pyscses/).
+
 ## Documentation
 Once installed, the `pyscses` code is imported into, and run using a [Jupyter notebook](http://jupyter-notebook.readthedocs.io/en/latest/#).
 An overview of the capabilities of `pyscses`, along with example code for running the code and varying the simulation conditions can be found in
