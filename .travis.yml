@@ -16,7 +16,10 @@ matrix:
       dist: xenial
       sudo: true
 # command to install dependencies
-install: pip install -r requirements.txt
+install: 
+  - pip install -r requirements.txt
+  - pip install coverage==4.3.4
+  - pip install codeclimate-test-reporter
 # command to run tests
 script: coverage run --rcfile=.coveragerc -m unittest discover
 after_success:
