@@ -1,19 +1,17 @@
 import unittest
-from project.grid import Grid, Grid_Point, volumes_from_grid, delta_x_from_grid
-from project.set_of_sites import Set_of_Sites
-from project.site import Site
-from project.defect_species import DefectSpecies
+from pyscses.grid import Grid, Grid_Point, delta_x_from_grid
+from pyscses.set_of_sites import Set_of_Sites
+from pyscses.site import Site
+from pyscses.defect_species import DefectSpecies
 from unittest.mock import Mock, MagicMock, patch, call
 import numpy as np
 
 class TestGrid( unittest.TestCase ):
-
-    @patch( 'project.grid.volumes_from_grid' )
-    @patch( 'project.grid.index_of_grid_at_x' )
-    @patch( 'project.grid.Grid_Point' )
-    def test_grid_instance_is_initialised( self, mock_Grid_Point, mock_index, mock_volumes ):
-        volumes = [ 1.0, 1.0, 1.0, 1.0, 1.0 ]
-        mock_volumes.return_value = volumes
+    @patch( 'pyscses.grid.index_of_grid_at_x' )
+    @patch( 'pyscses.grid.Grid_Point' )
+    def test_grid_instance_is_initialised( self, mock_Grid_Point, mock_index ):
+        #volumes = [ 0.025, 0.025, 0.025, 0.025, 0.025 ]
+        #mock_volumes.return_value = volumes
         mock_index.side_effect = [ 1, 3 ]
         mock_grid_points = [ Mock( spec=Grid_Point ), Mock( spec=Grid_Point ), Mock( spec=Grid_Point ), Mock( spec=Grid_Point ), Mock( spec=Grid_Point ) ]
         for g in mock_grid_points:
@@ -22,19 +20,20 @@ class TestGrid( unittest.TestCase ):
         x_coordinates = np.array( [ 0.0, 1.0, 2.0, 3.0, 4.0 ] )
         b = 0.25
         c = 0.1
-        limits = [ -0.5, 4.5 ]
+        limits = [ 1.0, 1.0 ]
+        limits_for_laplacian = [1.0, 1.0]
         set_of_sites = MagicMock( spec=Set_of_Sites )
         sites = [ Mock( spec=Site ), Mock( spec=Site ) ]
         sites[0].x = 1.0
         sites[1].x = 3.0
         sites[0].defect_species = [ Mock( spec=DefectSpecies ) ]
         sites[1].defect_species = [ Mock( spec=DefectSpecies ) ]
-        site_set.__iter__.return_value = iter( sites )
-        grid = Grid( x_coordinates=x_coordinates, b=b, c=c, limits=limits, site_set=site_set )
-        self.assertEqual( grid.volumes, volumes )
+        set_of_sites.__iter__.return_value = iter( sites )
+        grid = Grid( x_coordinates=x_coordinates, b=b, c=c, limits=limits, limits_for_laplacian=limits_for_laplacian, set_of_sites=set_of_sites )
         self.assertEqual( grid.points, mock_grid_points )
         self.x = x_coordinates
         self.limits = limits
+        self.limits_for_laplacian = limits_for_laplacian
         expected_sites_at_grid_points = [ [], [ sites[0] ], [], [ sites[1] ], [] ]
         for p, e in zip( grid.points, expected_sites_at_grid_points ):
             self.assertEqual( p.sites, e )
@@ -42,31 +41,19 @@ class TestGrid( unittest.TestCase ):
             for defect_species in defect_species_list:
                 self.assertEqual( defect_species in grid.defect_species, True )
         # TODO Should really check calls to mocked methods are what we expect
-        # TODO The large number of assertions in this test suggests that the Grid __init__ method could be simplifie.
+        # TODO The large number of assertions in this test suggests that the Grid __init__ method could be simplified / refactored.
 
-    def test_volumes_from_grid( self ):
-        b = 2.0
-        c = 3.0
-        limits = [-0.5, 4.5]
-        grid = np.array( [ 0.0, 1.0, 2.0, 3.0, 4.0 ] )
-        with patch( 'project.grid.delta_x_from_grid' ) as mock_delta_x_from_grid:
-            mock_delta_x_from_grid.return_value = np.array( [ 1.0, 1.0, 1.0, 1.0, 1.0 ] )
-            volumes = volumes_from_grid( b, c, limits, grid )
-            expected_volumes = np.array( [ 6.0, 6.0, 6.0, 6.0, 6.0 ] )
-            mock_delta_x_from_grid.assert_called_with( grid, limits )
-        np.testing.assert_array_equal( volumes, expected_volumes )
-       
     def test_delta_x_from_grid( self ):
         grid = np.array( [ 0.0, 1.0, 2.0, 3.0, 4.0 ] )
-        limits = [-0.5, 5.0]
-        expected_delta_x = np.array( [ 0.75, 1.0, 1.0, 1.0, 1.0 ] )
+        limits = [1.0, 1.0]
+        expected_delta_x = np.array( [ 1.0, 1.0, 1.0, 1.0, 1.0 ] )
         delta_x = delta_x_from_grid( grid, limits )
         np.testing.assert_array_equal( expected_delta_x, delta_x )
 
     def test_delta_x_from_grid_with_uneven_grid( self ):
         grid = np.array( [ 0.5, 1.0, 2.0, 3.0, 5.0 ] )
-        limits = [0.0, 5.2]
-        expected_delta_x = np.array( [ 0.5, 0.75, 1.0, 1.5, 1.1 ] )
+        limits = [0.5, 1.0]
+        expected_delta_x = np.array( [ 0.5, 0.75, 1.0, 1.5, 1.0 ] )
         delta_x = delta_x_from_grid( grid, limits )
         np.testing.assert_array_almost_equal( expected_delta_x, delta_x )
      
