@@ -1,0 +1,15 @@
+project/__pycache__
+**/.DS_Store
+dist/
+pyscses.egg-info/
+pyscses/__pycache__
+build/
+paper/apa.csl
+paper/joss-logo.png
+paper/latex.template
+**/__pycache__
+**/*.swp
+**/*.swo
+userguides/notebooks/.ipynb_checkpoints
+docs/.DS_Store
+**/.nbgrader.log
