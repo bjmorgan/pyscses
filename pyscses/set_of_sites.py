@@ -9,7 +9,7 @@ from pyscses.constants import boltzmann_eV
 from bisect import bisect_left
 
 class Set_of_Sites:
-    """ The Set_of_Sites object groups together all of the Site objects into one object and contains functions for the calculations that provide properties of all of the sites together rather than individually. """
+    """The Set_of_Sites object groups together all of the Site objects into one object and contains functions for the calculations that provide properties of all of the sites together rather than individually. """
     def __init__( self, sites ):
         self.sites = sites
     
@@ -30,16 +30,19 @@ class Set_of_Sites:
         return iter( self.sites )
 
     def subset( self, label ):
-        """ Returns a list of all the sites which contain a particular defect """
+        """Returns a list of all the sites which contain a particular defect """
         return [ s for s in self.sites if s.label == label ] 
 
     def get_coords( self, label ):
         """ 
         Returns a list of the x coordinates for all the sites wich contain a particular defect 
+
 	Args:
 	    label (str): Label identifying the required defect species.
+
 	Returns:
-	    sites (list): List of sites for a specific defect species.
+	    list: List of sites for a specific defect species.
+
 	"""
         return [ s.x for s in self.sites if s.label == label ]
 
@@ -52,7 +55,7 @@ class Set_of_Sites:
             phi (array): electrostatic potential on a one-dimensional grid. 
 
         Returns:
-            energies_on_grid (array): energies at their grid points
+            array: energies at their grid points
  
         """
         energies_on_grid = np.zeros_like( grid )
@@ -70,7 +73,7 @@ class Set_of_Sites:
             temp (float): Absolute temperature.
 
         Returns:
-            probability (array): probabilities of defects occupying each site using their grid points
+            array: probabilities of defects occupying each site using their grid points
  
         """
         probability = np.zeros_like( grid.x )
@@ -88,7 +91,7 @@ class Set_of_Sites:
             temp (float): Absolute temperature.
 
         Returns:
-            defect_density (array): defect density for each site using their grid points
+            array: defect density for each site using their grid points
  
         """
         defect_density = np.zeros_like( grid.x )
@@ -108,7 +111,7 @@ class Set_of_Sites:
             temp (float): Absolute temperature.
 
         Returns:
-            defect_density (array): defect density for each site using their grid points
+            array: defect density for each site using their grid points
  
         """
         defect_density = np.zeros_like( sub_grid.x )
@@ -121,6 +124,7 @@ class Set_of_Sites:
   
         """
         Creates a Set_of_Sites object for sites interpolated onto a regular grid, this is equivalent to assuming a continuum approximation.
+
         Args:
             all_sites (object): Orginal Set_of_Sites object from full data.
             x_min (float): Minimum x coordinate value defining the calculation region.
@@ -132,8 +136,10 @@ class Set_of_Sites:
             limits for laplacian (list): distance between the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. 
             site_labels( list ): List of strings for the different site species.
             defect_labels (list): List of strings for the different defect species.
+
         Returns:
-            Set_of_Sites (object): Sites interpolated onto a regular grid.
+            :obj:`Set_of_Sites`: Sites interpolated onto a regular grid.
+
 	"""	    
   
         grid = np.linspace( x_min, x_max, n_points )
@@ -149,6 +155,7 @@ class Set_of_Sites:
         return Set_of_Sites( sites ), limits    
 
     def form_continuum_sites_new( all_sites, x_min, x_max, n_points, b, c, defect_species, limits_for_laplacian, site_labels, defect_labels ):
+        """TODO"""
 
         limits = [ x_min, x_max ]
         grid = np.linspace( x_min, x_max, n_points )
@@ -169,6 +176,7 @@ class Set_of_Sites:
         """
         Takes the data from the input file and creates a Set_of_Sites object for those sites. 
 	The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
+
         Args:
 	    input_data (file): A .txt file where each line includes the information about a site. 
 	    limits (list): Minimum and maximum x coordinated defining the calculation region. 
@@ -178,7 +186,8 @@ class Set_of_Sites:
 	    temperature (float): Temperature that the calculation is being run at.
 
 	Returns:
-	    Set_of_Sites (object): Set of Sites object for the input data.
+	    :obj:`Set_of_Sites`: `Set_of_Sites` object for the input data.
+
  	"""
         site_data = load_site_data( input_data, limits[0], limits[1], site_charge, offset )
         energies = [ line[4] for line in site_data ]
@@ -197,16 +206,18 @@ class Set_of_Sites:
     def core_width_analysis( cls, input_data, limits, defect_species, site_charge, core, temperature ):
         """
 	Calculated the width of the 'core' region. This is given as the region where the segregation energies in the system are within a region of positive to negative kT.
+
         Args:
 	    input_data (file): A .txt file where each line includes information about a site.
 	    limits (list): Minimum and maximum x coordinates defining the calculation region.
 	    defect_species (object): Class object containing information about the defect species present in the system.
             site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
 	    core (str): Core definition. Allowed keywords: 'single' = Single segregation energy used to define the core. 'multi-site' = Layered segregation energies used to define the core while the energies fall in the region of positive and negative kT. 'all' = All sites between a minimum and maximum x coordinate used in calculation.
-
 	    temperature (float): Temperature that the calculation is being run at.
+
 	Returns:
-	    core_width (float): Distance between the minimum and maximum x coordinates where the segregation energy is in the range of positive to negative kT. 
+	    float: Distance between the minimum and maximum x coordinates where the segregation energy is in the range of positive to negative kT. 
+
 	"""
         site_data = load_site_data( input_data, limits[0], limits[1], site_charge )
         energies = [ line[4] for line in site_data ]
@@ -226,4 +237,4 @@ class Set_of_Sites:
         minval = np.min(x_seg[:,0][np.nonzero(x_seg[:,1])])
         maxval = np.max(x_seg[:,0][np.nonzero(x_seg[:,1])])
         core_width = maxval-minval
-        return(core_width)
+        return core_width 

@@ -17,6 +17,7 @@ class Site:
 	valence (float): The charge of the defect present at the site (in atomic units).
 	defects (list): List of Defect_Species objects for all defects present at the site.
 	sites (list): List containing all x coordinates and corresponding  defect segregation energies.
+
     """
 
     def __init__( self, label, x, defect_species, defect_energies, scaling = None, valence = 0 ):
@@ -43,7 +44,8 @@ class Site:
 	    label (str): Label to identify defect species.
     
 	Returns:
-	    (list): List of Defect_at_Site objects for a specific defect species. 
+            list: List of Defect_at_Site objects for a specific defect species. 
+
 	"""
         return [ d for d in self.defects if d.label == label ][0]
 
@@ -61,7 +63,7 @@ class Site:
                           'min' - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).
 
         Returns:
-            average site energies (np.array): Average segregation energies on the site coordinates grid.
+            numpy.array: Average segregation energies on the site coordinates grid.
   
         """
         return self.grid_point.average_site_energy( method )
@@ -77,7 +79,7 @@ class Site:
             temp (float): Temperature of calculation in Kelvin.
 
         Returns:
-            (float): The sum of Boltzmann terms.
+            float: The sum of Boltzmann terms.
         
         """
         return sum( [ d.boltzmann_three( phi, temp ) for d in self.defects ] )
@@ -91,7 +93,8 @@ class Site:
             temp (float):   Temperature of calculation.
 
         Returns: 
-            probabilities (list): Probabilities of site occupation on a 1D grid. 
+            list: Probabilities of site occupation on a 1D grid. 
+
         """
         probabilities = []
         for defect in self.defects:
@@ -102,7 +105,7 @@ class Site:
         return probabilities 
 
     def defect_valences( self ):
-        """ Returns an array of valences for each defect from self.defects """
+        """Returns an array of valences for each defect from self.defects """
         return np.array( [ d.valence for d in self.defects ] )
 
 
@@ -115,7 +118,8 @@ class Site:
             temp (float): Temperature of calculation.
 
         Returns:
-            charge (np.array): The charge on a 1D grid.
+            np.array: The charge on a 1D grid.
+
         """
         charge =  ( self.valence +  np.sum( self.probabilities( phi, temp ) * self.defect_valences() * self.scaling ) ) * fundamental_charge
         return charge
@@ -130,7 +134,7 @@ class Site:
             temp (float): Temperature of calculation.
 
         Returns: 
-            boltzmann_probabilities (list): Probabilities of site occupation on a 1D grid. 
+            list: Probabilities of site occupation on a 1D grid. 
 
         """
         boltzmann_probabilities = [ defect.boltzmann_two( phi, temp ) for defect in self.defects ]
@@ -145,7 +149,7 @@ class Site:
             temp (float): Temperature of calculation.
 
         Returns:
-            charge (np.array): The charge on a 1D grid.
+            np.array: The charge on a 1D grid.
         """
         charge =  np.sum( self.probabilities_boltz( phi, temp ) * self.defect_valences() * self.scaling ) * fundamental_charge
         return charge

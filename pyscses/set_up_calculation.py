@@ -16,7 +16,8 @@ def site_from_input_file( site, defect_species, site_charge, core, temperature )
         site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
 
     Returns:
-        Site (object)
+        :obj:`Site`
+
     """
     label = site[0]
     if site_charge == True:
@@ -41,11 +42,14 @@ def site_from_input_file( site, defect_species, site_charge, core, temperature )
 def format_line( line, site_charge, offset = 0.0 ):
     """
     Each line in the input file is formatted into separate site properties. 
+
     Args:
         line (str): A line in the input file.
         site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
+
     Returns: 
-        line (list): line from the input file, split into individual values. 
+        list: line from the input file, split into individual values. 
+
     """
     # x coordinate
     if site_charge == True:
@@ -67,6 +71,7 @@ def format_line( line, site_charge, offset = 0.0 ):
 def load_site_data( filename, x_min, x_max, site_charge, offset = 0.0 ):
     """
     Reads in the input data and formats the input data if the x coordinate values are within the calculation region.
+
     Args:
         filename(string): Filename for importing the input data.
         x_min(float): Minimum x coordinate value defining the calculation region.
@@ -74,7 +79,8 @@ def load_site_data( filename, x_min, x_max, site_charge, offset = 0.0 ):
         site_charge (bool): True if site charges are to be included in the calculation, false if they are not to be included.
    
     Return:
-        input_data(list): formatted data for calculation.
+        list: formatted data for calculation.
+
     """
     with open( filename, 'r' ) as f:
         input_data = [ line.split() for line in f ]
@@ -87,16 +93,15 @@ def load_site_data( filename, x_min, x_max, site_charge, offset = 0.0 ):
     return input_data
 
 def average_similar_sites( input_data ):
-    """
-    Corrects for rounding errors in the input data. Sites within 0.02nm are taken as the same site, therefore the x coordinate values are averaged to prevent the formation of separate sites. 
+    """Corrects for rounding errors in the input data. Sites within 0.02nm are taken as the same site, therefore the x coordinate values are averaged to prevent the formation of separate sites. 
 
     Args:
 	input_data (str): The input file.
 
     Returns:
-	input_data (str): The input file, formatted with x coordinate values within 0.02nm averaged and set to the same value.
-    """
+	str: The input file, formatted with x coordinate values within 0.02nm averaged and set to the same value.
 
+    """
     x_coords = []
     similar_x = []
     updated_x_coords = []
@@ -119,16 +124,17 @@ def average_similar_sites( input_data ):
     return input_data
 
 def calculate_grid_offsets( filename, x_min, x_max, system ):
-    """
-    Reads in the input data calculates the distance to the next site outside of the defined calculation region. Allows calculation of the delta_x and volume values for the endmost grid points.
+    """Reads in the input data calculates the distance to the next site outside of the defined calculation region. Allows calculation of the delta_x and volume values for the endmost grid points.
+
     Args:
         filename(string): Filename for importing the input data.
         x_min(float): Minimum x coordinate value defining the calculation region.
         x_max(float): Maximum x coordinate value defining the calculation region. 
         system(str): 'single' for single grain boundary systems, 'double' for systems where the input data has been mirrored to give two grain boundaries. 
+
     Returns:
-        limits(list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. 
-        limits_for_laplacian(list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
+        list, list: distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. Distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
+
     """
     with open( filename, 'r' ) as f:
         input_data = [ line.split() for line in f ]

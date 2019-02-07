@@ -257,10 +257,12 @@ class Grid:
     def subgrid( self, subset_species ):
         """
         Creates a subgrid for each species.
+
         Args:
             subset_species (str): Site species to separate into subgrid. 
+
         Returns:
-            Grid (object): Grid object for subset of data.
+            :obj:`Grid`: Grid object for subset of data.
         """
         return Grid.grid_from_set_of_sites( self.set_of_sites.subset(subset_species), self.limits, self.limits_for_laplacian, self.b, self.c ) 
 
@@ -268,13 +270,15 @@ class Grid:
     def grid_from_set_of_sites( cls, set_of_sites, limits, limits_for_laplacian, b, c ):
         """
         Creates a grid from a given Set_of_Sites object.
+
         Args:
             set_of_sites (object): Set_of_Sites object containing a set of all Site objects. 
             limits (list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. 
             limits_for_laplacian (list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
             b (float):                b dimension for every grid-point.
             c (float):                c dimension for every grid-point.
+
         Returns:
-            Grid (object): Grid object for the given set of sites. 
+            :obj:`Grid`: Grid object for the given set of sites. 
         """ 
         return cls( np.unique( [ site.x for site in set_of_sites ] ), b, c, limits, limits_for_laplacian, set_of_sites )
