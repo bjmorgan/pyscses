@@ -12,6 +12,26 @@ pip install -r requirements.txt
 
 from inside the `userguides` directory.
 
+_Notebooks_
+[Theory](notebooks/Theory.ipynb)
+
+[Setting up the notebook](notebooks/Setting_up.ipynb)
+
+[Running the calculation](notebooks/Running.ipynb)
+
+[Example 1 - continuum vs. site explicit and boundary conditions](notebooks/Ex_1_BC.ipynb)
+
+[Example 2 - Mott-Schottky vs. Gouy-Chapman conditions](notebooks/Ex_2_MSGC.ipynb)
+
+[Example 3 - Calculating the grain boundary resistivity and activation energy](notebooks/Ex_3_Res.ipynb)
+
+[Example 4 - Comparison with 'experimental' values](notebooks/Ex_4_MSapp.ipynb)
+
+[Example 5 - Using the pyscses with real data](notebooks/Ex_5_real_data.ipynb)
+
+[Example 6 - Storing the output data](notebooks/Ex_6_store_data.ipynb)
+
+
 Expected run times for each notebook ( Using an iMac with a 4 Ghz i7 processor):
 Example 1: 81 minutes
 Example 2: 32 minutes
