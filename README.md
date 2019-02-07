@@ -52,14 +52,13 @@ python -m unittest discover
 Automated unit testing of the latest commit happens [here](https://travis-ci.org/bjmorgan/pyscses/).
 
 ## Documentation
-Once installed, the `pyscses` code is imported into, and run using a [Jupyter notebook](http://jupyter-notebook.readthedocs.io/en/latest/#).
-An overview of the capabilities of `pyscses`, along with example code for running the code and varying the simulation conditions can be found in
+Introductory userguides are contained in the [userguide](https://github.com/bjmorgan/pyscses/blob/master/userguides/README.md). Each guide is presented as a [Jupyter notebook](http://jupyter-notebook.readthedocs.io/en/latest/#). The userguides cover the theory behind the Poisson-Boltzmann solver, how to set up a Jupyter notebook to run a calculation and examples of running the calculation under different approximations. These examples include site explicit vs. continuum modelling, Mott-Schottky (single mobile defect species) and Gouy-Chapman (all defect species mobile) conditions and running the solver on real data.
+These userguides can also be found in the directory:
 ```
 pyscses/userguides/userguide.ipynb
 ```
-or the Jupyter notebook can be found on github [here](https://github.com/bjmorgan/pyscses/blob/master/userguides/notebooks/userguide.ipynb) .
 
-API documentation is available [here](https://pyscses.readthedocs.io/en/latest/) .
+Full API documentation is available [here](https://pyscses.readthedocs.io/en/latest/) .
 
 ## Scientific context
 
