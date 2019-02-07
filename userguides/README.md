@@ -4,6 +4,14 @@ Space charge properties such as electrostatic potential, charge density and char
 
 These userguides cover the theory behind the Poisson-Boltzmann solver and go through setting up the Jupyter notebooks in order to calculate the space charge properties. Following this, the different approximations are explored and examples given to show how the calculated properties vary concluding with running the solver on some real crystalline data. 
 
+To run these userguides, there are additional dependencies. These can be installed using
+
+```
+pip install -r requirements.txt
+```
+
+from inside the `userguides` directory.
+
 Expected run times for each notebook ( Using an iMac with a 4 Ghz i7 processor):
 Example 1: 81 minutes
 Example 2: 32 minutes
