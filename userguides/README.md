@@ -35,12 +35,19 @@ from inside the `userguides` directory.
 [Example 6 - Storing the output data](notebooks/Ex_6_store_data.ipynb)
 
 **Run times**
+
 Expected run times for each notebook ( Using an iMac with a 4 Ghz i7 processor):
+
 Example 1: 81 minutes
+
 Example 2: 32 minutes
+
 Example 3: 3 minutes
+
 Example 4: 3 minutes
+
 Example 5: 2 minutes
+
 Example 6: 2 minutes
 
 **Note** - Calculations run using Gouy-Chapman conditions take significantly longer to run. This is due to the Poisson-Boltzmann solver being run repeatedly in order to minimise the difference between the input and output mole fractions.
