@@ -60,7 +60,7 @@ class Calculation:
 
         Args:
             input_mole_fractions (list): Mole fractions for each of the species used in the iterative Poisson-Boltzmann solver.
-            approximation (?): TODO
+            approximation (str): The defect mobility approximation. Either 'mott-schottky' to enforce only a single mobile defect, or 'gouy-chapman' to allow all defect species to redistribute. 
    
         Returns:
             list: Mole fractions that are calculated from the iterative Poisson-Boltzmann solver.
@@ -91,15 +91,12 @@ class Calculation:
 
         
     def mole_fraction_correction( self, target_mole_fractions, approximation, initial_guess ):
-        """Starting from an initial guess for the appropriate input mole fractions, minimises the error between the target bulk mole fraction and the output mole fraction from the iterative Poisson-Boltzmann solver. 
+        """Starting from an initial guess for the appropriate input mole fractions, minimises the error between the target bulk mole fraction and the output mole fraction from the iterative Poisson-Boltzmann solver. The output is stored as a Calculation attribute. Calculation.initial_guess (list): The optimum values to be used as the input mole fractions for the iterative Poisson-Boltzmann solver so that the output bulk mole fractions are the target bulk mole fractions. 
 
         Args:
             target_mole_fractions (list): The value that the mole fractions should be in the bulk. 
-            approximation (?): TODO
-            initial_guess (?): TODO
-
-        Returns:
-            list: The optimum values to be used as the input mole fractions for the iterative Poisson-Boltzmann solver so that the output bulk mole fractions are the target bulk mole fractions. 
+            approximation (str): The defect mobility approximation. Either 'mott-schottky' to enforce only a single mobile defect, or 'gouy-chapman' to allow all defect species to redistribute. 
+            initial_guess (list): Values for an initial guess for the defect mole fractions used in the error minimisation. 
 
         """
         self.initial_guess = initial_guess
@@ -185,16 +182,16 @@ class Calculation:
 
     def solve( self, approximation ):
         """
-        Self-consistent solving of the Poisson-Boltzmann equation. Iterates until the convergence is less than the convergence limit.
+        Self-consistent solving of the Poisson-Boltzmann equation. Iterates until the convergence is less than the convergence limit. The outputs are stored as Calculation attributes.
+        Calculation.phi (array): Electrostatic potential on a one-dimensional grid. 
+        Calculation.rho (array): Charge density on a one-dimensional grid.
+        Calculation.niter (int): Number of iterations performed to reach convergence.
+
 
         Args:
             approximation (str): Approximation used for the defect behaviour.
                                  'mott-schottky' - Some defects immobile / fixed to bulk mole fractions.
                                  'gouy-chapman' - All defects mobile / able to redistribute.
-        Returns:
-            numpy.array: Electrostatic potential on a one-dimensional grid. 
-            float: Charge density on a one-dimensional grid.
-            int: Number of iterations performed to reach convergence.
 
         """
         poisson_solver = MatrixSolver( self.grid, self.dielectric, self.temp, boundary_conditions=self.boundary_conditions )
@@ -227,13 +224,10 @@ class Calculation:
         self.niter = niter
 
     def form_subgrids( self, site_labels ):
-        """Creates a `pysces.Grid` object for each species in the system.
+        """Creates a `pysces.Grid` object for each species in the system. The output is a dictionary of separate Grid classes for the different site species and is stored as Calculation.subgrids. 
 
         Args:
             site_labels (list): List of strings for the different site species.
-  
-        Returns:
-            dict: Dictionary of separate Grid classes for the different site species (name). 
 
         """
         self.site_labels = site_labels
@@ -352,18 +346,13 @@ class Calculation:
 
     def calculate_resistivity_ratio( self, pos_or_neg_scr, scr_limit, mobility_scaling=False ):
         """
-        Each species present in the system is looped over and the perpendicular and parallel conductivity ratios are calculated and appended to separate lists. Once all species have been added to the list, the conductivities are summed and the reciprocal taken to give the resistivity ratios perpendicular and parallel to the grain boundary.
-
+        Each species present in the system is looped over and the perpendicular and parallel conductivity ratios are calculated and appended to separate lists. Once all species have been added to the list, the conductivities are summed and the reciprocal taken to give the resistivity ratios perpendicular and parallel to the grain boundary. The outputs are stored as calculation attributes, Calculation.perpendicular_resistivity_ratio(float), Calculation.parallel_resistivity_ratio (float): :math:`r_\mathrm{gb}^\perp, r_\mathrm{gb}^\parallel`: The perpendicular and parallel grain boundary resistivity ratios.
         Args:
             pos_or_neg_scr (str): 'positive' - for a positive space charge potential.
 				  'negative' - for a negative space charge potential.
             scr_limit (float): The minimum electrostatic potential that the electrostatic potential must exceed to be included in the space charge region.
             mobility_scaling (bool): For particles on a lattice which only interact through volume exclusion, the mobility exhibits a blocking term. True if the blocking term is to be included, False if the blocking term is not to be included. Default = False.
 
-        Returns:
-            float, float: :math:`r_\mathrm{gb}^\perp, r_\mathrm{gb}^\parallel`: The perperndicular and parallel grain boundary resistivity ratios.
-
-        TODO: Note this does not return the resistivity ratios, but instead sets these Calculation attributes.
 	"""
         full_parallel_conductivity_data = []
         full_perpendicular_conductivity_data = []
@@ -375,8 +364,7 @@ class Calculation:
         self.parallel_resistivity_ratio = 1 / sum(full_parallel_conductivity_data)
             
     def solve_MS_approx_for_phi( self, valence ):
-        r"""Calculate the space-charge potential, :math:`\phi_0`, from the grain-boundary resistivity ratio, within the Mott-Schottky approximation.
-
+        """Calculate the space-charge potential, :math:`\phi_0`, from the grain-boundary resistivity ratio, within the Mott-Schottky approximation.
         Within the Mott-Schottky approximation the grain boundary resistivity is related to the space-charge potential (the electrostatic potential at the grain boundary core, compared to the bulk value) according to
         
         .. math:: r_\mathrm{gb} = \frac{\rho_{i,\mathrm{gb}}}{\rho_{i,\infty}} = \frac{\exp(z_i\phi_0 / V_\mathrm{th})}{2z_i\phi_0/V_\mathrm{th}}
@@ -394,12 +382,12 @@ class Calculation:
         .. math:: \phi_{0,\mathrm{MS}} = -\mathrm{LambertW}\left(\frac{1}{2 r_\mathrm{gb}}\right)\frac{V_\mathrm{th}}{z_i}.
         .. _LambertW: https://en.wikipedia.org/wiki/Lambert_W_function
 
+        The output is stored as a Calculation attribute. Calculation.ms_phi (float): :math:`\phi_{0,\mathrm{MS}}`. The space charge potential calculated from Mott-Schottky model.
+
+
         Args:
             valence( float ): Charge of the mobile defect species. 
    
-        Returns:
-            float: :math:`\phi_{0,\mathrm{MS}}`. The space charge potential calculated from Mott-Schottky model.
- 
         Raises:
             ValueError: If the calculated resistivity ratio is less than 1.36, the LambertW function returns a complex, non-physical value.
 
@@ -413,37 +401,30 @@ class Calculation:
 
         .. _Debye length: https://en.wikipedia.org/wiki/Debye_length
 
+        The output is stored as a Calculation attribute. Calculation.debye_length (float): The Debye length as derived from Poisson-Boltzmann equation.
+
         Args:
             None
-
-        Returns:
-            float: The Debye length as derived from Poisson-Boltzmann equation.
 
         """
         self.debye_length = np.sqrt( ( self.dielectric * vacuum_permittivity * boltzmann_eV * self.temp ) / ( 2 * ( fundamental_charge ** 2 ) * self.average_bulk_mobile_defect_density ) )
 
     def calculate_space_charge_width( self, valence ):
         """Calculate the approximate space charge width from the Debye length.
+           The output is stores as a Calculation attribute. Calculation.space_charge_width (float): The approximate space charge width.
 
         Args:
 	    valence (float): The charge of the mobile defect species.
-
-        Returns:
-            float: Approximate space charge width.
 
         """
         self.space_charge_width = 2 * ( self.debye_length * math.sqrt( max(self.phi) / ( ( boltzmann_eV * self.temp ) / valence ) ) )
 
 
     def mole_fractions( self ):
-        """Calculate the mole fractions (probability of defects occupation) for each site on the subgrid for each species.
-
+        """Calculate the mole fractions (probability of defects occupation) for each site on the subgrid for each species. The output is stored as a Calculation attribute. Calculation.mf (dict): A dictionary of the defect species mole fractions for each site on the subgrid for each site species. 
         Args:
             None
  
-        Returns:
-            dict: A dictionary of the defect species mole fractions for each site on the subgrid for each site species. 
-
         """
         mole_fractions = {}
         for label in self.site_labels:
