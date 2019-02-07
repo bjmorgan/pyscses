@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 from inside the `userguides` directory.
 
-_Notebooks_
+__Notebooks__
 [Theory](notebooks/Theory.ipynb)
 
 [Setting up the notebook](notebooks/Setting_up.ipynb)
