@@ -13,4 +13,5 @@ paper/latex.template
 userguides/notebooks/.ipynb_checkpoints
 docs/.DS_Store
 **/.nbgrader.log
+*.ipynb_checkpoints
 docs/build
