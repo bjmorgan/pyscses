@@ -2,18 +2,17 @@
 
 These userguides cover the theory behind the Poisson-Boltzmann solver and go through setting up the Jupyter notebooks in order to calculate the space charge properties. Following this, the different approximations are explored and examples given to show how the calculated properties vary concluding with running the solver on some real crystalline data. 
 
-To run these userguides, there are additional dependencies. These can be installed using
-
+Running these userguides requires additional Python dependencies. These can be installed using
 ```
+cd userguides
 pip install -r requirements.txt
 ```
 
-from inside the `userguides` directory.
-
 ## Notebooks
 
-- [Theory](notebooks/Theory.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/userguides/notebooks/Theory.ipynb))
-- [Setting up the notebook](notebooks/Setting_up.ipynb)
+Each notebook can be viewed using [nbviewer](https://nbviewer.jupyter.org) by following each <span style="color:orange">nbviewer</span> link.
+- [Theory](notebooks/Theory.ipynb) ([<span style="color:blue">nbviewer</span>](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/userguides/notebooks/Theory.ipynb))
+- [Setting up the notebook](notebooks/Setting_up.ipynb) 
 - [Running the calculation](notebooks/Running.ipynb)
 - [Example 1 - continuum vs. site explicit and boundary conditions](notebooks/Ex_1_BC.ipynb)
 - [Example 2 - Mott-Schottky vs. Gouy-Chapman conditions](notebooks/Ex_2_MSGC.ipynb)
