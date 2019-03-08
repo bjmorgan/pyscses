@@ -15,7 +15,7 @@ Each notebook can be viewed using [nbviewer](https://nbviewer.jupyter.org) by fo
 - [Setting up the notebook](notebooks/Setting_up.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/userguides/notebooks/Setting_up.ipynb))
 - [Running the calculation](notebooks/Running.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/userguides/notebooks/Running.ipynb))
 - [Example 1 - continuum vs. site explicit and boundary conditions](notebooks/Ex_1_BC.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/userguides/notebooks/Ex_1_BC.ipynb))
-- [Example 2 - Mott-Schottky vs. Gouy-Chapman conditions](notebooks/Ex_2_MSGC.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/userguides/notebooks/Ex_2_MSCG.ipynb))
+- [Example 2 - Mott-Schottky vs. Gouy-Chapman conditions](notebooks/Ex_2_MSGC.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/userguides/notebooks/Ex_2_MSGC.ipynb))
 - [Example 3 - Calculating the grain boundary resistivity and activation energy](notebooks/Ex_3_Res.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/userguides/notebooks/Ex_3_Res.ipynb))
 - [Example 4 - Comparison with &ldquo;experimental&rdquo; values](notebooks/Ex_4_MSapp.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/userguides/notebooks/Ex_4_MSapp.ipynb))
 - [Example 5 - Using the pyscses with real data](notebooks/Ex_5_real_data.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/userguides/notebooks/Ex_5_real_data.ipynb))
