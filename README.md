@@ -102,13 +102,13 @@ Wellock, Georgina L., & Morgan, Benjamin J. (2019). *pyscses - a PYthon Space-Ch
 
 ### Bugs reports and feature requests
 
-If you think you have found a bug, please report it on the Issue Tracker. This is also the place to propose ideas for new features or ask questions about the design of pyscses. Poor documentation is considered a bug, but please be as specific as possible when asking for improvements.
+If you think you have found a bug, please report it on the [Issue Tracker](https://github.com/bjmorgan/pyscses/issues). This is also the place to propose ideas for new features or ask questions about the design of pyscses. Poor documentation is considered a bug, but please be as specific as possible when asking for improvements.
 
 ### Code contributions
 
 We welcome your help in improving and extending the package with your own contributions. This is managed through GitHub pull requests; for external contributions we prefer the "fork and pull" workflow, while core developers use branches in the main repository:
 
-- First open an Issue to discuss the proposed contribution. This discussion might include how the changes fit pyscses' scope and a general technical approach.
+- First open an [Issue](https://github.com/bjmorgan/pyscses/issues) to discuss the proposed contribution. This discussion might include how the changes fit pyscses' scope and a general technical approach.
 - Make your own project fork and implement the changes there. Please keep your code style compliant with PEP8.
-- Open a pull request to merge the changes into the main project. A more detailed discussion can take place there before the changes are accepted.
+- Open a [pull request](https://github.com/bjmorgan/pyscses/pulls) to merge the changes into the main project. A more detailed discussion can take place there before the changes are accepted.
 
