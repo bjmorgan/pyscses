@@ -125,7 +125,6 @@ Wellock, Georgina L., & Morgan, Benjamin J. (2019). *pyscses - a PYthon Space-Ch
 ```
 
 # References
-
-[HwangEtAl_JElectroceram1999]: Hwang, J.-H., McLachlan, D. S., & Mason, T. O. (1999). Brick layer model analysis of nanoscale-to-microscale cerium dioxide. J. Electroceram., 3 (1), 7–16. doi:[10.1023/A:1009998114205](https://dx.doi.org/10.1023/A:1009998114205)
-[Kim_PhysChemChemPhys2016]: Kim, S., & Maier, J. (2002). On the conductivity mechanism of nanocrystalline ceria. J. Electrochem. Soc., 149(10), J73–J83. doi:[10.1149/1.1507597](https://dx.doi.org/10.1149/1.1507597)
+1. <a name="HwangEtAl_JElectroceram1999" />[Hwang, J.-H., McLachlan, D. S., & Mason, T. O. (1999). Brick layer model analysis of nanoscale-to-microscale cerium dioxide. *J. Electroceram.*, **3** (1), 7–16.](https://dx.doi.org/10.1023/A:1009998114205)
+1. <a name="Kim_PhysChemChemPhys2016" />[Kim, S., & Maier, J. (2002). On the conductivity mechanism of nanocrystalline ceria. *J. Electrochem. Soc.*, **149**(10), J73–J83.](https://dx.doi.org/10.1149/1.1507597)
 
