@@ -10,10 +10,10 @@ pip install -r requirements.txt
 
 ## Notebooks
 
-- [Test 1 - Site explicit modelling under Mott-Schottky conditions.](test_1/test_notebook_1.ipynb)
-- [Test 2 - Continuum modelling under Mott-Schottky conditions.](test_2/test_notebook_2.ipynb)
-- [Test 3 - Site explicit modelling under Gouy-Chapman conditions.](test_3/test_notebook_3.ipynb)
-- [Test 4 - Site explicit modelling under Mott-Schottky conditions including the additional site charge.](test_4/test_notebook_4.ipynb)
+- [Test 1 - Site explicit modelling under Mott-Schottky conditions.](test_1/test_notebook_1.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/tests/test_notebooks/test_1/test_notebook_1.ipynb))
+- [Test 2 - Continuum modelling under Mott-Schottky conditions.](test_2/test_notebook_2.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/tests/test_notebooks/test_2/test_notebook_2.ipynb))
+- [Test 3 - Site explicit modelling under Gouy-Chapman conditions.](test_3/test_notebook_3.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/tests/test_notebooks/test_3/test_notebook_3.ipynb))
+- [Test 4 - Site explicit modelling under Mott-Schottky conditions including the additional site charge.](test_4/test_notebook_4.ipynb) ([nbviewer](https://nbviewer.jupyter.org/github/bjmorgan/pyscses/blob/master/tests/test_notebooks/test_4/test_notebook_4.ipynb))
 
 ## Running times
 
