@@ -7,7 +7,33 @@
 [![DOI](https://zenodo.org/badge/90385184.svg)](https://zenodo.org/badge/latestdoi/90385184)
 [![Documentation Status](https://readthedocs.org/projects/pyscses/badge/?version=latest)](https://pyscses.readthedocs.io/en/latest/?badge=latest)
 
-`pyscses` is a Python module that implements a site-explicit, one-dimensional Poisson-Boltzmann solver, used for modelling ionic space charge properties in solid materials. Space charge properties such as electrostatic potential, charge density and charge carrier distributions over the space charge region can be calculated using the Poisson-Boltzmann equation from the input of defect segregation energies and atomically resolved charge carrier positions. The grain boundary resistivity and activation energy can be calculated by extending the model using the calculated charge carrier distributions. `pyscses` also accounts for different approximations typically assumed when space charge formation is considered. These approximations include site explicit vs. continuum modelling, Mott-Schottky (single mobile defect species) and Gouy-Chapman (all defect species mobile) conditions, and whether the charge of the non-defective species should be considered. 
+`pyscses` is a Python package for modelling ionic space-charges in solid electrolytes. Its primary use is to calculate equilibrium distributions of point-charge atomic defects within one-dimensional &ldquo;Poisson-Boltzmann&rdquo;-like mean-field models. These calculations take as inputs a set of defect site positions, within a specific crystal structure, and the associated defect segregation energies. `pyscses` can also be used to calculate ionic transport properties (space-charge resistivities and activation energies) for these equilibrium defect distributions.
+
+One approach to modelling space-charge formation in solid electrolytes is to consider defects as ideal point-charges embedded in a continuum dielectric, and to calculate equilibrium defect distributions by solving mean-field &ldquo;Poisson-Boltzmann&rdquo;-like equations [@Franceschetti_SolStatIonics1981; @GuoAndWaser_ProgMaterSci2006; @NymanEtAl_ApplPhysLett2012; @LindmanEtAl_SolStatIonics2013a; @PolfusEtAl_SolStatIonics2016; @HelgeeEtAl_FuelCells2013]. While numerical solutions to the 1D Poisson-Boltzmann equation are relatively simple to implement, published results are typically obtined using private closed-source codes, making it difficult to reproduce results or to test the effect of different approximations included in specific models. ``pyscses`` provides an open-source Python package for modelling space-charge formation in solid electrolytes, within a 1D Poisson-Boltzmann-like formalism.We are currently using ``pyscses`` in our own research into space-charge formation in solid electrolytes for fuel cells and lithium-ion batteries, and hope that this open-source resource will support reproducible research practices in future studies in this area [@SandveEtAl_PLoSComputBiol2013].
+
+# Numerical Model
+``pyscses`` considers simple one-dimensional models of crystallographic interfaces, and calculates equilibrium defect distributions by solving a modified Poisson-Boltzmann equation [@Maier_ProgSolStatChem1995; @DeSouzaEtAl_SolidStateIonics2011], which can be derived by considering the condition that at equilibrium the electrochemical potential for a given defect species is constant [@Maier_IonicsTextbook2005]:
+$$
+\mu^o_{i,x} + RT\ln \left( \frac{c_{i,x}}{1-c_{i,x}} \right) + z_i F \Phi_x = \mu^o_{i,\infty} + RT\ln \left(\frac{c_{i,\infty}}{1- c_{i,\infty}}\right) + z_i F \Phi_{\infty}.
+$$
+The thermodynamic driving force for point-defect segregation to or from the interface is described by defect segregation energies, $\left\{\Delta E_\mathrm{seg}^{i,x}\right\}$
+$$
+\Delta E_\mathrm{seg}^{i,x} = E_\mathrm{f}^{i,x} - E_\mathrm{f}^{i, \infty}
+$$
+i.e. $\Delta E_\mathrm{seg}^{i,x}$ is the difference in defect formation energy for defect species $i$ at site $x$ compared to a reference site in the &ldquo;bulk&rdquo; of the crystal.
+
+Within the general framework of solving this modified 1D Poisson-Boltzmann equation, ``pyscses`` implements a range of numerical models:
+- Continuum (regular grid) and site-explicit (irregular grid) models.
+- Periodic and Dirichlet boundary conditions.
+- &ldquo;Mott-Schottky&rdquo; and &ldquo;Gouy-Champman&rdquo; condtions. These are implemented by setting the mobilities of different defect species. In the case of Mott-Schottky conditions, all but one defect species have a mobility of zero.
+- Inclusion of &ldquo;lattice&rdquo;site charges to account for non-defective species in the crystal structure.
+
+Properties that can be calculated include:
+- Defect mole fractions.
+- Charge density.
+- Electrostatic potential.
+- Parallel and perpendicular grain boundary resistivities [@HwangEtAl_JElectroceram1999].
+- Grain boundary activation energies [@Kim_PhysChemChemPhys2016].
 
 Full mathematical derivations, definitions and example code can be found in the [userguide](https://github.com/bjmorgan/pyscses/blob/master/userguides/notebooks/userguide.ipynb). 
 
