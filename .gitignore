@@ -15,3 +15,4 @@ docs/.DS_Store
 **/.nbgrader.log
 **/.ipynb_checkpoints
 docs/build
+**/generated_outputs
