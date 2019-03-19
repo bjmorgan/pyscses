@@ -21,8 +21,8 @@ Properties that can be calculated include:
 - Defect mole fractions.
 - Charge density.
 - Electrostatic potential.
-- Parallel and perpendicular grain boundary resistivities \[[1](HwangEtAl_JElectroceram1999)\].
-- Grain boundary activation energies \[[2](Kim_PhysChemChemPhys2016)\].
+- Parallel and perpendicular grain boundary resistivities \[[1](#HwangEtAl_JElectroceram1999)\].
+- Grain boundary activation energies \[[2](#Kim_PhysChemChemPhys2016)\].
 
 Full mathematical derivations, definitions and example code can be found in the [userguide](https://github.com/bjmorgan/pyscses/blob/master/userguides/notebooks/userguide.ipynb). 
 
