@@ -11,8 +11,6 @@
 
 One approach to modelling space-charge formation in solid electrolytes is to consider defects as ideal point-charges embedded in a continuum dielectric, and to calculate equilibrium defect distributions by solving mean-field &ldquo;Poisson-Boltzmann&rdquo;-like equations. While numerical solutions to the 1D Poisson-Boltzmann equation are relatively simple to implement, published results are typically obtined using private closed-source codes, making it difficult to reproduce results or to test the effect of different approximations included in specific models. ``pyscses`` provides an open-source Python package for modelling space-charge formation in solid electrolytes, within a 1D Poisson-Boltzmann-like formalism.We are currently using ``pyscses`` in our own research into space-charge formation in solid electrolytes for fuel cells and lithium-ion batteries, and hope that this open-source resource will support reproducible research practices in future studies in this area.
 
-Full mathematical derivations, definitions and example code can be found in the [userguide](https://github.com/bjmorgan/pyscses/blob/master/userguides/notebooks/userguide.ipynb). 
-
 ``pyscses`` implements a range of numerical models within the general scheme of solving a modified Poisson-Boltzmann equation on a 1D grid:
 - Continuum (regular grid) and site-explicit (irregular grid) models.
 - Periodic and Dirichlet boundary conditions.
@@ -23,8 +21,10 @@ Properties that can be calculated include:
 - Defect mole fractions.
 - Charge density.
 - Electrostatic potential.
-- Parallel and perpendicular grain boundary resistivities [@HwangEtAl_JElectroceram1999][1].
-- Grain boundary activation energies [@Kim_PhysChemChemPhys2016][2].
+- Parallel and perpendicular grain boundary resistivities [\[1\]][HwangEtAl_JElectroceram1999].
+- Grain boundary activation energies [\[2\]][Kim_PhysChemChemPhys2016].
+
+Full mathematical derivations, definitions and example code can be found in the [userguide](https://github.com/bjmorgan/pyscses/blob/master/userguides/notebooks/userguide.ipynb). 
 
 A more detailed overview of the code and its capabilities, and of the scientific context of modelling space-charge regions in solids, are given in the [JOSS paper](http://joss.theoj.org/papers/803ed6dd19f453819bdd3ed9ceadf3b3).
 
@@ -126,6 +126,6 @@ Wellock, Georgina L., & Morgan, Benjamin J. (2019). *pyscses - a PYthon Space-Ch
 
 # References
 
-[1]: Hwang, J.-H., McLachlan, D. S., & Mason, T. O. (1999). Brick layer model analysis of nanoscale-to-microscale cerium dioxide. J. Electroceram., 3 (1), 7–16. doi:[10.1023/A:1009998114205](https://dx.doi.org/10.1023/A:1009998114205)
-[2]: Kim, S., & Maier, J. (2002). On the conductivity mechanism of nanocrystalline ceria. J. Electrochem. Soc., 149(10), J73–J83. doi:[10.1149/1.1507597](https://dx.doi.org/10.1149/1.1507597)
+[HwangEtAl_JElectroceram1999]: Hwang, J.-H., McLachlan, D. S., & Mason, T. O. (1999). Brick layer model analysis of nanoscale-to-microscale cerium dioxide. J. Electroceram., 3 (1), 7–16. doi:[10.1023/A:1009998114205](https://dx.doi.org/10.1023/A:1009998114205)
+[Kim_PhysChemChemPhys2016]: Kim, S., & Maier, J. (2002). On the conductivity mechanism of nanocrystalline ceria. J. Electrochem. Soc., 149(10), J73–J83. doi:[10.1149/1.1507597](https://dx.doi.org/10.1149/1.1507597)
 
