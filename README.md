@@ -1,6 +1,6 @@
 # `pyscses` - PYthon Space-Charge Site-Explicit Solver
 
-<img src="https://github.com/bjmorgan/pyscses/blob/master/logo.png" width="200px"/>
+<img src="https://github.com/bjmorgan/pyscses/blob/master/resources/logo.png" width="200px"/>
 
 [![status](http://joss.theoj.org/papers/803ed6dd19f453819bdd3ed9ceadf3b3/status.svg)](http://joss.theoj.org/papers/803ed6dd19f453819bdd3ed9ceadf3b3)
 [![PyPI version](https://badge.fury.io/py/pyscses.svg)](https://badge.fury.io/py/pyscses)
