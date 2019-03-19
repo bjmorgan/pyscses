@@ -9,20 +9,11 @@
 
 `pyscses` is a Python package for modelling ionic space-charges in solid electrolytes. Its primary use is to calculate equilibrium distributions of point-charge atomic defects within one-dimensional &ldquo;Poisson-Boltzmann&rdquo;-like mean-field models. These calculations take as inputs a set of defect site positions, within a specific crystal structure, and the associated defect segregation energies. `pyscses` can also be used to calculate ionic transport properties (space-charge resistivities and activation energies) for these equilibrium defect distributions.
 
-One approach to modelling space-charge formation in solid electrolytes is to consider defects as ideal point-charges embedded in a continuum dielectric, and to calculate equilibrium defect distributions by solving mean-field &ldquo;Poisson-Boltzmann&rdquo;-like equations [@Franceschetti_SolStatIonics1981; @GuoAndWaser_ProgMaterSci2006; @NymanEtAl_ApplPhysLett2012; @LindmanEtAl_SolStatIonics2013a; @PolfusEtAl_SolStatIonics2016; @HelgeeEtAl_FuelCells2013]. While numerical solutions to the 1D Poisson-Boltzmann equation are relatively simple to implement, published results are typically obtined using private closed-source codes, making it difficult to reproduce results or to test the effect of different approximations included in specific models. ``pyscses`` provides an open-source Python package for modelling space-charge formation in solid electrolytes, within a 1D Poisson-Boltzmann-like formalism.We are currently using ``pyscses`` in our own research into space-charge formation in solid electrolytes for fuel cells and lithium-ion batteries, and hope that this open-source resource will support reproducible research practices in future studies in this area [@SandveEtAl_PLoSComputBiol2013].
+One approach to modelling space-charge formation in solid electrolytes is to consider defects as ideal point-charges embedded in a continuum dielectric, and to calculate equilibrium defect distributions by solving mean-field &ldquo;Poisson-Boltzmann&rdquo;-like equations. While numerical solutions to the 1D Poisson-Boltzmann equation are relatively simple to implement, published results are typically obtined using private closed-source codes, making it difficult to reproduce results or to test the effect of different approximations included in specific models. ``pyscses`` provides an open-source Python package for modelling space-charge formation in solid electrolytes, within a 1D Poisson-Boltzmann-like formalism.We are currently using ``pyscses`` in our own research into space-charge formation in solid electrolytes for fuel cells and lithium-ion batteries, and hope that this open-source resource will support reproducible research practices in future studies in this area.
 
-# Numerical Model
-``pyscses`` considers simple one-dimensional models of crystallographic interfaces, and calculates equilibrium defect distributions by solving a modified Poisson-Boltzmann equation [@Maier_ProgSolStatChem1995; @DeSouzaEtAl_SolidStateIonics2011], which can be derived by considering the condition that at equilibrium the electrochemical potential for a given defect species is constant [@Maier_IonicsTextbook2005]:
-$$
-\mu^o_{i,x} + RT\ln \left( \frac{c_{i,x}}{1-c_{i,x}} \right) + z_i F \Phi_x = \mu^o_{i,\infty} + RT\ln \left(\frac{c_{i,\infty}}{1- c_{i,\infty}}\right) + z_i F \Phi_{\infty}.
-$$
-The thermodynamic driving force for point-defect segregation to or from the interface is described by defect segregation energies, $\left\{\Delta E_\mathrm{seg}^{i,x}\right\}$
-$$
-\Delta E_\mathrm{seg}^{i,x} = E_\mathrm{f}^{i,x} - E_\mathrm{f}^{i, \infty}
-$$
-i.e. $\Delta E_\mathrm{seg}^{i,x}$ is the difference in defect formation energy for defect species $i$ at site $x$ compared to a reference site in the &ldquo;bulk&rdquo; of the crystal.
+Full mathematical derivations, definitions and example code can be found in the [userguide](https://github.com/bjmorgan/pyscses/blob/master/userguides/notebooks/userguide.ipynb). 
 
-Within the general framework of solving this modified 1D Poisson-Boltzmann equation, ``pyscses`` implements a range of numerical models:
+``pyscses`` implements a range of numerical models within the general scheme of solving a modified Poisson-Boltzmann equation on a 1D grid:
 - Continuum (regular grid) and site-explicit (irregular grid) models.
 - Periodic and Dirichlet boundary conditions.
 - &ldquo;Mott-Schottky&rdquo; and &ldquo;Gouy-Champman&rdquo; condtions. These are implemented by setting the mobilities of different defect species. In the case of Mott-Schottky conditions, all but one defect species have a mobility of zero.
@@ -32,10 +23,8 @@ Properties that can be calculated include:
 - Defect mole fractions.
 - Charge density.
 - Electrostatic potential.
-- Parallel and perpendicular grain boundary resistivities [@HwangEtAl_JElectroceram1999].
-- Grain boundary activation energies [@Kim_PhysChemChemPhys2016].
-
-Full mathematical derivations, definitions and example code can be found in the [userguide](https://github.com/bjmorgan/pyscses/blob/master/userguides/notebooks/userguide.ipynb). 
+- Parallel and perpendicular grain boundary resistivities [@HwangEtAl_JElectroceram1999][1].
+- Grain boundary activation energies [@Kim_PhysChemChemPhys2016][2].
 
 A more detailed overview of the code and its capabilities, and of the scientific context of modelling space-charge regions in solids, are given in the [JOSS paper](http://joss.theoj.org/papers/803ed6dd19f453819bdd3ed9ceadf3b3).
 
@@ -134,4 +123,9 @@ Wellock, Georgina L., & Morgan, Benjamin J. (2019). *pyscses - a PYthon Space-Ch
   url          = {https://doi.org/10.5281/zenodo.2536867}
 }
 ```
+
+# References
+
+[1]: Hwang, J.-H., McLachlan, D. S., & Mason, T. O. (1999). Brick layer model analysis of nanoscale-to-microscale cerium dioxide. J. Electroceram., 3 (1), 7–16. doi:[10.1023/A:1009998114205](https://dx.doi.org/10.1023/A:1009998114205)
+[2]: Kim, S., & Maier, J. (2002). On the conductivity mechanism of nanocrystalline ceria. J. Electrochem. Soc., 149(10), J73–J83. doi:[10.1149/1.1507597](https://dx.doi.org/10.1149/1.1507597)
 
