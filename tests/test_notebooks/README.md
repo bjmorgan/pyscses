@@ -1,6 +1,6 @@
 # Test Notebooks
 
-These test notebooks run through typical calculations that can be performed to calculate space charge properties using classically calculated data for a Gd-doped ceria system. To verify the results from running the calculations, the outputs from running each notebook will be stored in a `generated_outputs` directory and can be compared to the controlled outputs previously calculated in an `expected_outputs` directory. The notebooks run the calculations using a variety of typical calculation assumptions, including site explicit and continuum modelling, Mott-Schottky and Gouy-Chapman approximations and the inclusion of a site charge term. 
+These test notebooks run through typical simulations that can be performed to calculate space charge properties, using data generated from classical atomistic techniques. To verify the results from running the calculations, the outputs from running each notebook will be stored in a `generated_outputs` directory and can be compared to the controlled outputs previously computed and stored in an `expected_outputs` directory. The notebooks run the calculations using a variety of typical space charge model assumptions, including site explicit and continuum modelling, Mott-Schottky and Gouy-Chapman approximations and the inclusion of a site charge term.
 
 Running these notebooks requires additional Python dependencies. These can be installed using
 ```
