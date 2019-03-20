@@ -112,15 +112,15 @@ Wellock, Georgina L., & Morgan, Benjamin J. (2019). *pyscses - a PYthon Space-Ch
 ### BibTeX
 
 ```
-@misc{wellock_georgina_l_2019_2536901,
+@misc{wellock_georgina_l_2019_2599955,
   author       = {Wellock, Georgina L. and
                   Morgan, Benjamin J.},
-  title        = {{pyscses - a PYthon Space-Charge Site-Explicit 
+  title        = {{pyscses: a PYthon Space-Charge Site-Explicit 
                    Solver}},
-  month        = jan,
+  month        = mar,
   year         = 2019,
-  doi          = {10.5281/zenodo.2536901},
-  url          = {https://doi.org/10.5281/zenodo.2536867}
+  doi          = {10.5281/zenodo.2599955},
+  url          = {https://doi.org/10.5281/zenodo.2599955}
 }
 ```
 
