@@ -107,20 +107,22 @@ We welcome your help in improving and extending the package with your own contri
 
 This code can be cited as:
 
-Wellock, Georgina L., & Morgan, Benjamin J. (2019). *pyscses - a PYthon Space-Charge Site-Explicit Solver* Zenodo. http://doi.org/10.5281/zenodo.2536867
+Wellock G. L. & Morgan, B. J., (2019). pyscses: a PYthon Space-Charge Site-Explicit Solver. Journal of Open Source Software, 4(35), 1209, https://doi.org/10.21105/joss.01209
 
 ### BibTeX
 
 ```
-@misc{wellock_georgina_l_2019_2599955,
+@article{WellockAndMorgan_JOSS2019,
   author       = {Wellock, Georgina L. and
                   Morgan, Benjamin J.},
   title        = {{pyscses: a PYthon Space-Charge Site-Explicit 
                    Solver}},
+  journal      = {J. Open Source Soft.},
+  volume       = 4,
+  pages        = 1209,
   month        = mar,
   year         = 2019,
-  doi          = {10.5281/zenodo.2599955},
-  url          = {https://doi.org/10.5281/zenodo.2599955}
+  doi          = {10.21105/joss.01209},
 }
 ```
 
