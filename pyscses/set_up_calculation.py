@@ -4,6 +4,7 @@ from pyscses.site import Site
 import numpy as np
 from pyscses.constants import boltzmann_eV
 from bisect import bisect_left, bisect_right
+from sklearn.cluster import AgglomerativeClustering
 
 def site_from_input_file( site, defect_species, site_charge, core, temperature ):
     """
@@ -86,42 +87,39 @@ def load_site_data( filename, x_min, x_max, site_charge, offset = 0.0 ):
         input_data = [ line.split() for line in f ]
     input_data = [ format_line( line, site_charge, offset ) for line in input_data if ( float(line[2]) > x_min and float(line[2]) < x_max ) ]
     input_data = sorted( input_data, key=lambda x: x[2] )
-    input_data = average_similar_sites( input_data )
+    input_data = cluster_similar_sites( input_data )
 #    for line in input_data:
 #        print(line[0],line[2], flush=True)
 
     return input_data
 
-def average_similar_sites( input_data ):
-    """Corrects for rounding errors in the input data. Sites within 0.02nm are taken as the same site, therefore the x coordinate values are averaged to prevent the formation of separate sites. 
-
-    Args:
-	input_data (str): The input file.
-
-    Returns:
-	str: The input file, formatted with x coordinate values within 0.02nm averaged and set to the same value.
-
-    """
-    x_coords = []
-    similar_x = []
-    updated_x_coords = []
-    for i in input_data:
-        x_coords.append(i[2])
-    for i in range(len(x_coords)):
-        similar_x.append([])
-    for j in range(len(x_coords)):
-        for k in range(len(x_coords)):
-            if abs(x_coords[j] - x_coords[k]) < 2e-11:
-                similar_x[j].append(x_coords[k])
-    for m in range(len(similar_x)):
-        if len(similar_x[m]) == 1:
-            updated_x_coords.append(similar_x[m][0])
-        else:
-            updated_x_coords.append(sum(similar_x[m])/len(similar_x[m]))
-
-    for i, j in enumerate(input_data):
-        input_data[i][2] = updated_x_coords[i]
-    return input_data
+def cluster_similar_sites( input_data ):
+    """Clusters data points the input data to be projected onto a site. Clustering criterion is set as 0.01 nm.
+        
+        Args:
+        input_data (str): The input file.
+        
+        Returns:
+        str: The input file, formatted with x coordinate values with correct clustering coordinates.
+        
+        """
+    coordinates = np.array([[ion[2]] for ion in input_data]) # format data into correct format
+    # Use sklearn's clustering functionality to assign site clusters
+    cluster = AgglomerativeClustering(n_clusters=None, affinity='euclidean', compute_full_tree = True,linkage='ward',distance_threshold = 1e-10)
+    cluster_data = cluster.fit_predict(coordinates)
+    # Match clusters to sites
+    sites = [ [] for i in range(0,np.max(cluster_data)+1)]
+    for cluster in range(len(cluster_data)):
+        sites[cluster_data[cluster-1]].append(input_data[cluster-1])
+    sites = sorted(sites,key = lambda x: x[0][2])
+    # Prepare data in the correct format.
+    sites_format = []
+    for cluster in sites:
+        site_loc = np.mean(np.array(cluster)[:,2].astype('float64'))
+        for ion in cluster:
+            ion[2] = site_loc
+        sites_format += cluster
+    return sites_format
 
 def calculate_grid_offsets( filename, x_min, x_max, system ):
     """Reads in the input data calculates the distance to the next site outside of the defined calculation region. Allows calculation of the delta_x and volume values for the endmost grid points.
@@ -140,7 +138,7 @@ def calculate_grid_offsets( filename, x_min, x_max, system ):
         input_data = [ line.split() for line in f ]
         input_data = [ format_line( line, 0.0, 0.0 ) for line in input_data ]
         input_data = sorted( input_data, key=lambda x: x[2] )
-        input_data = average_similar_sites( input_data )
+        input_data = cluster_similar_sites( input_data )
         x_coords = np.unique( np.array( [ float(l[2]) for l in input_data ] ) )
         min_index = bisect_left( x_coords, x_min )
         max_index = bisect_right( x_coords, x_max )
