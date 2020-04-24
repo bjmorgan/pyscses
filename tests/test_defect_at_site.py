@@ -12,13 +12,13 @@ class TestDefectAtSite( unittest.TestCase ):
         phi = 0.5
         self.assertEqual( self.defect.potential_energy( phi ), 2.0 ) 
 
-    def test_boltzmann_one( self ):
+    def test_boltzmann_one(self):
         phi = 0.5
         temp = 298.0
-        with patch( 'pyscses.defect_at_site.Defect_at_Site.potential_energy' ) as mock_potential_energy:
+        with patch('pyscses.defect_at_site.Defect_at_Site.potential_energy') as mock_potential_energy:
             mock_potential_energy.return_value = 2.0
-            self.assertAlmostEqual( self.defect.boltzmann_one( phi=phi, temp=temp ), 1.4995936e-34, places=40 )
-            mock_potential_energy.assert_called_with( phi )
+            self.assertAlmostEqual(self.defect.boltzmann_one(phi=phi, temp=temp), 1.4996341881113563e-34, places=40)
+            mock_potential_energy.assert_called_with(phi)
 
 if __name__ == '__main__':
     unittest.main()
