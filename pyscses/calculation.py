@@ -1,7 +1,7 @@
 import numpy as np 
 import mpmath
 from bisect import bisect_left, bisect_right
-from set_of_sites import Set_of_Sites
+from pyscses.set_of_sites import Set_of_Sites
 from pyscses.matrix_solver import MatrixSolver
 from pyscses.set_up_calculation import calculate_grid_offsets
 from pyscses.constants import *
