@@ -44,20 +44,20 @@ class Defect_at_Site:
         return ( phi * self.valence ) + self.energy
 
 
-    def boltzmann_one( self, phi, temp ):
+    def boltzmann_one(self, phi, temp):
         r"""Boltzmann statistics calculation - part one
 
         .. math:: \exp\left(\frac{\Phi z+\Delta E}{k_BT}\right)
 
         Args:
             phi (float): Electrostatic potential.
-            temp (float): Temperature of calculation.
+            temp (float): Temperature in Kelvin.
     
         Returns:
-            float: Boltzmann statistics
+            float: Boltzmann factor.
    
         """
-        return math.exp(-self.potential_energy(phi ) / ( boltzmann_eV * temp ) )
+        return math.exp(-self.potential_energy(phi) / (boltzmann_eV * temp))
 
     def boltzmann_two( self, phi, temp ):
         r"""Boltzmann statistics calculation - part two
