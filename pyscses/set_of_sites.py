@@ -64,22 +64,30 @@ class Set_of_Sites:
         return energies_on_grid
 
     def calculate_probabilities( self, grid, phi, temp ):
-        """ 
-        Calculates the probability of a site being occupied by its corresponding defect.
-    
-        Args: 
-            grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-            phi (array): electrostatic potential on a one-dimensional grid. 
-            temp (float): Absolute temperature.
-
-        Returns:
-            array: probabilities of defects occupying each site using their grid points
- 
         """
+            Calculates the probability of a site being occupied by its corresponding defect.
+            
+            Args:
+            grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
+            phi (array): electrostatic potential on a one-dimensional grid.
+            temp (float): Absolute temperature.
+            
+            Returns:
+            array: probabilities of defects occupying each site using their grid points
+            
+            """
         probability = np.zeros_like( grid.x )
-        for site in self.sites:
-            probability[index_of_grid_at_x( grid.x, site.x )] = np.asarray( site.probabilities( phi_at_x( phi, grid.x, site.x ), temp ) )
-        return probability 
+        for i,j in enumerate(grid.x):
+            prob = []
+            for site in self.sites:
+                if j == site.x:
+                    prob.append(site.probabilities( phi_at_x( phi, grid.x, site.x ), temp ) )
+            if len(prob) == 0:
+                probability[i] = 0
+            else:
+                probability[i] = np.mean(prob)
+        
+        return probability
 
     def calculate_defect_density( self, grid, phi, temp ):
         """ 
