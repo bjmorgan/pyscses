@@ -287,7 +287,7 @@ class Calculation:
         subgrids = {}
         for label in site_labels:
             name = '{}'.format( label )
-            subgrids[name] = self.grid.subgrid( label )
+            subgrids[name] = self.grid.subgrid(label)
             subgrids[name].delta_x[0] = subgrids[name].delta_x[1]
             subgrids[name].delta_x[-1] = subgrids[name].delta_x[1]
             subgrids[name].volumes[0] = subgrids[name].volumes[1]
@@ -495,9 +495,8 @@ class Calculation:
         """
         mole_fractions = {}
         for label in self.site_labels:
-            name = '{}'.format(label)
-            subgrid_set_of_sites = self.subgrids[name].set_of_sites # actually a list
-            mole_fractions[name] = SetOfSites(subgrid_set_of_sites).calculate_probabilities(self.grid, self.phi, self.temp)
+            subset_of_sites = self.subgrids[label].set_of_sites
+            mole_fractions[label] = subset_of_sites.calculate_probabilities(self.grid, self.phi, self.temp)
         self.mf = mole_fractions
 
 def diff_central(x: np.ndarray,

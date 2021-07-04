@@ -175,7 +175,7 @@ class Grid:
         self.b = b
         self.c = c
         self.set_of_sites = set_of_sites
-        print(f"In Grid: type(set_of_sites) is {type(set_of_sites)}")
+        # print(f"In Grid: type(set_of_sites) is {type(set_of_sites)}")
         self.defect_species = []
         for site in set_of_sites:
             i = index_of_grid_at_x( self.x, site.x )
@@ -255,7 +255,7 @@ class Grid:
             energies.append( interpolated_energies )
         return energies
 
-    def subgrid( self, subset_species ):
+    def subgrid(self, subset_species):
         """
         Creates a subgrid for each species.
 
