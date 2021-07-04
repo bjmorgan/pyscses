@@ -1,4 +1,4 @@
-from pyscses.defect_at_site import Defect_at_Site
+from pyscses.defect_at_site import DefectAtSite
 import numpy as np
 import math
 from pyscses.constants import fundamental_charge, boltzmann_eV
@@ -12,7 +12,7 @@ class Site:
         x (float): x coordinate of the site. 
 	defect_energies (list): List of segregation energies for all defects present at the site.
         defect_species (list): List of defect species for all defects present at the site.
-	defects (list): List of Defect_at_Site objects, containing the properties of all individual defects at the site.
+	defects (list): List of DefectAtSite objects, containing the properties of all individual defects at the site.
 	scaling (float): A scaling factor that can be applied in the charge calculation.
 	valence (float): The charge of the defect present at the site (in atomic units).
 	defects (list): List of Defect_Species objects for all defects present at the site.
@@ -26,7 +26,7 @@ class Site:
         self.x = x  
         self.defect_energies = defect_energies 
         self.defect_species = defect_species
-        self.defects = [ Defect_at_Site( d.label, d.valence, d.mole_fraction, d.mobility, e, self, d.fixed ) for d, e in zip( defect_species, defect_energies ) ]
+        self.defects = [ DefectAtSite( d.label, d.valence, d.mole_fraction, d.mobility, e, self, d.fixed ) for d, e in zip( defect_species, defect_energies ) ]
         if scaling:
             self.scaling = scaling
         else:
@@ -44,7 +44,7 @@ class Site:
 	    label (str): Label to identify defect species.
     
 	Returns:
-            list: List of Defect_at_Site objects for a specific defect species. 
+            list: List of DefectAtSite objects for a specific defect species. 
 
 	"""
         return [ d for d in self.defects if d.label == label ][0]

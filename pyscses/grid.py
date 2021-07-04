@@ -3,8 +3,11 @@ import math
 from pyscses.constants import boltzmann_eV
 from bisect import bisect_left
 from scipy.interpolate import griddata # type: ignore
+from pyscses.grid_point import GridPoint
 
-def phi_at_x( phi, coordinates, x ):
+def phi_at_x(phi: np.ndarray,
+             coordinates: np.ndarray,
+             x: float) -> float:
     """
     Assigns each site x coordinate a grid point and returns the electrostatic potential at the grid point clostest to the x coordinate.
 
@@ -14,13 +17,15 @@ def phi_at_x( phi, coordinates, x ):
         x (float): Site x coordinate.
 
     Returns:
-        phi[index] (float): The electrostatic potential at the x coordinate with position [index].
+        float: The electrostatic potential at the x coordinate with position [index].
     """
 
-    index = index_of_grid_at_x( coordinates, x )
-    return phi[ index ]
+    index = index_of_grid_at_x(coordinates, x)
+    return phi[index]
 
-def energy_at_x( energy, coordinates, x ):
+def energy_at_x(energy: np.ndarray,
+                coordinates: np.ndarray,
+                x: float) -> float:
     """
     Assigns each site x coordinate a grid point and returns the segregation energy at the grid point clostest to the x coordinate.
 
@@ -30,13 +35,14 @@ def energy_at_x( energy, coordinates, x ):
         x (float): Site x coordinate.
 
     Returns:
-        energy[index] (float): The segregation energy at the x coordinate with position [index].
+        float: The segregation energy at the x coordinate with position [index].
     """
 
-    index = index_of_grid_at_x( coordinates, x )
-    return energy[ index ]
+    index = index_of_grid_at_x(coordinates, x)
+    return energy[index]
 
-def index_of_grid_at_x( coordinates, x ):
+def index_of_grid_at_x(coordinates: np.ndarray,
+                       x: float) -> int:
     """
     Assigns each site x coordinate to a position on a regularly or irregularly spaced grid.
     Returns the index of the grid point clostest to the value x
@@ -48,9 +54,10 @@ def index_of_grid_at_x( coordinates, x ):
     Returns:
         closest_index (int): Index of grid position closest to the site x coordinate.
     """
-    return closest_index( coordinates, x )
+    return closest_index(coordinates, x)
 
-def closest_index(myList, myNumber):
+def closest_index(myList: np.ndarray,
+                  myNumber: float) -> int:
     """
     Assumes myList is sorted. Returns index of closest value to myNumber.
     If two numbers are equally close, return the index of the smallest number.
@@ -62,7 +69,7 @@ def closest_index(myList, myNumber):
     Returns:
         pos (int): Index of position of number in myList which is closest to myNumber.
     """
-    pos = bisect_left(myList, myNumber)
+    pos = bisect_left(list(myList), myNumber)
     if pos == 0:
         return 0
     if pos == len(myList):
@@ -89,61 +96,61 @@ def delta_x_from_grid( coordinates, limits ):
     delta_x = np.insert( delta_x, len(delta_x), limits[1] )
     return delta_x
 
-class Grid_Point:
-    """ The Grid_Point class contains the information and calculations for each grid point individually """
-
-    def __init__( self, x, volume ):
-        """
-        x (float): x coordinate of grid point.
-        volume (float): volume of site at grid point.
-        sites (list): defect sites at grid point.
-        """
-        self.x = x
-        self.volume = volume
-        self.sites = []
-
-    def average_site_energy( self, method = 'mean' ):
-        """
-
-        Returns the average segregation energy for all sites based on a specified method
-
-        Args:
-            method (str): The method in which the average segregation energies will be calculated.
-                          'mean' - Returns the sum of all values at that site divided by the number of values at that site.
-                          'min' - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).
-
-        Returns:
-            average site energies (np.array): Average segregation energies on a 1D grid.
-
-        """
-
-        if self.sites:
-            return avg( np.array( [ s.energies() for s in self.sites ] ), method )
-        else:
-            return [None]
-
-def avg( energies, method = 'mean' ):
-    """
-
-    Returns the average segregation energy for a site based on a specified method
-
-    Args:
-        energies (np.array): Segregation energies on 1D grid.
-        method (str): The method in which the average segregation energies will be calculated.
-                      'mean' - Returns the sum of all values at that site divided by the number of values at that site.
-                      'min' - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).
-
-    Returns:
-        average site energies (np.array): Average segregation energies on a 1D grid.
-
-    """
-
-    if method == 'mean':
-        return [ np.mean( row ) for row in energies.T ]
-    elif method == 'min':
-        return [ np.min( row ) for row in energies.T ]
-    else:
-        raise ValueError( "method: {}".format( method ) )
+# class Grid_Point:
+#     """ The Grid_Point class contains the information and calculations for each grid point individually """
+#
+#     def __init__( self, x, volume ):
+#         """
+#         x (float): x coordinate of grid point.
+#         volume (float): volume of site at grid point.
+#         sites (list): defect sites at grid point.
+#         """
+#         self.x = x
+#         self.volume = volume
+#         self.sites = []
+#
+#     def average_site_energy( self, method = 'mean' ):
+#         """
+#
+#         Returns the average segregation energy for all sites based on a specified method
+#
+#         Args:
+#             method (str): The method in which the average segregation energies will be calculated.
+#                           'mean' - Returns the sum of all values at that site divided by the number of values at that site.
+#                           'min' - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).
+#
+#         Returns:
+#             average site energies (np.array): Average segregation energies on a 1D grid.
+#
+#         """
+#
+#         if self.sites:
+#             return avg( np.array( [ s.energies() for s in self.sites ] ), method )
+#         else:
+#             return [None]
+#
+# def avg( energies, method = 'mean' ):
+#     """
+#
+#     Returns the average segregation energy for a site based on a specified method
+#
+#     Args:
+#         energies (np.array): Segregation energies on 1D grid.
+#         method (str): The method in which the average segregation energies will be calculated.
+#                       'mean' - Returns the sum of all values at that site divided by the number of values at that site.
+#                       'min' - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).
+#
+#     Returns:
+#         average site energies (np.array): Average segregation energies on a 1D grid.
+#
+#     """
+#
+#     if method == 'mean':
+#         return [ np.mean( row ) for row in energies.T ]
+#     elif method == 'min':
+#         return [ np.min( row ) for row in energies.T ]
+#     else:
+#         raise ValueError( "method: {}".format( method ) )
 
 class Grid:
     def __init__( self, x_coordinates, b, c, limits, limits_for_laplacian, set_of_sites):
@@ -154,7 +161,7 @@ class Grid:
         Args:
             delta_x (np.array): Distance between the midpoint of each consecutive grid point.
             volumes (np.array): Volume of each consecutive grid point.
-            points (list): Grid_Point object at each grid point in Grid.
+            points (list): GridPoint object at each grid point in Grid.
             x (np.array): The x-coordinates for each grid point.
             limits(list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively.
             limits_for_laplacian(list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
@@ -168,7 +175,7 @@ class Grid:
         """
         self.delta_x = delta_x_from_grid( x_coordinates, limits )
         self.volumes = self.delta_x * b * c
-        self.points = [ Grid_Point( x, v ) for x, v in zip( x_coordinates, self.volumes ) ]
+        self.points = [GridPoint(x, v) for x, v in zip(x_coordinates, self.volumes)]
         self.x = x_coordinates
         self.limits = limits
         self.limits_for_laplacian = limits_for_laplacian
