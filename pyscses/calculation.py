@@ -8,7 +8,8 @@ from pyscses.set_up_calculation import calculate_grid_offsets
 from pyscses.constants import *
 from pyscses.grid import delta_x_from_grid, Grid, phi_at_x
 from scipy.optimize import minimize # type: ignore
-from typing import Tuple, List
+from typing import Tuple, List, Dict
+import math
 
 class Calculation:
     """The Calculation class contains methods for calculating the relevant space charge properties for any given system, such as electrostatic potential, charge density, defect mole fractions and parallel and perpendicular grain boundary resistivities.
@@ -42,8 +43,7 @@ class Calculation:
         self.dielectric = dielectric
         self.temp = temp
         self.boundary_conditions = boundary_conditions
-        # self.mf: Dict[str, np.ndarray]
-
+        self.mf: Dict[str, np.ndarray]
 
     def mole_fraction_error(self,
                             input_mole_fractions: np.ndarray,
@@ -84,7 +84,7 @@ class Calculation:
         """
         for mf in input_mole_fractions:
             for i in range(len(mf)):
-                for site in self.grid.set_of_sites.subset( self.site_labels[i] ):
+                for site in self.grid.set_of_sites.subset(self.site_labels[i]):
                     for defect in site.defect_species:
                         defect.mole_fraction = input_mole_fractions[0,i]
                     for defect in site.defects:
@@ -95,15 +95,15 @@ class Calculation:
         for mf in input_mole_fractions:
             for i in range(len(mf)):
                 species.append(self.site_labels[i])
-        self.form_subgrids( species )
+        self.form_subgrids(species)
         self.mole_fractions()
         average_mole_fractions = []
         for mf in input_mole_fractions:
             for i in range(len(mf)):
-                self.mf[self.site_labels[i]] = [mf for mf in self.mf[self.site_labels[i]] if mf != 0.0 ]
+                self.mf[self.site_labels[i]] = np.array([mf for mf in self.mf[self.site_labels[i]] if mf != 0.0])
                 average_mf = self.calculate_average(self.subgrids[self.site_labels[i]], self.bulk_x_min, self.bulk_x_max, self.mf[self.site_labels[i]])
                 average_mole_fractions.append(average_mf)
-        output_mole_fractions = np.array( [ average_mole_fractions ] )
+        output_mole_fractions = np.array([average_mole_fractions])
         return output_mole_fractions
 
 
@@ -122,11 +122,14 @@ class Calculation:
         self.initial_guess = initial_guess
         bounds = [(0.0001, 1)]*len(target_mole_fractions)
         target_mole_fractions = np.array([target_mole_fractions])
-        opt_mole_fractions = minimize( self.mole_fraction_error, self.initial_guess, args=(  target_mole_fractions, approximation ), bounds = (bounds) )
+        opt_mole_fractions = minimize(self.mole_fraction_error,
+                                      self.initial_guess,
+                                      args=(target_mole_fractions, approximation),
+                                      bounds=(bounds))
         opt_mole_fractions.x = np.array([opt_mole_fractions.x])
         for mf in target_mole_fractions:
             for i in range(len(mf)):
-                for site in self.grid.set_of_sites.subset( self.site_labels[i] ):
+                for site in self.grid.set_of_sites.subset(self.site_labels[i]):
                     for defect in site.defect_species:
                         defect.mole_fraction = opt_mole_fractions.x[0,i]
                     for defect in site.defects:
@@ -267,7 +270,7 @@ class Calculation:
                 if niter % 500 == 0:
                     print(f'Iteration: {niter} -> Convergence: {conv} / {self.convergence}')
         if verbose:
-            print('Converged at iteration {niter} -> Convergence: {conv} / {self.convergence}')
+            print(f'Converged at iteration {niter} -> Convergence: {conv} / {self.convergence}')
         self.phi = phi
         self.rho = self.grid.rho( phi, self.temp )
         self.niter = niter
@@ -291,7 +294,10 @@ class Calculation:
             subgrids[name].volumes[-1] = subgrids[name].volumes[1]
         self.subgrids = subgrids
 
-    def create_subregion_sites( self, grid, min_cutoff, max_cutoff ):
+    def create_subregion_sites(self,
+                               grid: Grid,
+                               min_cutoff: float,
+                               max_cutoff: float) -> SetOfSites:
         """Creates a `pyscses.SetOfSites` object for a defined region of the grid.
 
         Args:
@@ -306,11 +312,13 @@ class Calculation:
         sites = []
         for site in grid.set_of_sites:
             if site.x > min_cutoff and site.x < max_cutoff:
-                sites.append( site )
-        sites = SetOfSites( sites )
-        return sites
+                sites.append(site)
+        return SetOfSites(sites)
 
-    def create_space_charge_region( self, grid, pos_or_neg_scr, scr_limit ):
+    def create_space_charge_region(self,
+                                   grid: Grid,
+                                   pos_or_neg_scr: str,
+                                   scr_limit: float) -> List[float]:
         """Calculate the space charge region. The space charge region is defined as the region when the electrostatic potential is greater than a predefined limit.
 
 	Args:
@@ -335,7 +343,11 @@ class Calculation:
                     space_charge_region.append( x_and_phi[i,0] )
         return space_charge_region
 
-    def calculate_mobile_defect_conductivities( self, pos_or_neg_scr, scr_limit, species, mobility_scaling=False ):
+    def calculate_mobile_defect_conductivities(self,
+                                               pos_or_neg_scr: str,
+                                               scr_limit: float,
+                                               species: str,
+                                               mobility_scaling: bool = False) -> Tuple[float, float]:
         """Calculate the conductivity ratio between the space charge region and the bulk both perpendicular and parallel to the grain boundary.
 
         A `SetOfSites` object is created for the sites in the space charge region, and the defect distributions calculated. The width of the space charge region is calculated and a bulk region of the same width is defined. A SetOfSites object for the bulk region is created and the defect distributions calculated. Taking each site as a resistor in series or parallel respectively, the conductivity is calculated and the ratio between the space charge region and the bulk is taken.
@@ -351,7 +363,7 @@ class Calculation:
             float: The perpendicular conductivity ratio. The conductivity ratio between the bulk and the space charge region perpendicular to the grain boundary.
             float: The parallel conductivity ratio. The conductivity ratio between the bulk and the space charge region parallel to the grain boundary.
 
-	"""
+	    """
         space_charge_region = self.create_space_charge_region( self.subgrids[species], pos_or_neg_scr, scr_limit )
         space_charge_region_limits = self.calculate_offset( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
         space_charge_region_sites = self.create_subregion_sites( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
@@ -372,8 +384,8 @@ class Calculation:
         self.bulk_limits = self.calculate_offset( self.subgrids[species], self.bulk_x_min, bulk_x_max )
         bulk_mobile_defect_sites = self.create_subregion_sites( self.subgrids[species], self.bulk_x_min, bulk_x_max )
         bulk_mobile_defect_grid = Grid.grid_from_set_of_sites( bulk_mobile_defect_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c )
-        bulk_mobile_defect_density = SetOfSites( bulk_mobile_defect_grid.set_of_sites ).subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )
-        bulk_region_mobile_defect_mf = bulk_mobile_defect_sites.calculate_probabilities( bulk_mobile_defect_grid, self.phi, self.temp )
+        bulk_mobile_defect_density = SetOfSites(bulk_mobile_defect_grid.set_of_sites).subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )
+        bulk_region_mobile_defect_mf = bulk_mobile_defect_sites.calculate_probabilities(bulk_mobile_defect_grid, self.phi, self.temp)
         if mobility_scaling:
             bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities
         else:
@@ -394,7 +406,10 @@ class Calculation:
 #        self.depletion_factor = 1 - ( mobile_defect_density / average_bulk )
         return perpendicular_conductivity_ratio, parallel_conductivity_ratio
 
-    def calculate_resistivity_ratio( self, pos_or_neg_scr, scr_limit, mobility_scaling=False ):
+    def calculate_resistivity_ratio(self,
+                                    pos_or_neg_scr: str,
+                                    scr_limit: float,
+                                    mobility_scaling: bool = False) -> None:
         """
         Each species present in the system is looped over and the perpendicular and parallel conductivity ratios are calculated and appended to separate lists. Once all species have been added to the list, the conductivities are summed and the reciprocal taken to give the resistivity ratios perpendicular and parallel to the grain boundary. The outputs are stored as calculation attributes, Calculation.perpendicular_resistivity_ratio(float), Calculation.parallel_resistivity_ratio (float): :math:`r_\mathrm{gb}^\perp, r_\mathrm{gb}^\parallel`: The perpendicular and parallel grain boundary resistivity ratios.
         Args:
@@ -403,17 +418,18 @@ class Calculation:
             scr_limit (float): The minimum electrostatic potential that the electrostatic potential must exceed to be included in the space charge region.
             mobility_scaling (bool): For particles on a lattice which only interact through volume exclusion, the mobility exhibits a blocking term. True if the blocking term is to be included, False if the blocking term is not to be included. Default = False.
 
-	"""
+	    """
         full_parallel_conductivity_data = []
         full_perpendicular_conductivity_data = []
         for label in self.site_labels:
             c_per, c_par = ( self.calculate_mobile_defect_conductivities( pos_or_neg_scr, scr_limit, label, mobility_scaling  ))
             full_parallel_conductivity_data.append(c_par)
             full_perpendicular_conductivity_data.append(c_per)
-        self.perpendicular_resistivity_ratio = 1 / sum(full_perpendicular_conductivity_data)
-        self.parallel_resistivity_ratio = 1 / sum(full_parallel_conductivity_data)
+        self.perpendicular_resistivity_ratio = 1.0 / sum(full_perpendicular_conductivity_data)
+        self.parallel_resistivity_ratio = 1.0 / sum(full_parallel_conductivity_data)
 
-    def solve_MS_approx_for_phi( self, valence ):
+    def solve_MS_approx_for_phi(self,
+                                valence: float) -> None:
         """Calculate the space-charge potential, :math:`\phi_0`, from the grain-boundary resistivity ratio, within the Mott-Schottky approximation.
         Within the Mott-Schottky approximation the grain boundary resistivity is related to the space-charge potential (the electrostatic potential at the grain boundary core, compared to the bulk value) according to
 
@@ -446,7 +462,7 @@ class Calculation:
             raise ValueError( "Resistivity ratio < 1.36. Solution not on a real branch." )
         self.ms_phi = (-mpmath.lambertw(-1/(2*self.perpendicular_resistivity_ratio),k=-1)) * ( ( boltzmann_eV * self.temp ) / valence )
 
-    def calculate_debye_length( self ):
+    def calculate_debye_length(self) -> None:
         """Calculate the `Debye length`_.
 
         .. _Debye length: https://en.wikipedia.org/wiki/Debye_length
@@ -459,7 +475,8 @@ class Calculation:
         """
         self.debye_length = np.sqrt( ( self.dielectric * vacuum_permittivity * boltzmann_eV * self.temp ) / ( 2 * ( fundamental_charge ** 2 ) * self.average_bulk_mobile_defect_density ) )
 
-    def calculate_space_charge_width( self, valence ):
+    def calculate_space_charge_width(self,
+                                     valence: float) -> None:
         """Calculate the approximate space charge width from the Debye length.
            The output is stores as a Calculation attribute. Calculation.space_charge_width (float): The approximate space charge width.
 
@@ -470,7 +487,7 @@ class Calculation:
         self.space_charge_width = 2 * ( self.debye_length * math.sqrt( max(self.phi) / ( ( boltzmann_eV * self.temp ) / valence ) ) )
 
 
-    def mole_fractions( self ):
+    def mole_fractions(self) -> None:
         """Calculate the mole fractions (probability of defects occupation) for each site on the subgrid for each species. The output is stored as a Calculation attribute. Calculation.mf (dict): A dictionary of the defect species mole fractions for each site on the subgrid for each site species.
         Args:
             None
@@ -479,10 +496,12 @@ class Calculation:
         mole_fractions = {}
         for label in self.site_labels:
             name = '{}'.format(label)
-            mole_fractions[name] = SetOfSites(self.subgrids[name].set_of_sites).calculate_probabilities( self.grid, self.phi, self.temp )
+            subgrid_set_of_sites = self.subgrids[name].set_of_sites # actually a list
+            mole_fractions[name] = SetOfSites(subgrid_set_of_sites).calculate_probabilities(self.grid, self.phi, self.temp)
         self.mf = mole_fractions
 
-def diff_central(x, y):
+def diff_central(x: np.ndarray,
+                 y: np.ndarray) -> np.ndarray:
     """Calculate the numerical derivative of x,y data using a central difference approximation.
 
     Args:
@@ -502,7 +521,8 @@ def diff_central(x, y):
     f = (x2 - x1)/(x2 - x0)
     return (1-f)*(y2 - y1)/(x2 - x1) + f*(y1 - y0)/(x1 - x0)
 
-def calculate_activation_energies( ratios, temp ):
+def calculate_activation_energies(ratios: List[float],
+                                  temp: List[float]) -> np.ndarray:
     """Solves the Arrhenius equation using the calculated resistivity ratio for a series of temperatures to calculate the activation energy for single defect segregation.
 
     Uses a central difference approach so endpoints filled in with NaN to create an array with the same length as the args.
@@ -515,13 +535,11 @@ def calculate_activation_energies( ratios, temp ):
         numpy.array: The activation energy calculated for different temperatures.
 
     """
-    temp = np.array( temp )
-    ratios = np.array(ratios)
-    x = 1 / temp
-    y = np.log( 1 / ratios )
-    slopes = diff_central( x, y )
+    x = 1 / np.array(temp)
+    y = np.log(1.0 / np.array(ratios))
+    slopes = diff_central(x, y)
     Ea = slopes*-boltzmann_eV
-    Ea = np.append( Ea, 0 )
-    Ea = np.insert( Ea, [0], 0 )
-    Ea2 = np.where(Ea == 0, np.nan, Ea )
+    Ea = np.append(Ea, 0)
+    Ea = np.insert(Ea, [0], 0)
+    Ea2 = np.where(Ea == 0, np.nan, Ea)
     return Ea2

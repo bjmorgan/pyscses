@@ -56,6 +56,6 @@ class TestGrid( unittest.TestCase ):
         expected_delta_x = np.array( [ 0.5, 0.75, 1.0, 1.5, 1.0 ] )
         delta_x = delta_x_from_grid( grid, limits )
         np.testing.assert_array_almost_equal( expected_delta_x, delta_x )
-     
+
 if __name__ == '__main__':
     unittest.main()
