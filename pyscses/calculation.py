@@ -322,9 +322,9 @@ class Calculation:
         """Calculate the space charge region. The space charge region is defined as the region when the electrostatic potential is greater than a predefined limit.
 
 	Args:
-	    grid (:obj:`pyscses.Grid`): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
+	    grid (:obj:`pyscses.Grid`): Grid object - contains properties of the grid including the x coordinates and the volumes.
 	    pos_or_neg_scr (str): 'positive' - for a positive space charge potential.
-				  'negative' - for a negative space charge potential.
+				              'negative' - for a negative space charge potential.
 	    scr_limit (float): The minimum electrostatic potential that the electrostatic potential must exceed to be included in the space charge region.
 
 	Returns:
