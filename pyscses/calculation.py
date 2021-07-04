@@ -180,7 +180,9 @@ class Calculation:
         delta_x = self.calculate_delta_x( grid, min_cut_off, max_cut_off )
         return np.sum( sc_property[ min_index + 1 : max_index ] * delta_x ) / np.sum( delta_x )
 
-    def solve( self, approximation ):
+    def solve(self,
+              approximation: str,
+              verbose: bool = False) -> None:
         """
         Self-consistent solving of the Poisson-Boltzmann equation. Iterates until the convergence is less than the convergence limit. The outputs are stored as Calculation attributes.
         Calculation.phi (array): Electrostatic potential on a one-dimensional grid. 
@@ -192,6 +194,7 @@ class Calculation:
             approximation (str): Approximation used for the defect behaviour.
                                  'mott-schottky' - Some defects immobile / fixed to bulk mole fractions.
                                  'gouy-chapman' - All defects mobile / able to redistribute.
+            verbose (optional, bool): Verbose output. Default is False.
 
         """
         poisson_solver = MatrixSolver( self.grid, self.dielectric, self.temp, boundary_conditions=self.boundary_conditions )
@@ -214,11 +217,11 @@ class Calculation:
             conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
             prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp )
             niter += 1
-#            if niter % 500 == 0.0:
-#            if niter == 1:
-#                print(conv)
-#                print(phi, rho)
-#                stop
+            if verbose:
+                if niter % 500 == 0:
+                    print(f'Iteration: {niter} -> Convergence: {conv} / {self.convergence}') 
+        if verbose:
+            print('Converged at iteration {niter} -> Convergence: {conv} / {self.convergence}')
         self.phi = phi
         self.rho = self.grid.rho( phi, self.temp )
         self.niter = niter
