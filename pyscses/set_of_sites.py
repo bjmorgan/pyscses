@@ -1,6 +1,6 @@
 import numpy as np
 from pyscses.grid import Grid
-from scipy.interpolate import griddata
+from scipy.interpolate import griddata # type: ignore
 import math
 from pyscses.set_up_calculation import site_from_input_file, load_site_data 
 from pyscses.grid import index_of_grid_at_x, phi_at_x, energy_at_x

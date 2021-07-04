@@ -1,12 +1,13 @@
+from __future__ import annotations
 import numpy as np 
-import mpmath
+import mpmath # type: ignore
 from bisect import bisect_left, bisect_right
 from pyscses.set_of_sites import Set_of_Sites
 from pyscses.matrix_solver import MatrixSolver
 from pyscses.set_up_calculation import calculate_grid_offsets
 from pyscses.constants import *
 from pyscses.grid import delta_x_from_grid, Grid, phi_at_x
-from scipy.optimize import minimize
+from scipy.optimize import minimize # type: ignore
 
 class Calculation:
     """The Calculation class contains methods for calculating the relevant space charge properties for any given system, such as electrostatic potential, charge density, defect mole fractions and parallel and perpendicular grain boundary resistivities. 
@@ -16,14 +17,22 @@ class Calculation:
         bulk_x_min (float): The minimum x coordinate defining a region of bulk.
         bulk_x_max (float): The maximum x coordinate defining a region of bulk.
         alpha (float): A damping parameter for updating the potential at each iteration.
-        convergence (float): The convergence limit. The difference between the updated phi and the phi from the previous iteration must be below this for the calculation to be sufficently converged. 
+        convergence (float): The convergence limit. The difference between the updated phi and the phi from the previous iteration must be below this for the calculation to be sufficiently converged. 
         dielectric (float): The dielectric constant for the studied material.
         temp (float): The temperature that the calculation is run. 
         boundary_conditions (str): Specified boundary conditions for the matrix solver. Allowed values are `dirichlet` and `periodic`. Default = `dirichlet`.
  
     """
 
-    def __init__(self, grid, bulk_x_min, bulk_x_max, alpha, convergence, dielectric, temp, boundary_conditions ):
+    def __init__(self,
+                 grid: Grid,
+                 bulk_x_min: float,
+                 bulk_x_max: float,
+                 alpha: float,
+                 convergence: float,
+                 dielectric: float,
+                 temp: float,
+                 boundary_conditions: str = 'dirichlet') -> None:
         self.grid = grid
         self.bulk_x_min = bulk_x_min
         self.bulk_x_max = bulk_x_max
@@ -32,10 +41,15 @@ class Calculation:
         self.dielectric = dielectric 
         self.temp = temp 
         self.boundary_conditions = boundary_conditions
+        # self.mf: Dict[str, np.ndarray]
 
 
-    def mole_fraction_error( self, input_mole_fractions, target_mole_fractions, approximation):
-        """Calculates the sum of sqaures error between the output mole fractions calculated from the input mole fractions, compared to the target mole fractions.
+    def mole_fraction_error(self,
+                            input_mole_fractions: np.ndarray,
+                            target_mole_fractions: np.ndarray,
+                            approximation) -> float:
+        """Calculates the sum of squared error between the output mole fractions calculated from the input mole fractions,
+            compared to the target mole fractions.
 
         Args:
             input_mole_fractions (list): Mole fractions for each of the species used in the iterative Poisson-Boltzmann solver.
@@ -113,71 +127,71 @@ class Calculation:
                         defect.mole_fraction = opt_mole_fractions.x[0,i]
         self.initial_guess = opt_mole_fractions.x
 
-    def find_index( self, grid, min_cut_off, max_cut_off ):
+    def find_index( self, grid, min_cutoff, max_cutoff ):
         """Calculates the indices of the grid positions closest to a minimum and maximum value.
 
         Args:
 	    grid (:obj:`pyscses.Grid`): pyscses.Grid object. This contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-	    min_cut_off (float): Minimum x coordinate value defining the calculation region. 
-	    max_cut_off (float): Maximum x coordinate value defining the calculation region.
+	    min_cutoff (float): Minimum x coordinate value defining the calculation region. 
+	    max_cutoff (float): Maximum x coordinate value defining the calculation region.
 
 	Returns:
 	    int, int: Index for minimum cutoff; index for maximum cutoff
 
 	"""
-        min_index = bisect_left( grid.x, min_cut_off )
-        max_index = bisect_left( grid.x, max_cut_off )
+        min_index = bisect_left( grid.x, min_cutoff )
+        max_index = bisect_left( grid.x, max_cutoff )
         return min_index, max_index
 
-    def calculate_offset( self, grid, min_cut_off, max_cut_off ):
+    def calculate_offset( self, grid, min_cutoff, max_cutoff ):
         """Calculate the offset between the midpoint of the last x coordinate in the calculation region and the x coordinate outside of the calulation region.
 
         Args:
             grid (:obj:`pyscses.Grid`): Contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-            min_cut_off (float): Minimum x coordinate value defining the calculation region. 
-	    max_cut_off (float): Maximum x coordinate value defining the calculation region.
+            min_cutoff (float): Minimum x coordinate value defining the calculation region. 
+	    max_cutoff (float): Maximum x coordinate value defining the calculation region.
 
         Returns:
             float: Offset for the minimum x coordinate.
 	    float: Offset fot the maximum x coordinate.
 
         """
-        min_index, max_index = self.find_index( grid, min_cut_off, max_cut_off )
+        min_index, max_index = self.find_index( grid, min_cutoff, max_cutoff )
         min_offset = ( ( grid.x[ min_index + 1 ] - grid.x[ min_index ] ) / 2 ) + ( ( grid.x[ min_index ] - grid.x[ min_index - 1 ] ) / 2 )
         max_offset = ( ( grid.x[ max_index ] - grid.x[ max_index - 1 ] ) / 2 ) + ( ( grid.x[ max_index - 1 ] - grid.x[ max_index -2 ] ) / 2 )
         return min_offset, max_offset
 
-    def calculate_delta_x( self, grid, min_cut_off, max_cut_off ):
+    def calculate_delta_x( self, grid, min_cutoff, max_cutoff ):
         """Calculates the distance between the midpoints of each consecutive site. Inserts the calculated distance to the next grid point outside of the calculation region to the first and last position as the delta_x value for the endmost sites. 
 
         Args:
             grid (:obj:`pyscses.Grid`): Contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-            min_cut_off (float): Minimum x coordinate value defining the calculation region. 
-	    max_cut_off (float): Maximum x coordinate value defining the calculation region.
+            min_cutoff (float): Minimum x coordinate value defining the calculation region. 
+	    max_cutoff (float): Maximum x coordinate value defining the calculation region.
 
 	Returns:
 	    list: Distance between consecutive sites. 
 
 	"""
-        min_index, max_index = self.find_index( grid, min_cut_off, max_cut_off )
-        min_offset, max_offset = self.calculate_offset( grid, min_cut_off, max_cut_off )
+        min_index, max_index = self.find_index( grid, min_cutoff, max_cutoff )
+        min_offset, max_offset = self.calculate_offset( grid, min_cutoff, max_cutoff )
         return delta_x_from_grid( grid.x[ min_index+1 : max_index ], [min_offset, max_offset] )
 
-    def calculate_average( self, grid, min_cut_off, max_cut_off, sc_property ):
+    def calculate_average( self, grid, min_cutoff, max_cutoff, sc_property ):
         """Calculate the average of a given space chage property over a given region.
 
         Args:
             grid (:obj:`pyscses.Grid`): Contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-            min_cut_off (float): Minimum x coordinate value defining the calculation region. 
-            max_cut_off (float): Maximum x coordinate value defining the calculation region.
+            min_cutoff (float): Minimum x coordinate value defining the calculation region. 
+            max_cutoff (float): Maximum x coordinate value defining the calculation region.
             sc_property (list): Value of space charge property at all sites.
 
         Returns:
             float: The average value for the property over the given sites. 
 
 	"""
-        min_index, max_index = self.find_index( grid, min_cut_off, max_cut_off )
-        delta_x = self.calculate_delta_x( grid, min_cut_off, max_cut_off )
+        min_index, max_index = self.find_index(grid, min_cutoff, max_cutoff)
+        delta_x = self.calculate_delta_x(grid, min_cutoff, max_cutoff)
         return np.sum( sc_property[ min_index + 1 : max_index ] * delta_x ) / np.sum( delta_x )
 
     def solve(self,
@@ -197,25 +211,38 @@ class Calculation:
             verbose (optional, bool): Verbose output. Default is False.
 
         """
-        poisson_solver = MatrixSolver( self.grid, self.dielectric, self.temp, boundary_conditions=self.boundary_conditions )
+        poisson_solver = MatrixSolver(grid=self.grid,
+              dielectric=self.dielectric,
+              temp=self.temp,
+              boundary_conditions=self.boundary_conditions)
 
-        phi = np.zeros_like( self.grid.x )
-        rho = np.zeros_like( self.grid.x )
-
-        conv = 1
+        phi = np.zeros_like(self.grid.x)
+        rho = np.zeros_like(self.grid.x)
+        
+        conv = 1.0
         niter = 0
         while conv > self.convergence:
-            predicted_phi, rho = poisson_solver.solve( phi )
+            predicted_phi, rho = poisson_solver.solve(phi)
             if approximation == 'gouy-chapman':
-                average_phi = self.calculate_average( self.grid, self.bulk_x_min, self.bulk_x_max, predicted_phi )
+                average_phi = self.calculate_average(grid=self.grid,
+                                             min_cutoff=self.bulk_x_min,
+                                             max_cutoff=self.bulk_x_max,
+                                             sc_property=predicted_phi)
                 predicted_phi -= average_phi
-            if approximation == 'mott-schottky':
-                vo_predicted_phi = [ phi_at_x( predicted_phi, self.grid.x, x ) for x in self.grid.subgrid(self.site_labels[0]).x ]
-                average_vo_predicted_phi = self.calculate_average( self.grid.subgrid( self.site_labels[0] ), self.bulk_x_min, self.bulk_x_max, vo_predicted_phi )
-                predicted_phi -= average_vo_predicted_phi
+            elif approximation == 'mott-schottky':
+                subgrid = self.grid.subgrid(self.site_labels[0])
+                predicted_phi_subgrid = np.array([phi_at_x(phi=predicted_phi,
+                                                   coordinates=self.grid.x, 
+                                                   x=x)
+                                            for x in subgrid.x])
+                average_predicted_phi = self.calculate_average(grid=subgrid,
+                                                       min_cutoff=self.bulk_x_min,
+                                                       max_cutoff=self.bulk_x_max,
+                                                       sc_property=predicted_phi_subgrid)
+                predicted_phi -= average_predicted_phi
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
-            conv = sum( ( predicted_phi - phi )**2) / len( self.grid.x )
-            prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp )
+            conv = sum((predicted_phi - phi )**2) / len(self.grid.x)
+            # prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp) # Jacob: Does this do anything?
             niter += 1
             if verbose:
                 if niter % 500 == 0:
@@ -244,13 +271,13 @@ class Calculation:
             subgrids[name].volumes[-1] = subgrids[name].volumes[1]
         self.subgrids = subgrids
 
-    def create_subregion_sites( self, grid, min_cut_off, max_cut_off ):
+    def create_subregion_sites( self, grid, min_cutoff, max_cutoff ):
         """Creates a `pyscses.Set_of_Sites` object for a defined region of the grid.
 
         Args:
             grid (object): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-            min_cut_off (float): Minimum x coordinate value defining the calculation region. 
-            max_cut_off (float): Maximum x coordinate value defining the calculation region.
+            min_cutoff (float): Minimum x coordinate value defining the calculation region. 
+            max_cutoff (float): Maximum x coordinate value defining the calculation region.
 
         Returns:
             :obj:`pyscses.SetOfSites`: Set of Sites object for a given subregion of the grid.
@@ -258,7 +285,7 @@ class Calculation:
         """
         sites = []
         for site in grid.set_of_sites:
-            if site.x > min_cut_off and site.x < max_cut_off:
+            if site.x > min_cutoff and site.x < max_cutoff:
                 sites.append( site )
         sites = Set_of_Sites( sites )
         return sites

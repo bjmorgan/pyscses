@@ -1,7 +1,7 @@
 import numpy as np
-from scipy.sparse import dia_matrix, diags, spdiags, csc_matrix
-from scipy.sparse import linalg 
-from scipy.constants import epsilon_0
+from scipy.sparse import dia_matrix, diags, spdiags, csc_matrix # type: ignore
+from scipy.sparse import linalg # type: ignore
+from scipy.constants import epsilon_0 # type: ignore
 
 class MatrixSolver:
     """ 
