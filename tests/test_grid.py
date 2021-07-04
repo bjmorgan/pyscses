@@ -1,6 +1,6 @@
 import unittest
 from pyscses.grid import Grid, Grid_Point, delta_x_from_grid
-from pyscses.set_of_sites import Set_of_Sites
+from pyscses.set_of_sites import SetOfSites
 from pyscses.site import Site
 from pyscses.defect_species import DefectSpecies
 from unittest.mock import Mock, MagicMock, patch, call
@@ -22,7 +22,7 @@ class TestGrid( unittest.TestCase ):
         c = 0.1
         limits = [ 1.0, 1.0 ]
         limits_for_laplacian = [1.0, 1.0]
-        set_of_sites = MagicMock( spec=Set_of_Sites )
+        set_of_sites = MagicMock( spec=SetOfSites )
         sites = [ Mock( spec=Site ), Mock( spec=Site ) ]
         sites[0].x = 1.0
         sites[1].x = 3.0
