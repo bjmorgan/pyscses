@@ -1,7 +1,7 @@
 from __future__ import annotations
 import numpy as np
 import mpmath # type: ignore
-from bisect import bisect_left, bisect_right
+from bisect import bisect_left
 from pyscses.set_of_sites import SetOfSites
 from pyscses.matrix_solver import MatrixSolver
 from pyscses.set_up_calculation import calculate_grid_offsets
@@ -85,8 +85,8 @@ class Calculation:
         for mf in input_mole_fractions:
             for i in range(len(mf)):
                 for site in self.grid.set_of_sites.subset(self.site_labels[i]):
-                    for defect in site.defect_species:
-                        defect.mole_fraction = input_mole_fractions[0,i]
+                    for defect_species in site.defect_species:
+                        defect_species.mole_fraction = input_mole_fractions[0,i]
                     for defect in site.defects:
                         defect.mole_fraction = input_mole_fractions[0,i]
 
@@ -130,8 +130,8 @@ class Calculation:
         for mf in target_mole_fractions:
             for i in range(len(mf)):
                 for site in self.grid.set_of_sites.subset(self.site_labels[i]):
-                    for defect in site.defect_species:
-                        defect.mole_fraction = opt_mole_fractions.x[0,i]
+                    for defect_species in site.defect_species:
+                        defect_species.mole_fraction = opt_mole_fractions.x[0,i]
                     for defect in site.defects:
                         defect.mole_fraction = opt_mole_fractions.x[0,i]
         self.initial_guess = opt_mole_fractions.x
@@ -151,8 +151,8 @@ class Calculation:
 	    int, int: Index for minimum cutoff; index for maximum cutoff
 
 	"""
-        min_index = bisect_left( grid.x, min_cutoff )
-        max_index = bisect_left( grid.x, max_cutoff )
+        min_index = int(np.searchsorted(grid.x, min_cutoff))
+        max_index = int(np.searchsorted(grid.x, max_cutoff))
         return min_index, max_index
 
     def calculate_offset(self,
@@ -193,7 +193,8 @@ class Calculation:
 	"""
         min_index, max_index = self.find_index( grid, min_cutoff, max_cutoff )
         min_offset, max_offset = self.calculate_offset( grid, min_cutoff, max_cutoff )
-        return delta_x_from_grid( grid.x[ min_index+1 : max_index ], [min_offset, max_offset] )
+        return delta_x_from_grid(grid.x[min_index+1: max_index ],
+                                 (min_offset, max_offset))
 
     def calculate_average(self,
                           grid: Grid,
@@ -370,9 +371,9 @@ class Calculation:
         for site in space_charge_region_sites:
             charge = site.defects[0].valence
             mobilities = site.defects[0].mobility
-        space_charge_region_grid = Grid.grid_from_set_of_sites( space_charge_region_sites, space_charge_region_limits, space_charge_region_limits, self.grid.b, self.grid.c )
+        space_charge_region_grid = Grid.from_set_of_sites( space_charge_region_sites, space_charge_region_limits, space_charge_region_limits, self.grid.b, self.grid.c )
         space_charge_region_width = space_charge_region_grid.x[-1] - space_charge_region_grid.x[0]
-        mobile_defect_density = SetOfSites( self.subgrids[species].set_of_sites ).subgrid_calculate_defect_density( self.subgrids[species], self.grid, self.phi, self.temp )
+        mobile_defect_density = self.subgrids[species].set_of_sites.subgrid_calculate_defect_density( self.subgrids[species], self.grid, self.phi, self.temp )
         space_charge_region_mobile_defect_mf = space_charge_region_sites.calculate_probabilities( space_charge_region_grid, self.phi, self.temp )
         space_charge_region_mobile_defect_density = space_charge_region_sites.subgrid_calculate_defect_density( space_charge_region_grid, self.grid, self.phi, self.temp )
         if mobility_scaling:
@@ -383,8 +384,8 @@ class Calculation:
         min_bulk_index, max_bulk_index = self.find_index( self.subgrids[species], self.bulk_x_min, bulk_x_max )
         self.bulk_limits = self.calculate_offset( self.subgrids[species], self.bulk_x_min, bulk_x_max )
         bulk_mobile_defect_sites = self.create_subregion_sites( self.subgrids[species], self.bulk_x_min, bulk_x_max )
-        bulk_mobile_defect_grid = Grid.grid_from_set_of_sites( bulk_mobile_defect_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c )
-        bulk_mobile_defect_density = SetOfSites(bulk_mobile_defect_grid.set_of_sites).subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )
+        bulk_mobile_defect_grid = Grid.from_set_of_sites( bulk_mobile_defect_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c )
+        bulk_mobile_defect_density = bulk_mobile_defect_grid.set_of_sites.subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )
         bulk_region_mobile_defect_mf = bulk_mobile_defect_sites.calculate_probabilities(bulk_mobile_defect_grid, self.phi, self.temp)
         if mobility_scaling:
             bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities

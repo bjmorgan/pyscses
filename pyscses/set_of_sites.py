@@ -62,24 +62,25 @@ class SetOfSites:
     	"""
         return [s.x for s in self.sites if s.label == label]
 
-    def calculate_energies_on_grid(self,
-                                   grid: Grid,
-                                   phi: np.ndarray) -> np.ndarray:
-        """
-        Returns an array of energies at their points on a one-dimensional grid.
-
-        Args:
-            grid (Grid): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
-            phi (array): electrostatic potential on a one-dimensional grid.
-
-        Returns:
-            array: energies at their grid points
-
-        """
-        energies_on_grid = np.zeros_like(grid.x)
-        for site in self.sites:
-            energies_on_grid[index_of_grid_at_x(grid.x, site.x)] =+ energy_at_x(site.defect_energies, grid.x, site.x)
-        return energies_on_grid
+# BEN: Is this used?
+#     def calculate_energies_on_grid(self,
+#                                    grid: Grid,
+#                                    phi: np.ndarray) -> np.ndarray:
+#         """
+#         Returns an array of energies at their points on a one-dimensional grid.
+#
+#         Args:
+#             grid (Grid): Grid object - contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
+#             phi (array): electrostatic potential on a one-dimensional grid.
+#
+#         Returns:
+#             array: energies at their grid points
+#
+#         """
+#         energies_on_grid = np.zeros_like(grid.x)
+#         for site in self.sites:
+#             energies_on_grid[index_of_grid_at_x(grid.x, site.x)] =+ energy_at_x(site.defect_energies, grid.x, site.x)
+#         return energies_on_grid
 
     def calculate_probabilities(self,
                                 grid: Grid,
