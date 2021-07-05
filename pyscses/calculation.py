@@ -263,6 +263,8 @@ class Calculation:
                                                        max_cutoff=self.bulk_x_max,
                                                        sc_property=predicted_phi_subgrid)
                 predicted_phi -= average_predicted_phi
+            # TODO: This is inefficient. Jacob has some ideas for how to improve things.
+            # TODO: This definition of convergence should not be averaged over all sites.
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
             conv = sum((predicted_phi - phi )**2) / len(self.grid.x)
             # prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp) # Jacob: Does this do anything?
@@ -365,6 +367,8 @@ class Calculation:
             float: The parallel conductivity ratio. The conductivity ratio between the bulk and the space charge region parallel to the grain boundary.
 
 	    """
+        # TODO: Needs refactoring.
+        # TODO: Updated copy of this function from Jacob.
         space_charge_region = self.create_space_charge_region( self.subgrids[species], pos_or_neg_scr, scr_limit )
         space_charge_region_limits = self.calculate_offset( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
         space_charge_region_sites = self.create_subregion_sites( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
@@ -375,11 +379,16 @@ class Calculation:
         space_charge_region_width = space_charge_region_grid.x[-1] - space_charge_region_grid.x[0]
         mobile_defect_density = self.subgrids[species].set_of_sites.subgrid_calculate_defect_density( self.subgrids[species], self.grid, self.phi, self.temp )
         space_charge_region_mobile_defect_mf = space_charge_region_sites.calculate_probabilities( space_charge_region_grid, self.phi, self.temp )
-        space_charge_region_mobile_defect_density = space_charge_region_sites.subgrid_calculate_defect_density( space_charge_region_grid, self.grid, self.phi, self.temp )
+        space_charge_region_mobile_defect_density = space_charge_region_sites.subgrid_calculate_defect_density(space_charge_region_grid, self.grid, self.phi, self.temp)
+        # TODO: According to Jacob this only scales the mobility of space-charge region but not the
+        # TODO: bulk region, or vice-versa depending on whether it is switched on or not?
         if mobility_scaling:
              mobile_defect_conductivity = space_charge_region_mobile_defect_density * ( 1 - space_charge_region_mobile_defect_mf ) * charge * mobilities
         else:
             mobile_defect_conductivity = space_charge_region_mobile_defect_density * charge * mobilities
+        # TODO: This example bulk region can overlap with the space-charge region for cells that are similar lengths to the space-charge width, and will give spurious results.
+        # TODO: Possible solution: We can directly compute the bulk resistivity from the bulk site density, without having to query the space-charge model.
+        # TODO: Jacob to share his working code for this from his solver.
         bulk_x_max = self.bulk_x_min + space_charge_region_width
         min_bulk_index, max_bulk_index = self.find_index( self.subgrids[species], self.bulk_x_min, bulk_x_max )
         self.bulk_limits = self.calculate_offset( self.subgrids[species], self.bulk_x_min, bulk_x_max )
@@ -387,12 +396,17 @@ class Calculation:
         bulk_mobile_defect_grid = Grid.from_set_of_sites( bulk_mobile_defect_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c )
         bulk_mobile_defect_density = bulk_mobile_defect_grid.set_of_sites.subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )
         bulk_region_mobile_defect_mf = bulk_mobile_defect_sites.calculate_probabilities(bulk_mobile_defect_grid, self.phi, self.temp)
+        # TODO: According to Jacob this only scales the mobility of space-charge region but not the
+        # TODO: bulk region, or vice-versa depending on whether it is switched on or not?
         if mobility_scaling:
             bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities
         else:
             bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities * (1-bulk_region_mobile_defect_mf)
         space_charge_array = np.column_stack( ( mobile_defect_conductivity, space_charge_region_grid.x ) )
         bulk_array = np.column_stack( ( bulk_mobile_defect_conductivity, bulk_mobile_defect_grid.x ) )
+        # TODO: This uses an incorrect definition of the perpendicular resistivity!!!
+        # TODO: Jacob has fixed this!!
+        # TODO: Should be refactored into its own function.
         if mobilities != 0.0:
             space_charge_perpendicular = sum( space_charge_region_grid.delta_x / mobile_defect_conductivity )
             self.average_bulk_mobile_defect_density = sum(bulk_mobile_defect_grid.delta_x * bulk_mobile_defect_density ) / sum(bulk_mobile_defect_grid.delta_x)
@@ -404,7 +418,7 @@ class Calculation:
         else:
             perpendicular_conductivity_ratio = 0.0
             parallel_conductivity_ratio = 0.0
-#        self.depletion_factor = 1 - ( mobile_defect_density / average_bulk )
+#        self.depletion_factor = 1 - (mobile_defect_density / average_bulk)
         return perpendicular_conductivity_ratio, parallel_conductivity_ratio
 
     def calculate_resistivity_ratio(self,

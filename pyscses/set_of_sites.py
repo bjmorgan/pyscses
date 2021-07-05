@@ -100,12 +100,13 @@ class SetOfSites:
             array: probabilities of defects occupying each site using their grid points
 
         """
+        # TODO: This is Jacob's fixed code, but it is inefficient and slow.
         probability = np.zeros_like(grid.x)
         for i,j in enumerate(grid.x):
             prob = []
             for site in self.sites:
                 if j == site.x:
-                    prob.append(site.probabilities(phi_at_x( phi, grid.x, site.x ), temp))
+                    prob.append(site.probabilities(phi_at_x(phi, grid.x, site.x), temp))
             if len(prob) == 0:
                 probability[i] = 0
             else:
