@@ -2,7 +2,7 @@ from __future__ import annotations
 import numpy as np
 import math
 from pyscses.constants import fundamental_charge, boltzmann_eV
-# from pyscses.grid_point import GridPoint
+from pyscses.grid_point import GridPoint
 from pyscses.defect_species import DefectSpecies
 from typing import List, Optional
 from pyscses.defect_at_site import DefectAtSite
@@ -69,7 +69,7 @@ class Site:
             self.scaling = scaling
         else:
             self.scaling = np.ones_like(defect_energies, dtype=float)
-        # self.grid_point: Optional[GridPoint] = None
+        self.grid_point: Optional[GridPoint] = None
         self.valence = valence
 
     def defect_with_label(self,
@@ -92,25 +92,24 @@ class Site:
         """Returns a list of the segregation energies for each defect from self.defects """
         return [d.energy for d in self.defects]
 
-# BEN: Does not appear to be used?
-#     def average_local_energy(self,
-#                              method: str = 'mean') -> Optional[np.ndarray]:
-#         """
-#         Returns the average local segregation energy for each site based on a specified method
-#
-#         Args:
-#             method (str): The method in which the average segregation energies will be calculated.
-#                           'mean' - Returns the sum of all values at that site divided by the number of values at that site.
-#                           'min' - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).
-#
-#         Returns:
-#             numpy.array: Average segregation energies on the site coordinates grid.
-#
-#         """
-#         if self.grid_point is not None:
-#             return self.grid_point.average_site_energy(method)
-#         else:
-#             raise ValueError("TODO")
+    def average_local_energy(self,
+                             method: str = 'mean') -> Optional[np.ndarray]:
+        """
+        Returns the average local segregation energy for each site based on a specified method.
+
+        Args:
+            method (str): The method in which the average segregation energies will be calculated.
+                          'mean' - Returns the sum of all values at that site divided by the number of values at that site.
+                          'min' - Returns the minimum segregation energy value for that site (appropriate for low temperature calculations).
+
+        Returns:
+            numpy.array: Average segregation energies on the site coordinates grid.
+
+        """
+        if self.grid_point is not None:
+            return self.grid_point.average_site_energy(method)
+        else:
+            raise ValueError("TODO")
 
     def sum_of_boltzmann_three(self,
                                phi: float,

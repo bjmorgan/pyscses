@@ -8,10 +8,8 @@ from pyscses.constants import boltzmann_eV
 from pyscses.defect_species import DefectSpecies
 from bisect import bisect_left
 from typing import List, Iterator, Tuple, Optional
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from pyscses.site import Site
-    from pyscses.grid import Grid
+from pyscses.site import Site
+from pyscses.grid import Grid
 
 class SetOfSites:
     """The SetOfSites object groups together all of the Site objects into one object and
@@ -42,6 +40,10 @@ class SetOfSites:
     def __iter__(self) -> Iterator[Site]:
         """Iterator over self.sites"""
         return iter(self.sites)
+
+    def __len__(self) -> int:
+        """Number of sites"""
+        return len(self.sites)
 
     def subset(self,
                label: str) -> SetOfSites:
@@ -156,48 +158,55 @@ class SetOfSites:
             defect_density[ i ] += np.asarray( site.probabilities( phi_at_x( phi, full_grid.x, site.x ), temp ) ) / sub_grid.volumes[ i ]
         return defect_density
 
-# BEN: Does not appear to be called?
-#     def form_continuum_sites(all_sites,
-#                              x_min,
-#                              x_max,
-#                              n_points,
-#                              b,
-#                              c,
-#                              defect_species,
-#                              limits_for_laplacian,
-#                              site_labels,
-#                              defect_labels):
-#         """
-#         Creates a SetOfSites object for sites interpolated onto a regular grid, this is equivalent to assuming a continuum approximation.
-#
-#         Args:
-#             all_sites (SetOfSites): Orginal SetOfSites object from full data.
-#             x_min (float): Minimum x coordinate value defining the calculation region.
-#             x_max (float): Maximum x coordinate value defining the calculation region.
-#             n_points (int): Number of points that the data should be interpolated on to.
-#             b (float): b dimension for every grid point.
-#             c (float): c dimension for every grid point.
-#             defect_species (object): Class object containing information about the defect species present in the system.
-#             limits for laplacian (list): distance between the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively.
-#             site_labels( list ): List of strings for the different site species.
-#             defect_labels (list): List of strings for the different defect species.
-#
-#         Returns:
-#             :obj:`SetOfSites`: Sites interpolated onto a regular grid.
-#
-# 	"""
-#
-#         grid = np.linspace( x_min, x_max, n_points )
-#         limits = [grid[1] - grid[0], grid[1] - grid[0]]
-#         sites = []
-#         for label, d_label in zip(site_labels, defect_labels):
-#             scaling = len( all_sites.subset( label ) ) / len( grid )
-#             continuum_grid = Grid(grid, b, c, limits, limits_for_laplacian, all_sites.subset(label))
-#             average_energies = np.array( [ site.average_local_energy( method = 'mean' )[0] for site in all_sites.subset( label ) ] )
-#             new_energies = griddata( ( [ site.x for site in all_sites.subset( label ) ] ), average_energies, grid, method = 'nearest' )
-#             for x, e in zip( grid, new_energies):
-#                 sites.append( Site( label, x, [ defect_species[ d_label ] ], [e], scaling = np.array( scaling ) ) )
-#         return SetOfSites( sites ), limits
+
+    def form_continuum_sites(all_sites,
+                             x_min,
+                             x_max,
+                             n_points,
+                             b,
+                             c,
+                             defect_species,
+                             limits_for_laplacian,
+                             site_labels,
+                             defect_labels):
+        """
+        Creates a SetOfSites object for sites interpolated onto a regular grid, this is equivalent to assuming a continuum approximation.
+
+        Args:
+            all_sites (SetOfSites): Original SetOfSites object from full data.
+            x_min (float): Minimum x coordinate value defining the calculation region.
+            x_max (float): Maximum x coordinate value defining the calculation region.
+            n_points (int): Number of points that the data should be interpolated on to.
+            b (float): b dimension for every grid point.
+            c (float): c dimension for every grid point.
+            defect_species (object): Class object containing information about the defect species present in the system.
+            limits for laplacian (list): distance between the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively.
+            site_labels( list ): List of strings for the different site species.
+            defect_labels (list): List of strings for the different defect species.
+
+        Returns:
+            :obj:`SetOfSites`: Sites interpolated onto a regular grid.
+
+	"""
+
+        grid = np.linspace(x_min, x_max, n_points)
+        limits = (grid[1] - grid[0], grid[1] - grid[0])
+        sites = []
+        for label, d_label in zip(site_labels, defect_labels):
+            scaling = len( all_sites.subset(label)) / len(grid)
+            continuum_grid = Grid(grid, b, c, limits, limits_for_laplacian, all_sites.subset(label))
+            average_energies = np.array([site.average_local_energy(method='mean')[0] for site in all_sites.subset(label)])
+            new_energies = griddata(([site.x for site in all_sites.subset(label)]),
+                                     average_energies,
+                                     grid,
+                                     method='nearest')
+            for x, e in zip(grid, new_energies):
+                sites.append(Site(label,
+                                  x,
+                                  [defect_species[d_label]],
+                                  [e],
+                                  scaling=np.array([scaling])))
+        return SetOfSites(sites), limits
 
     @ classmethod
     def set_of_sites_from_input_data(cls: object,
@@ -210,14 +219,14 @@ class SetOfSites:
                                      offset: float = 0.0) -> SetOfSites:
         """
         Takes the data from the input file and creates a SetOfSites object for those sites.
-	    The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
+        The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
 
         Args:
     	    filename (str): Name of the input file to be parsed.
     	    limits (list): Minimum and maximum x coordinated defining the calculation region.
-                defect_species (object): Class object containing information about the defect species present in the system.
-                site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
-    	    core (str): Core definition. 'single' = Single segregation energy used to define the core. 'multi-site' = Layered segregation energies used to define the core while the energies fall in the region of positive and negative kT. 'all' = All sites between a minimum and maximum x coordinate used in calculation.
+            defect_species (object): Class object containing information about the defect species present in the system.
+            site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
+            core (str): Core definition. 'single' = Single segregation energy used to define the core. 'multi-site' = Layered segregation energies used to define the core while the energies fall in the region of positive and negative kT. 'all' = All sites between a minimum and maximum x coordinate used in calculation.
     	    temperature (float): Temperature that the calculation is being run at.
 
     	Returns:
@@ -238,22 +247,23 @@ class SetOfSites:
         return SetOfSites([site_from_input_file(line, defect_species, site_charge, core, temperature) for line in site_data])
 
     @ classmethod
-    def core_width_analysis( cls, input_data, limits, defect_species, site_charge, core, temperature ):
+    def core_width_analysis(cls,
+                            input_data, limits, defect_species, site_charge, core, temperature ):
         """
-	Calculated the width of the 'core' region. This is given as the region where the segregation energies in the system are within a region of positive to negative kT.
+        Calculated the width of the 'core' region. This is given as the region where the segregation energies in the system are within a region of positive to negative kT.
 
         Args:
-	    input_data (file): A .txt file where each line includes information about a site.
-	    limits (list): Minimum and maximum x coordinates defining the calculation region.
-	    defect_species (object): Class object containing information about the defect species present in the system.
+        input_data (file): A .txt file where each line includes information about a site.
+        limits (list): Minimum and maximum x coordinates defining the calculation region.
+        defect_species (object): Class object containing information about the defect species present in the system.
             site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
-	    core (str): Core definition. Allowed keywords: 'single' = Single segregation energy used to define the core. 'multi-site' = Layered segregation energies used to define the core while the energies fall in the region of positive and negative kT. 'all' = All sites between a minimum and maximum x coordinate used in calculation.
-	    temperature (float): Temperature that the calculation is being run at.
+            core (str): Core definition. Allowed keywords: 'single' = Single segregation energy used to define the core. 'multi-site' = Layered segregation energies used to define the core while the energies fall in the region of positive and negative kT. 'all' = All sites between a minimum and maximum x coordinate used in calculation.
+        temperature (float): Temperature that the calculation is being run at.
 
-	Returns:
-	    float: Distance between the minimum and maximum x coordinates where the segregation energy is in the range of positive to negative kT.
+        Returns:
+            float: Distance between the minimum and maximum x coordinates where the segregation energy is in the range of positive to negative kT.
 
-	"""
+        """
         site_data = load_site_data( input_data, limits[0], limits[1], site_charge )
         energies = [ line[4] for line in site_data ]
         min_energy = min(energies)

@@ -149,7 +149,7 @@ class Grid:
         for site in set_of_sites:
             i = index_of_grid_at_x(self.x, site.x)
             self.points[i].sites.append(site)
-            # site.grid_point = self.points[i]
+            site.grid_point = self.points[i]
             for defect_species in site.defect_species:
                 if defect_species not in self.defect_species:
                     self.defect_species.append(defect_species)
