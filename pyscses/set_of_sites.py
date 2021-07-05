@@ -7,7 +7,7 @@ from pyscses.grid import index_of_grid_at_x, phi_at_x, energy_at_x
 from pyscses.constants import boltzmann_eV
 from pyscses.defect_species import DefectSpecies
 from bisect import bisect_left
-from typing import List, Iterator, Tuple, Optional
+from typing import List, Iterator, Tuple, Optional, Union
 from pyscses.site import Site
 from pyscses.grid import Grid
 
@@ -21,9 +21,9 @@ class SetOfSites:
 
     """
     def __init__(self,
-                 sites: List[Site]) -> None:
+                 sites: Union[List[Site], Tuple[Site, ...]]) -> None:
         """Initialise a SetOfSites object."""
-        self.sites = sites
+        self.sites = tuple(sites)
 
     def __add__(self,
                 other: SetOfSites) -> SetOfSites:
