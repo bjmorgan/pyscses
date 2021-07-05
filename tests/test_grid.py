@@ -1,6 +1,6 @@
 import unittest
 from pyscses.grid import Grid, delta_x_from_grid
-from pyscses.grid import closest_index
+from pyscses.grid import closest_index, index_of_grid_at_x, energy_at_x
 from pyscses.grid_point import GridPoint
 from pyscses.set_of_sites import SetOfSites
 from pyscses.site import Site
@@ -17,6 +17,33 @@ class TestGridFunctions(unittest.TestCase):
         self.assertEqual(closest_index(a, 4.0), 1)
         self.assertEqual(closest_index(a, 0.1), 0)
         self.assertEqual(closest_index(a, 9.5), 4)
+
+    def test_index_of_grid_at_x(self):
+        coordinates = np.array([-2.0, -1.0, 0.0, 1.0, 2.0])
+        with patch('pyscses.grid.closest_index') as mock_closest_index:
+            mock_closest_index.side_effect = [0, 2, 3]
+            self.assertEqual(index_of_grid_at_x(coordinates=coordinates,
+                                                x=-1.5), 0)
+            self.assertEqual(index_of_grid_at_x(coordinates=coordinates,
+                                                x=0.1), 2)
+            self.assertEqual(index_of_grid_at_x(coordinates=coordinates,
+                                                x=1.5), 3)
+
+
+    def test_energy_at_x(self):
+        energy = np.array([0.1, 0.2, 0.3, 0.4, 0.5])
+        coordinates = np.array([-2.0, -1.0, 0.0, 1.0, 2.0])
+        with patch('pyscses.grid.index_of_grid_at_x') as mock_index_of_grid_at_x:
+            mock_index_of_grid_at_x.side_effect = [0, 2, 3]
+            self.assertEqual(energy_at_x(energy=energy,
+                                         coordinates=coordinates,
+                                         x=-1.5), 0.1)
+            self.assertEqual(energy_at_x(energy=energy,
+                                         coordinates=coordinates,
+                                         x=-0.1), 0.3)
+            self.assertEqual(energy_at_x(energy=energy,
+                                         coordinates=coordinates,
+                                         x=0.6), 0.4)
 
 
 class TestGrid(unittest.TestCase):

@@ -24,6 +24,7 @@ def phi_at_x(phi: np.ndarray,
 
     Returns:
         float: The electrostatic potential at the x coordinate with position [index].
+
     """
     index = index_of_grid_at_x(coordinates, x)
     return phi[index]
@@ -41,8 +42,8 @@ def energy_at_x(energy: np.ndarray,
 
     Returns:
         energy[index] (float): The segregation energy at the x coordinate with position [index].
-    """
 
+    """
     index = index_of_grid_at_x(coordinates, x)
     return energy[index]
 
@@ -50,14 +51,14 @@ def index_of_grid_at_x(coordinates: np.ndarray,
                        x: float) -> int:
     """Assigns each site x coordinate to a position on a regularly or irregularly spaced grid.
 
-    Returns the index of the grid point clostest to the value x
+    Returns the index of the grid point closest to the value x
 
     Args:
-        coordinates (np.array): 1D grid of ordered numbers over a region.
-        x (float): Site x coordinate
+        coordinates (np.array): arraylike ordered list of x coordinates.
+        x (float): x coordinate.
 
     Returns:
-        int: Index of grid position closest to the site x coordinate.
+        int: Index of the coordinates array at the position closest to the input x coordinate.
 
     """
     return closest_index(coordinates, x)
