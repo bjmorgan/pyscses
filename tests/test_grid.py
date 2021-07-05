@@ -1,5 +1,6 @@
 import unittest
 from pyscses.grid import Grid, delta_x_from_grid
+from pyscses.grid import closest_index
 from pyscses.grid_point import GridPoint
 from pyscses.set_of_sites import SetOfSites
 from pyscses.site import Site
@@ -7,7 +8,18 @@ from pyscses.defect_species import DefectSpecies
 from unittest.mock import Mock, MagicMock, patch, call
 import numpy as np
 
-class TestGrid( unittest.TestCase ):
+class TestGridFunctions(unittest.TestCase):
+
+    def test_closest_index(self):
+        a = [1,3,5,7,9]
+        self.assertEqual(closest_index(a, 3.1), 1)
+        self.assertEqual(closest_index(a, 4.1), 2)
+        self.assertEqual(closest_index(a, 4.0), 1)
+        self.assertEqual(closest_index(a, 0.1), 0)
+        self.assertEqual(closest_index(a, 9.5), 4)
+
+
+class TestGrid(unittest.TestCase):
     @patch('pyscses.grid.index_of_grid_at_x')
     @patch('pyscses.grid.GridPoint')
     def test_grid_instance_is_initialised( self, mock_GridPoint, mock_index ):
