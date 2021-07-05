@@ -3,7 +3,8 @@ from pyscses.grid import Grid, delta_x_from_grid
 from pyscses.grid import (closest_index,
     index_of_grid_at_x,
     energy_at_x,
-    phi_at_x)
+    phi_at_x,
+    delta_x_from_grid)
 from pyscses.grid_point import GridPoint
 from pyscses.set_of_sites import SetOfSites
 from pyscses.site import Site
@@ -62,6 +63,13 @@ class TestGridFunctions(unittest.TestCase):
             self.assertEqual(phi_at_x(phi=energy,
                                       coordinates=coordinates,
                                       x=0.6), 0.4)
+
+    def test_delta_x_from_grid(self):
+        coordinates = np.array([0.0, 1.0, 3.0, 6.0, 10.0])
+        limits = (1.0, 4.0)
+        expected_delta_x = np.array([1.0, 1.5, 2.5, 3.5, 4.0])
+        np.testing.assert_array_equal(delta_x_from_grid(coordinates=coordinates,
+            limits=limits), expected_delta_x)
 
 
 class TestGrid(unittest.TestCase):
