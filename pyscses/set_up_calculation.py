@@ -24,6 +24,7 @@ def site_from_input_file(site,
         :obj:`Site`
 
     """
+
     label = site[0]
     if site_charge == True:
         valence = float(site[1])
@@ -33,6 +34,11 @@ def site_from_input_file(site,
     defect_labels = site[3::2]
     defect_energies = [ float(e) for e in site[4::2] ]
     min_energy = min(defect_energies)
+    # TODO: **Not well-defined what this is *supposed* to do.**
+    # TODO: Intended to define the core as being a single plane versus multiple planes.
+    # TODO: For multiple planes consider everything with |E_seg| < kT.
+    # TODO: For single plane, what is the intended behaviour if we have >1 site with the
+    # TODO: **same** lowest segregation energy?
     if core == 'single':
         for d_e in defect_energies:
             if d_e > min_energy:
