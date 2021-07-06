@@ -61,7 +61,7 @@ def index_of_grid_at_x(coordinates: np.ndarray,
     """
     return closest_index(coordinates, x)
 
-def closest_index(myList: Union[list[float],np.ndarray],
+def closest_index(myList: Union[list[float], np.ndarray],
                   myNumber: float) -> int:
     """
     Assumes myList is sorted. Returns index of closest value to myNumber.
