@@ -4,7 +4,7 @@ import math
 from pyscses.constants import fundamental_charge, boltzmann_eV
 from pyscses.grid_point import GridPoint
 from pyscses.defect_species import DefectSpecies
-from typing import List, Optional
+from typing import List, Optional, Dict
 from pyscses.defect_at_site import DefectAtSite
 
 class LabelError(Exception):
@@ -71,6 +71,18 @@ class Site:
             self.scaling = np.ones_like(defect_energies, dtype=float)
         self.grid_point: Optional[GridPoint] = None
         self.valence = valence
+
+    def competing_defect_species(self) -> Dict[str, int]:
+        """Returns a dictionary reporting the number of fixed and / or mobile defect species that can occupy this site.
+
+        Args:
+            None
+
+        Returns
+            Dict(str, int): Dictionary {'fixed': n_fixed, 'mobile': n_mobile}
+
+        """
+        pass
 
     def defect_with_label(self,
                           label: str) -> DefectAtSite:
