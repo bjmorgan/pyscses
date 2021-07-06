@@ -44,7 +44,7 @@ class Site:
             scaling (optional, list(float): Optional list of scaling factors for the net charge at this site. Default scaling for each defect species is 1.0.
             valence (optional, float): Optional formal valence for this site in the absence of any defects. Default is 0.0.
 
-        Raise:
+        Raises:
             ValueError if the number of DefectSpecies != the number of defect segregation energies != the number of scaling factors (if passed).
 
         """
@@ -111,33 +111,14 @@ class Site:
         else:
             raise ValueError("TODO")
 
-    def sum_of_boltzmann_three(self,
-                               phi: float,
-                               temp : float) -> float:
-        """
-        Calculates the sum of the calculated "boltzmann_three" values for each defect at each site.
-
-    .. math:: \sum_i(x_i\exp(-\Phi_xz/kT) - 1)
-
-        Args:
-            phi (float): Electrostatic potential at the site.
-            temp (float): Temperature in Kelvin.
-
-        Returns:
-            float: The sum of Boltzmann terms.
-
-        """
-        return sum([d.boltzmann_three(phi, temp) for d in self.defects])
-
     def probabilities(self,
                       phi: float,
                       temp: float) -> List[float]:
         """Calculates the probabilities of this site being occupied by each defect species.
-        Derived from the chemical potential term for a Fermi-Dirac like distribution.
 
         Args:
-            phi (float):   Electrostatic potential at this site.
-            temp (float):   Temperature in Kelvin.
+            phi (float): Electrostatic potential at this site in Volts.
+            temp (float): Temperature in Kelvin.
 
         Returns:
             list: Probabilities of site occupation on a 1D grid.
@@ -148,14 +129,14 @@ class Site:
             if defect.fixed:
                 probabilities.append(defect.mole_fraction)
             else:
-                probabilities.append(defect.boltzmann_two(phi, temp) /
-                                     (1.0 + self.sum_of_boltzmann_three(phi, temp)))
+                probabilities.append(defect.mole_fraction * defect.boltzmann_factor(phi, temp) /
+                                     (1.0 + sum([d.mole_fraction * (d.boltzmann_factor(phi, temp) - 1.0)
+                                                for d in self.defects])))
         return probabilities
 
     def defect_valences(self) -> np.ndarray:
         """Returns an array of valences for each defect from self.defects """
         return np.array([d.valence for d in self.defects])
-
 
     def charge(self,
                phi: float,
@@ -164,7 +145,7 @@ class Site:
         Charge at this site (in Coulombs).
 
         Args:
-            phi (float):  Electrostatic potential at this site (units?).
+            phi (float):  Electrostatic potential at this site in Volts.
             temp (float): Temperature in Kelvin.
 
         Returns:
@@ -175,41 +156,3 @@ class Site:
                                 * self.defect_valences()
                                 * self.scaling)) * fundamental_charge
         return charge
-
-    def probabilities_boltz(self,
-                            phi: float,
-                            temp: float) -> List[float]:
-        """
-
-        Calculates the probability of this site being occupied by each defect.
-
-        Args:
-            phi (float): Electrostatic potential at this site.
-            temp (float): Temperature in Kelvin.
-
-        Returns:
-            list: Probabilities of site occupation on a 1D grid.
-
-        """
-        boltzmann_probabilities = [defect.boltzmann_two(phi, temp) for defect in self.defects]
-        return boltzmann_probabilities
-
-# BEN: Does not appear to be used?
-#     def charge_boltz(self,
-#                      phi: float,
-#                      temp: float) -> float:
-#         """
-#         Calculates the charge in Coulombs at this site using Boltzmann probabilities.
-#
-#         Args:
-#             phi (float): Electrostatic potential at this site
-#             temp (float): Temperature in Kelvin.
-#
-#         Returns:
-#             np.array: The charge on a 1D grid.
-#         """
-#         charge =  np.sum(self.probabilities_boltz(phi, temp)
-#                          * self.defect_valences()
-#                          * self.scaling) * fundamental_charge
-#         return charge
-

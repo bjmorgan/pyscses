@@ -54,10 +54,10 @@ class DefectAtSite:
         """
         return (phi * self.valence) + self.energy
 
-    def boltzmann_one(self,
-                      phi: float,
-                      temp: float) -> float:
-        r"""Boltzmann statistics calculation - part one
+    def boltzmann_factor(self,
+                         phi: float,
+                         temp: float) -> float:
+        r"""Boltzmann factor for this defect species.
 
         .. math:: \exp\left(\frac{-\Phi z+\Delta E}{k_BT}\right)
 
@@ -70,37 +70,3 @@ class DefectAtSite:
 
         """
         return math.exp(-self.potential_energy(phi) / (boltzmann_eV * temp))
-
-    def boltzmann_two(self,
-                      phi: float,
-                      temp: float) -> float:
-        r"""Boltzmann statistics calculation - part two
-
-        .. math:: x\exp\left(\frac{-\Phi z+\Delta E}{K_BT}\right)
-
-        Args:
-            phi (float): Electrostatic potential.
-            temp (float): Temperature of calculation.
-
-        Returns:
-            float: Boltzmann statistics * mole fraction
-
-        """
-        return self.mole_fraction * self.boltzmann_one(phi, temp)
-
-    def boltzmann_three(self,
-                        phi: float,
-                        temp: float) -> float:
-        r"""Boltzmann statistics calculation - part three
-
-        .. math:: x\left(\exp\left(-\frac{\Phi z+\Delta E}{K_BT}\right)-1\right)
-
-        Args:
-            phi (float): Electrostatic potential.
-            temp (float): Temperature of calculation.
-
-        Returns:
-            float: ( Boltzmann statistics - 1 ) * mole fraction.
-
-        """
-        return self.mole_fraction * (self.boltzmann_one(phi, temp) - 1.0)
