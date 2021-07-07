@@ -22,11 +22,31 @@ def create_mock_defect_species(n):
         mock_defect_species.append(m)
     return mock_defect_species
 
+def create_mock_defects_at_site(n):
+    labels = ['A', 'B', 'C', 'D', 'E']
+    valence = [-2.0, -1.0, 0.0, 1.0, 2.0]
+    mole_fraction = [0.15, 0.25, 0.35, 0.45, 0.55]
+    mobility = [0.1, 0.2, 0.3, 0.4, 0.5]
+    energies = [-0.1, -0.2, -0.3, -0.4, -0.5]
+    mock_defects_at_site = []
+    for i in range(n):
+        m = Mock(spec=DefectAtSite)
+        m.label = labels.pop()
+        m.valence = valence.pop()
+        m.mole_fraction = mole_fraction.pop()
+        m.mobility = mobility.pop()
+        m.energy = energies.pop()
+        m.fixed = False
+        mock_defects_at_site.append(m)
+    return mock_defects_at_site
+
 class TestSiteInit(unittest.TestCase):
 
     def test_site_is_initialised(self):
         mock_defect_species = create_mock_defect_species(2)
+        mock_defects_at_site = create_mock_defects_at_site(2)
         with patch('pyscses.site.DefectAtSite', autospec=True) as mock_DefectAtSite:
+            mock_DefectAtSite.side_effect = mock_defects_at_site
             site = Site(label='A',
                         x=1.5,
                         defect_species=mock_defect_species,
@@ -37,27 +57,58 @@ class TestSiteInit(unittest.TestCase):
         self.assertEqual(site.defect_energies, [-0.2, +0.2])
         np.testing.assert_equal(site.scaling, np.array([1.0, 1.0]))
         self.assertEqual(site.valence, 0.0)
+        self.assertEqual(site.saturation_parameter, 1.0)
+        self.assertEqual(site.fixed_defects, ())
+        self.assertEqual(site.mobile_defects, tuple(mock_defects_at_site))
+        self.assertEqual(site.alpha, 1.0)
 
     def test_site_is_initialised_with_optional_args(self):
         mock_defect_species = create_mock_defect_species(2)
         with patch('pyscses.site.DefectAtSite', autospec=True) as mock_DefectAtSite:
+            mock_DefectAtSite.side_effect = create_mock_defects_at_site(2)
             site = Site(label='B',
                         x=1.5,
                         defect_species=mock_defect_species,
                         defect_energies=[-0.2, +0.2],
                         scaling=[0.5, 0.4],
-                        valence=-2.0)
+                        valence=-2.0,
+                        saturation_parameter=0.1)
         self.assertEqual(site.label, 'B')
         self.assertEqual(site.x, 1.5)
         self.assertEqual(site.defect_species, mock_defect_species)
         self.assertEqual(site.defect_energies, [-0.2, +0.2])
         np.testing.assert_equal(site.scaling, np.array([0.5, 0.4]))
         self.assertEqual(site.valence, -2.0)
+        self.assertEqual(site.saturation_parameter, 0.1)
+        self.assertEqual(site.alpha, 0.1)
+
+    def test_site_init_with_mixed_mobile_and_fixed_defects(self):
+        mock_defect_species = create_mock_defect_species(3)
+        mock_defects_at_site = create_mock_defects_at_site(3)
+        mock_defects_at_site[0].fixed = False
+        mock_defects_at_site[0].mole_fraction = 0.4
+        mock_defects_at_site[1].fixed = True
+        mock_defects_at_site[1].mole_fraction = 0.3
+        mock_defects_at_site[2].fixed = True
+        mock_defects_at_site[2].mole_fraction = 0.2
+        with patch('pyscses.site.DefectAtSite', autospec=True) as mock_DefectAtSite:
+            mock_DefectAtSite.side_effect = mock_defects_at_site
+            site = Site(label='C',
+            x=1.5,
+            defect_species=mock_defect_species,
+            defect_energies=[-0.2, +0.2, 0.0])
+        self.assertEqual(site.fixed_defects, (mock_defects_at_site[1], mock_defects_at_site[2]))
+        self.assertEqual(site.mobile_defects[0], mock_defects_at_site[0])
+        self.assertEqual(site.alpha, 0.5)
+    # TODO: test that fixed defects are added to the site.fixed_defects tuple and mobile defects are added to the site.mobiile_defects tuple
+
+    # TODO: test that site.alpha is computed correctly for various combinations of saturation_parameter and fixed defect species.
 
     def test_site_init_data_check_1(self):
         """Checks that initialising a Site object raises a ValueError if n(defect_species) != n(defect_energies)"""
         mock_defect_species = create_mock_defect_species(1)
         with patch('pyscses.site.DefectAtSite', autospec=True) as mock_DefectAtSite:
+            # mock_DefectAtSite.side_effect = create_mock_defects_at_site(1)
             with self.assertRaises(ValueError):
                 site = Site(label='A',
                             x=1.5,
@@ -79,12 +130,13 @@ class TestSite(unittest.TestCase):
 
     def setUp(self):
         mock_defect_species = create_mock_defect_species(2)
+        mock_defects_at_site = create_mock_defects_at_site(2)
         with patch('pyscses.site.DefectAtSite', autospec=True) as mock_DefectAtSite:
+            mock_DefectAtSite.side_effect = mock_defects_at_site
             self.site = Site(label='A',
                         x=1.5,
                         defect_species=mock_defect_species,
                         defect_energies=[-0.2, +0.2])
-        self.site.defects = [Mock(spec=DefectAtSite), Mock(spec=DefectAtSite)]
 
 
     def test_defect_with_label(self):

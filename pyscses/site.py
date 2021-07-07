@@ -22,8 +22,20 @@ class Site:
         defects (list): List of DefectAtSite objects, containing the properties of all individual defects at the site.
         scaling (float): A scaling factor that can be applied in the charge calculation.
         valence (float): The charge of the defect present at the site (in atomic units).
+        saturation_parameter (float): Optional saturation parameter as described in
+            `Hendricks et al. Sol. Stat. Ionics (2002)`_
+            and `Swift et al. Nature Comp. Sci. (2021)`_.
+            Setting `saturation_parameter` < `1.0` sets some proportion of excluded sites that are
+            unavailable for occupation by any explicit defects.
+            Default value is `1.0`, i.e., 100% of sites may be occupied.
         defects (list): List of Defect_Species objects for all defects present at the site.
         sites (list): List containing all x coordinates and corresponding  defect segregation energies.
+
+    .. _Hendricks et al. Sol. Stat. Ionics (2002):
+       https://doi.org/10.1016/S0167-2738(02)00484-8
+
+    .. _Swift et al. Nature Comp. Sci. (2021):
+       https://doi.org/10.1038/s43588-021-00041-y
 
     """
 
@@ -33,7 +45,8 @@ class Site:
                  defect_species: List[DefectSpecies],
                  defect_energies: List[float],
                  scaling: Optional[np.ndarray] = None,
-                 valence: float = 0.0) -> None:
+                 valence: float = 0.0,
+                 saturation_parameter: float = 1.0) -> None:
         """Initialise a Site object.
 
         Args:
@@ -43,9 +56,20 @@ class Site:
             defect_energies (list(float)): List of defect segregation energies for each defect species at this site.
             scaling (optional, list(float): Optional list of scaling factors for the net charge at this site. Default scaling for each defect species is 1.0.
             valence (optional, float): Optional formal valence for this site in the absence of any defects. Default is 0.0.
+            saturation_parameter (optional, float): Optional saturation parameter as described in
+                Hendricks et al. Sol. Stat. Ionics (2002) [#HendricksEtAl_SolStatIonics2002]_
+                and Swift et al. Nature Comp. Sci. (2021). [#SwiftEtAl_NatureCompSci2021]_.
+                A saturation parameter < 1.0 introduces some proportion of excluded sites that are
+                unavailable for occupation by any explicit defects. Default is 1.0.
 
         Raises:
             ValueError if the number of DefectSpecies != the number of defect segregation energies != the number of scaling factors (if passed).
+
+        .. [HendricksEtAl_SolStatIonics2002]:
+           https://doi.org/10.1016/S0167-2738(02)00484-8
+
+        .. [SwiftEtAl_NatureCompSci2021]:
+           https://doi.org/10.1038/s43588-021-00041-y
 
         """
         if len(defect_species) != len(defect_energies):
@@ -71,9 +95,10 @@ class Site:
             self.scaling = np.ones_like(defect_energies, dtype=float)
         self.grid_point: Optional[GridPoint] = None
         self.valence = valence
-        self.fixed_defects = tuple(d for d in self.defects if d.fixed=True)
-        self.mobile_defects = tuple(d for d in self.defects if d.fixed=False)
-        self.alpha = 1.0 - sum((d.mole_fraction for d in fixed_defects))
+        self.saturation_parameter = saturation_parameter
+        self.fixed_defects = tuple(d for d in self.defects if d.fixed)
+        self.mobile_defects = tuple(d for d in self.defects if not d.fixed)
+        self.alpha = self.saturation_parameter - sum((d.mole_fraction for d in self.fixed_defects))
 
     def competing_defect_species(self) -> Dict[str, int]:
         """Returns a dictionary reporting the number of fixed and / or mobile defect species that can occupy this site.
@@ -125,8 +150,8 @@ class Site:
             return self.grid_point.average_site_energy(method)
         else:
             raise ValueError("TODO")
-        
-    def probabilities(self:
+
+    def probabilities(self,
                       phi: float,
                       temp: float) -> List[float]:
         """Calculates the probabilities of this site being occupied by each defect species.
@@ -141,8 +166,8 @@ class Site:
         """
         probabilities_dict = {}
         boltzmann_factors = {d.label: d.boltzmann_factor(phi, temp) for d in self.mobile_defects}
-        denominator = (self.alpha + 
-                       sum([d.mole_fraction * (boltzmann_factors[d.label] - 1.0) 
+        denominator = (self.alpha +
+                       sum([d.mole_fraction * (boltzmann_factors[d.label] - 1.0)
                             for d in self.mobile_defects]))
         for defect in self.defects:
             if defect.fixed:
@@ -150,7 +175,7 @@ class Site:
             else:
                 numerator = self.alpha * defect.mole_fraction * boltzmann_factors[defect.label]
                 probabilities_dict[defect.label] = numerator / denominator
-        return [probabilities_dict[d.label] for d in self.defects]   
+        return [probabilities_dict[d.label] for d in self.defects]
 
     def defect_valences(self) -> np.ndarray:
         """Returns an array of valences for each defect from self.defects """
