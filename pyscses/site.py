@@ -6,6 +6,7 @@ from pyscses.grid_point import GridPoint
 from pyscses.defect_species import DefectSpecies
 from typing import List, Optional, Dict
 from pyscses.defect_at_site import DefectAtSite
+import warnings
 
 class LabelError(Exception):
     pass
@@ -180,6 +181,20 @@ class Site:
     def probabilities_as_list(self,
                               phi: float,
                               temp: float) -> List[float]:
+        """Calculates the probabilities of this site being occupied by each defect species.
+
+        Legacy interface that returns a list of site-occupation probabilities
+        in the same order as `Site.defects`.
+
+            Args:
+            phi (float): Electrostatic potential at this site in Volts.
+            temp (float): Temperature in Kelvin.
+
+        Returns:
+            list(float): Probabilities of site occupation for each defect species.
+
+        """
+        warnings.warn("Site.probabilities_as_list() is deprecated and targetted for removal. Please use Site.probabilities() instead.", DeprecationWarning)
         probabilities_dict = self.probabilities(phi=phi, temp=temp)
         return [probabilities_dict[d.label] for d in self.defects]
 

@@ -183,6 +183,10 @@ class TestSite(unittest.TestCase):
                                                  temp=298.0),
                          {'A': exp_A, 'B': exp_B})
 
+    def test_probabilites_as_list(self):
+        self.site.probabilities = Mock(return_value={'E': 0.1, 'D': 0.2})
+        self.site.probabilities_as_list(phi=1.0, temp=298.0)
+
 
 if __name__ == '__main__':
     unittest.main()
