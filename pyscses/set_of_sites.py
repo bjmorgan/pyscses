@@ -106,7 +106,7 @@ class SetOfSites:
             prob = []
             for site in self.sites:
                 if j == site.x:
-                    prob.append(site.probabilities(phi_at_x(phi, grid.x, site.x), temp))
+                    prob.append(site.probabilities_as_list(phi_at_x(phi, grid.x, site.x), temp))
             if len(prob) == 0:
                 probability[i] = 0
             else:
@@ -132,7 +132,7 @@ class SetOfSites:
         defect_density = np.zeros_like( grid.x )
         for site in self.sites:
             i = index_of_grid_at_x( grid.x, site.x )
-            defect_density[ i ] += np.asarray( site.probabilities( phi_at_x( phi, grid.x, site.x ), temp ) ) / grid.volumes[ i ]
+            defect_density[ i ] += np.asarray( site.probabilities_as_list( phi_at_x( phi, grid.x, site.x ), temp ) ) / grid.volumes[ i ]
         return defect_density
 
     def subgrid_calculate_defect_density(self,
@@ -156,7 +156,7 @@ class SetOfSites:
         defect_density = np.zeros_like( sub_grid.x )
         for site in self.sites:
             i = index_of_grid_at_x( sub_grid.x, site.x )
-            defect_density[ i ] += np.asarray( site.probabilities( phi_at_x( phi, full_grid.x, site.x ), temp ) ) / sub_grid.volumes[ i ]
+            defect_density[ i ] += np.asarray( site.probabilities_as_list( phi_at_x( phi, full_grid.x, site.x ), temp ) ) / sub_grid.volumes[ i ]
         return defect_density
 
 

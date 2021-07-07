@@ -153,6 +153,36 @@ class TestSite(unittest.TestCase):
         self.site.defects[1].energy = +0.2
         self.assertEqual(self.site.energies(), [-0.2, +0.2])
 
+    def test_probabilities_one(self):
+        self.site.defects[0].boltzmann_factor = Mock(return_value=0.1)
+        self.site.defects[0].mole_fraction = 0.2
+        self.site.defects[0].label = 'A'
+        self.site.defects[1].boltzmann_factor = Mock(return_value=0.1)
+        self.site.defects[1].mole_fraction = 0.1
+        self.site.defects[1].label = 'B'
+        exp_A = ((0.2*0.1/(1.0+(0.2*(0.1-1.0)+0.1*(0.1-1.0)))))
+        exp_B= ((0.1*0.1/(1.0+(0.2*(0.1-1.0)+0.1*(0.1-1.0)))))
+        self.assertEqual(self.site.probabilities(phi=1.0,
+                                                 temp=298.0),
+                         {'A': exp_A, 'B': exp_B})
+
+    def test_probabilities_two(self):
+        self.site.defects[0].boltzmann_factor = Mock(return_value=0.1)
+        self.site.defects[0].mole_fraction = 0.2
+        self.site.defects[0].label = 'A'
+        self.site.defects[0].fixed = True
+        self.site.alpha = 0.8
+        self.site.fixed_defects = (self.site.defects[0],)
+        self.site.defects[1].boltzmann_factor = Mock(return_value=0.1)
+        self.site.defects[1].mole_fraction = 0.1
+        self.site.defects[1].label = 'B'
+        self.site.mobile_defects = (self.site.defects[1],)
+        exp_A = 0.2
+        exp_B= 0.8*((0.1*0.1/(0.8+(0.1*(0.1-1.0)))))
+        self.assertEqual(self.site.probabilities(phi=1.0,
+                                                 temp=298.0),
+                         {'A': exp_A, 'B': exp_B})
+
 
 if __name__ == '__main__':
     unittest.main()

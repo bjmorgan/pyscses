@@ -153,7 +153,7 @@ class Site:
 
     def probabilities(self,
                       phi: float,
-                      temp: float) -> List[float]:
+                      temp: float) -> Dict[str, float]:
         """Calculates the probabilities of this site being occupied by each defect species.
 
         Args:
@@ -161,7 +161,7 @@ class Site:
             temp (float): Temperature in Kelvin.
 
         Returns:
-            list(float): Probabilities of site occupation on a 1D grid.
+            dict(str, float): Probabilities of site occupation for each defect species.
 
         """
         probabilities_dict = {}
@@ -175,6 +175,12 @@ class Site:
             else:
                 numerator = self.alpha * defect.mole_fraction * boltzmann_factors[defect.label]
                 probabilities_dict[defect.label] = numerator / denominator
+        return probabilities_dict
+
+    def probabilities_as_list(self,
+                              phi: float,
+                              temp: float) -> List[float]:
+        probabilities_dict = self.probabilities(phi=phi, temp=temp)
         return [probabilities_dict[d.label] for d in self.defects]
 
     def defect_valences(self) -> np.ndarray:
