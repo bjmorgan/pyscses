@@ -101,18 +101,6 @@ class Site:
         self.mobile_defects = tuple(d for d in self.defects if not d.fixed)
         self.alpha = self.saturation_parameter - sum((d.mole_fraction for d in self.fixed_defects))
 
-    def competing_defect_species(self) -> Dict[str, int]:
-        """Returns a dictionary reporting the number of fixed and / or mobile defect species that can occupy this site.
-
-        Args:
-            None
-
-        Returns
-            Dict(str, int): Dictionary {'fixed': n_fixed, 'mobile': n_mobile}
-
-        """
-        pass
-
     def defect_with_label(self,
                           label: str) -> DefectAtSite:
         """Select a defect at this site by the species label.
