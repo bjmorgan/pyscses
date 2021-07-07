@@ -127,8 +127,8 @@ class Site:
             raise ValueError("TODO")
         
     def probabilities(self:
-                            phi: float,
-                            temp: float) -> List[float]:
+                      phi: float,
+                      temp: float) -> List[float]:
         """Calculates the probabilities of this site being occupied by each defect species.
 
         Args:
