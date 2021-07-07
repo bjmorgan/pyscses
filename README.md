@@ -6,6 +6,7 @@
 [![PyPI version](https://badge.fury.io/py/pyscses.svg)](https://badge.fury.io/py/pyscses)
 [![DOI](https://zenodo.org/badge/90385184.svg)](https://zenodo.org/badge/latestdoi/90385184)
 [![Documentation Status](https://readthedocs.org/projects/pyscses/badge/?version=latest)](https://pyscses.readthedocs.io/en/latest/?badge=latest)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/ac455973a037fa2a10de/test_coverage)](https://codeclimate.com/github/bjmorgan/pyscses/test_coverage)
 
 `pyscses` is a Python package for modelling ionic space-charges in solid electrolytes. Its primary use is to calculate equilibrium distributions of point-charge atomic defects within one-dimensional &ldquo;Poisson-Boltzmann&rdquo;-like mean-field models. These calculations take as inputs a set of defect site positions, within a specific crystal structure, and the associated defect segregation energies. `pyscses` can also be used to calculate ionic transport properties (space-charge resistivities and activation energies) for these equilibrium defect distributions.
 

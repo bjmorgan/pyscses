@@ -16,3 +16,4 @@ docs/.DS_Store
 **/.ipynb_checkpoints
 docs/build
 **/generated_outputs
+.nova

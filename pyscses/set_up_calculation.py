@@ -4,17 +4,24 @@ from pyscses.site import Site
 import numpy as np
 from pyscses.constants import boltzmann_eV
 from bisect import bisect_left, bisect_right
-from sklearn.cluster import AgglomerativeClustering
+from sklearn.cluster import AgglomerativeClustering # type: ignore
 
-def site_from_input_file( site, defect_species, site_charge, core, temperature ):
+def site_from_input_file(site,
+                         defect_species,
+                         site_charge,
+                         temperature,
+                         zero_energies_less_than_kT=False):
     """
     Takes the data from the input file and converts it into a site.
-    The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site. 
+    The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
 
     Args:
         site (str): A line in the input file.
         defect_species (object): Class object containing information about the defect species present in the system.
         site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
+        temperature (float): Temperature in Kelvin.
+        zero_energies_less_than_kT (optional(bool)): If True segregation energies with absolute values < kT will be set to zero.
+            Default is False.
 
     Returns:
         :obj:`Site`
@@ -27,29 +34,30 @@ def site_from_input_file( site, defect_species, site_charge, core, temperature )
         valence = 0.0
     x = float(site[2])
     defect_labels = site[3::2]
-    defect_energies = [ float(e) for e in site[4::2] ]
-    min_energy = min(defect_energies)
-    if core == 'single':
+    defect_energies = [float(e) for e in site[4::2]]
+    if zero_energies_less_than_kT:
+        kT = boltzmann_eV * temperature
         for d_e in defect_energies:
-            if d_e > min_energy:
+            if abs(d_e) < kT:
                 d_e = 0.0
-    if core == 'multi-site':
-        for d_e in defect_energies:
-            if ( -boltzmann_eV * temperature) <= d_e <= ( boltzmann_eV * temperature ):
-                d_e = 0.0
-    #defect_energies = [ 0.0 for e in site[4::2] ]
-    return Site( label, x, [ defect_species[l] for l in defect_labels ], defect_energies, valence=valence )
+    return Site(label,
+                x, 
+                [defect_species[l] for l in defect_labels],\
+                defect_energies,
+                valence=valence)
 
-def format_line( line, site_charge, offset = 0.0 ):
+def format_line(line,
+                site_charge,
+                offset = 0.0):
     """
-    Each line in the input file is formatted into separate site properties. 
+    Each line in the input file is formatted into separate site properties.
 
     Args:
         line (str): A line in the input file.
         site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
 
-    Returns: 
-        list: line from the input file, split into individual values. 
+    Returns:
+        list: line from the input file, split into individual values.
 
     """
     # x coordinate
@@ -69,16 +77,20 @@ def format_line( line, site_charge, offset = 0.0 ):
 #        line[i] = 0.0
     return line
 
-def load_site_data( filename, x_min, x_max, site_charge, offset = 0.0 ):
+def load_site_data(filename,
+                   x_min,
+                   x_max,
+                   site_charge,
+                   offset = 0.0):
     """
     Reads in the input data and formats the input data if the x coordinate values are within the calculation region.
 
     Args:
         filename(string): Filename for importing the input data.
         x_min(float): Minimum x coordinate value defining the calculation region.
-        x_max(float): Maximum x coordinate value defining the calculation region. 
+        x_max(float): Maximum x coordinate value defining the calculation region.
         site_charge (bool): True if site charges are to be included in the calculation, false if they are not to be included.
-   
+
     Return:
         list: formatted data for calculation.
 
@@ -93,15 +105,15 @@ def load_site_data( filename, x_min, x_max, site_charge, offset = 0.0 ):
 
     return input_data
 
-def cluster_similar_sites( input_data ):
+def cluster_similar_sites(input_data):
     """Clusters data points the input data to be projected onto a site. Clustering criterion is set as 0.01 nm.
-        
+
         Args:
         input_data (str): The input file.
-        
+
         Returns:
         str: The input file, formatted with x coordinate values with correct clustering coordinates.
-        
+
         """
     coordinates = np.array([[ion[2]] for ion in input_data]) # format data into correct format
     # Use sklearn's clustering functionality to assign site clusters
@@ -121,14 +133,17 @@ def cluster_similar_sites( input_data ):
         sites_format += cluster
     return sites_format
 
-def calculate_grid_offsets( filename, x_min, x_max, system ):
+def calculate_grid_offsets(filename,
+                           x_min,
+                           x_max,
+                           system):
     """Reads in the input data calculates the distance to the next site outside of the defined calculation region. Allows calculation of the delta_x and volume values for the endmost grid points.
 
     Args:
         filename(string): Filename for importing the input data.
         x_min(float): Minimum x coordinate value defining the calculation region.
-        x_max(float): Maximum x coordinate value defining the calculation region. 
-        system(str): 'single' for single grain boundary systems, 'double' for systems where the input data has been mirrored to give two grain boundaries. 
+        x_max(float): Maximum x coordinate value defining the calculation region.
+        system(str): 'single' for single grain boundary systems, 'double' for systems where the input data has been mirrored to give two grain boundaries.
 
     Returns:
         list, list: distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively. Distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
