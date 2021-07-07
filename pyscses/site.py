@@ -125,32 +125,8 @@ class Site:
             return self.grid_point.average_site_energy(method)
         else:
             raise ValueError("TODO")
-
-    def probabilities(self,
-                      phi: float,
-                      temp: float) -> List[float]:
-        """Calculates the probabilities of this site being occupied by each defect species.
-
-        Args:
-            phi (float): Electrostatic potential at this site in Volts.
-            temp (float): Temperature in Kelvin.
-
-        Returns:
-            list: Probabilities of site occupation on a 1D grid.
-
-        """
-        probabilities = []
-        for defect in self.defects:
-            if defect.fixed:
-                probabilities.append(defect.mole_fraction)
-            else:
-                numerator = defect.mole_fraction * defect.boltzmann_factor(phi, temp)
-                denominator = (1.0 + sum([d.mole_fraction * (d.boltzmann_factor(phi, temp) - 1.0)
-                                          for d in self.defects]))
-                probabilities.append(numerator / denominator)
-        return probabilities
         
-    def probabilities_fixed(self:
+    def probabilities(self:
                             phi: float,
                             temp: float) -> List[float]:
         """Calculates the probabilities of this site being occupied by each defect species.
