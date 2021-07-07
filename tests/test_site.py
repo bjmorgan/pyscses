@@ -105,7 +105,6 @@ class TestSiteInit(unittest.TestCase):
         """Checks that initialising a Site object raises a ValueError if n(defect_species) != n(defect_energies)"""
         mock_defect_species = create_mock_defect_species(1)
         with patch('pyscses.site.DefectAtSite', autospec=True) as mock_DefectAtSite:
-            # mock_DefectAtSite.side_effect = create_mock_defects_at_site(1)
             with self.assertRaises(ValueError):
                 site = Site(label='A',
                             x=1.5,
