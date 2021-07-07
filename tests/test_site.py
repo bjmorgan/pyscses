@@ -100,9 +100,6 @@ class TestSiteInit(unittest.TestCase):
         self.assertEqual(site.fixed_defects, (mock_defects_at_site[1], mock_defects_at_site[2]))
         self.assertEqual(site.mobile_defects[0], mock_defects_at_site[0])
         self.assertEqual(site.alpha, 0.5)
-    # TODO: test that fixed defects are added to the site.fixed_defects tuple and mobile defects are added to the site.mobiile_defects tuple
-
-    # TODO: test that site.alpha is computed correctly for various combinations of saturation_parameter and fixed defect species.
 
     def test_site_init_data_check_1(self):
         """Checks that initialising a Site object raises a ValueError if n(defect_species) != n(defect_energies)"""
