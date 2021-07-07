@@ -4,6 +4,7 @@ from pyscses.defect_species import DefectSpecies
 from pyscses.defect_at_site import DefectAtSite
 from pyscses.site import Site, LabelError
 from unittest.mock import Mock, patch
+from pyscses.constants import fundamental_charge
 import numpy as np
 
 def create_mock_defect_species(n):
@@ -183,9 +184,15 @@ class TestSite(unittest.TestCase):
                                                  temp=298.0),
                          {'A': exp_A, 'B': exp_B})
 
-    def test_probabilites_as_list(self):
+    def test_charge(self):
         self.site.probabilities = Mock(return_value={'E': 0.1, 'D': 0.2})
-        self.site.probabilities_as_list(phi=1.0, temp=298.0)
+        self.site.defects[0].valence = 1.0
+        self.site.defects[1].valence = 2.0
+        self.site.scaling = 0.5
+        self.site.valence = 1.0
+        expected_value = ((1.0*0.1 + 2.0*0.2)*0.5 + 1.0) * fundamental_charge
+        self.assertEqual(self.site.charge(phi=1.0, temp=298.0),
+                         expected_value)
 
 
 if __name__ == '__main__':

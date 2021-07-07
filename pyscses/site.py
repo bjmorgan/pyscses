@@ -194,12 +194,12 @@ class Site:
             list(float): Probabilities of site occupation for each defect species.
 
         """
-        warnings.warn("Site.probabilities_as_list() is deprecated and targetted for removal. Please use Site.probabilities() instead.", DeprecationWarning)
+        warnings.warn("Site.probabilities_as_list() is deprecated and targeted for removal. Please use Site.probabilities() instead.", DeprecationWarning)
         probabilities_dict = self.probabilities(phi=phi, temp=temp)
         return [probabilities_dict[d.label] for d in self.defects]
 
     def defect_valences(self) -> np.ndarray:
-        """Returns an array of valences for each defect from self.defects """
+        """Returns an array of valences for each defect in `self.defects`"""
         return np.array([d.valence for d in self.defects])
 
     def charge(self,
@@ -216,7 +216,9 @@ class Site:
             float: The charge at this site.
 
         """
-        charge =  (self.valence + np.sum(self.probabilities(phi, temp)
-                                * self.defect_valences()
-                                * self.scaling)) * fundamental_charge
-        return charge
+        defect_probabilities = self.probabilities(phi=phi, temp=temp)
+        charge = sum([defect_probabilities[d.label] * d.valence
+                      for d in self.defects]) * self.scaling
+        charge += self.valence
+        charge *= fundamental_charge
+        return float(charge)
