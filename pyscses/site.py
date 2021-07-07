@@ -71,6 +71,9 @@ class Site:
             self.scaling = np.ones_like(defect_energies, dtype=float)
         self.grid_point: Optional[GridPoint] = None
         self.valence = valence
+        self.fixed_defects = tuple(d for d in self.defects if d.fixed=True)
+        self.mobile_defects = tuple(d for d in self.defects if d.fixed=False)
+        self.alpha = 1.0 - sum((d.mole_fraction for d in fixed_defects))
 
     def competing_defect_species(self) -> Dict[str, int]:
         """Returns a dictionary reporting the number of fixed and / or mobile defect species that can occupy this site.
@@ -141,10 +144,37 @@ class Site:
             if defect.fixed:
                 probabilities.append(defect.mole_fraction)
             else:
-                probabilities.append(defect.mole_fraction * defect.boltzmann_factor(phi, temp) /
-                                     (1.0 + sum([d.mole_fraction * (d.boltzmann_factor(phi, temp) - 1.0)
-                                                for d in self.defects])))
+                numerator = defect.mole_fraction * defect.boltzmann_factor(phi, temp)
+                denominator = (1.0 + sum([d.mole_fraction * (d.boltzmann_factor(phi, temp) - 1.0)
+                                          for d in self.defects]))
+                probabilities.append(numerator / denominator)
         return probabilities
+        
+    def probabilities_fixed(self:
+                            phi: float,
+                            temp: float) -> List[float]:
+        """Calculates the probabilities of this site being occupied by each defect species.
+
+        Args:
+            phi (float): Electrostatic potential at this site in Volts.
+            temp (float): Temperature in Kelvin.
+
+        Returns:
+            list(float): Probabilities of site occupation on a 1D grid.
+
+        """
+        probabilities_dict = {}
+        boltzmann_factors = {d.label: d.boltzmann_factor(phi, temp) for d in self.mobile_defects}
+        denominator = (self.alpha + 
+                       sum([d.mole_fraction * (boltzmann_factors[d.label] - 1.0) 
+                            for d in self.mobile_defects]))
+        for defect in self.defects:
+            if defect.fixed:
+                probabilities_dict[defect.label] = defect.mole_fraction
+            else:
+                numerator = self.alpha * defect.mole_fraction * boltzmann_factors[defect.label]
+                probabilities_dict[defect.label] = numerator / denominator
+        return [probabilities_dict[d.label] for d in self.defects]   
 
     def defect_valences(self) -> np.ndarray:
         """Returns an array of valences for each defect from self.defects """

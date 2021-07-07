@@ -9,8 +9,8 @@ from sklearn.cluster import AgglomerativeClustering # type: ignore
 def site_from_input_file(site,
                          defect_species,
                          site_charge,
-                         core,
-                         temperature):
+                         temperature,
+                         zero_energies_less_than_kT=False):
     """
     Takes the data from the input file and converts it into a site.
     The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
@@ -19,12 +19,14 @@ def site_from_input_file(site,
         site (str): A line in the input file.
         defect_species (object): Class object containing information about the defect species present in the system.
         site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
+        temperature (float): Temperature in Kelvin.
+        zero_energies_less_than_kT (optional(bool)): If True segregation energies with absolute values < kT will be set to zero.
+            Default is False.
 
     Returns:
         :obj:`Site`
 
     """
-
     label = site[0]
     if site_charge == True:
         valence = float(site[1])
@@ -32,23 +34,17 @@ def site_from_input_file(site,
         valence = 0.0
     x = float(site[2])
     defect_labels = site[3::2]
-    defect_energies = [ float(e) for e in site[4::2] ]
-    min_energy = min(defect_energies)
-    # TODO: **Not well-defined what this is *supposed* to do.**
-    # TODO: Intended to define the core as being a single plane versus multiple planes.
-    # TODO: For multiple planes consider everything with |E_seg| < kT.
-    # TODO: For single plane, what is the intended behaviour if we have >1 site with the
-    # TODO: **same** lowest segregation energy?
-    if core == 'single':
+    defect_energies = [float(e) for e in site[4::2]]
+    if zero_energies_less_than_kT:
+        kT = boltzmann_eV * temperature
         for d_e in defect_energies:
-            if d_e > min_energy:
+            if abs(d_e) < kT:
                 d_e = 0.0
-    if core == 'multi-site':
-        for d_e in defect_energies:
-            if ( -boltzmann_eV * temperature) <= d_e <= ( boltzmann_eV * temperature ):
-                d_e = 0.0
-    #defect_energies = [ 0.0 for e in site[4::2] ]
-    return Site( label, x, [ defect_species[l] for l in defect_labels ], defect_energies, valence=valence )
+    return Site(label,
+                x, 
+                [defect_species[l] for l in defect_labels],\
+                defect_energies,
+                valence=valence)
 
 def format_line(line,
                 site_charge,
