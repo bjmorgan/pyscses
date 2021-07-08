@@ -104,6 +104,28 @@ def load_site_data(filename,
 #        print(line[0],line[2], flush=True)
 
     return input_data
+    
+def sites_from_file(filename: str,
+                    clustering_threshold: float = 1e-10,
+                    x_limits: Optional[Tuple[float, float]] = None,
+                    site_charge: bool = False) -> List(sites):
+    """Reads and pre-processes a set of site data from a file.
+    
+    Performs the following operations on the site data:
+        1. Sorts the site data so that sites are sorted with respect to their x coordinate.
+        2. Performs clustering of sites with x coordinates equal within a specified threshold (Default is 0.01 nm).
+        3. (optional) Excludes any data for sites with x coordinates outside specified limits.
+        4. (optional) Sets site charges to zero.
+        
+    Args:
+        filename (str): The input file.
+        clustering_threshold (optional(float)): Distance threshold for clustering sites with similar x coordinated.
+            Default is 1e-10.
+        TKTKTKTK >>>>
+         
+    """
+    pass
+
 
 def cluster_similar_sites(input_data):
     """Clusters data points the input data to be projected onto a site. Clustering criterion is set as 0.01 nm.
