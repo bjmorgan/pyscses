@@ -20,6 +20,10 @@ class DefectData(object):
         self.label = label
         self.energy = energy
 
+    def __eq__(self,
+               other: DefectData) -> bool:
+        return (self.label == other.label) and (self.energy == other.energy)
+
 class SiteData(object):
 
     def __init__(self,
@@ -34,6 +38,7 @@ class SiteData(object):
             valence (float): Site formal charge.
             x (float): Site x coordinate.
             defect_data (tuple(DefectData)): Data describing each defect species that can occupy this site.
+
         Returns:
             None
 
@@ -59,6 +64,28 @@ class SiteData(object):
         return input_string
 
     @classmethod
-    def from_input_line(self) -> SiteData:
-        """TODO"""
-        pass
+    def from_input_string(self,
+                          input_string: str) -> SiteData:
+        """Parse a formatted string in the input file format and return
+            a corresponding `SiteData` instance.
+
+        Args:
+            input_string (str): String describing the input data for this site.
+
+        Return:
+            SiteData
+
+        """
+        input = input_string.split()
+        label = input[0]
+        valence = float(input[1])
+        x = float(input[2])
+        defect_labels = input[3::2]
+        defect_energies = [float(s) for s in input[4::2]]
+        defect_data = tuple(DefectData(label=l, energy=e)
+                            for l, e in zip(defect_labels, defect_energies))
+        site_data = SiteData(label=label,
+                             valence=valence,
+                             x=x,
+                             defect_data=defect_data)
+        return site_data
