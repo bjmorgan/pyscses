@@ -5,6 +5,7 @@ import numpy as np
 from pyscses.constants import boltzmann_eV
 from bisect import bisect_left, bisect_right
 from sklearn.cluster import AgglomerativeClustering # type: ignore
+from typing import Optional, Tuple, List
 
 def site_from_input_file(site,
                          defect_species,
@@ -41,7 +42,7 @@ def site_from_input_file(site,
             if abs(d_e) < kT:
                 d_e = 0.0
     return Site(label,
-                x, 
+                x,
                 [defect_species[l] for l in defect_labels],\
                 defect_energies,
                 valence=valence)
@@ -104,25 +105,25 @@ def load_site_data(filename,
 #        print(line[0],line[2], flush=True)
 
     return input_data
-    
+
 def sites_from_file(filename: str,
                     clustering_threshold: float = 1e-10,
                     x_limits: Optional[Tuple[float, float]] = None,
-                    site_charge: bool = False) -> List(sites):
+                    site_charge: bool = False) -> List[Site]:
     """Reads and pre-processes a set of site data from a file.
-    
+
     Performs the following operations on the site data:
         1. Sorts the site data so that sites are sorted with respect to their x coordinate.
         2. Performs clustering of sites with x coordinates equal within a specified threshold (Default is 0.01 nm).
         3. (optional) Excludes any data for sites with x coordinates outside specified limits.
         4. (optional) Sets site charges to zero.
-        
+
     Args:
         filename (str): The input file.
         clustering_threshold (optional(float)): Distance threshold for clustering sites with similar x coordinated.
             Default is 1e-10.
         TKTKTKTK >>>>
-         
+
     """
     pass
 
