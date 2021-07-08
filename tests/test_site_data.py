@@ -43,6 +43,14 @@ class TestDefectData(unittest.TestCase):
                                    energy=energy2)
         self.assertFalse(defect_data_1 == defect_data_2)
 
+    def test_eq_evalutates_as_False_for_invalid_comparison(self):
+        label = 'X'
+        energy = -1.0
+        defect_data = DefectData(label=label,
+                                 energy=energy)
+        self.assertFalse(defect_data == 'foo')
+
+
 class TestSiteDataInit(unittest.TestCase):
 
     def test_SiteData_is_initialised(self):

@@ -23,7 +23,6 @@ class DefectData(object):
     def __eq__(self,
                other: object) -> bool:
         if not isinstance(other, DefectData):
-            print('oops')
             return NotImplemented
         return (self.label == other.label) and (self.energy == other.energy)
 
