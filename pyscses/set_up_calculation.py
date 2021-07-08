@@ -109,7 +109,7 @@ def load_site_data(filename,
 def sites_from_file(filename: str,
                     clustering_threshold: float = 1e-10,
                     x_limits: Optional[Tuple[float, float]] = None,
-                    site_charge: bool = False) -> List[Site]:
+                    site_charge: bool = False) -> List(sites):
     """Reads and pre-processes a set of site data from a file.
 
     Performs the following operations on the site data:
