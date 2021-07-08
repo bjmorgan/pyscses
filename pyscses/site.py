@@ -216,7 +216,7 @@ class Site:
     def from_site_data(cls,
                        site_data: SiteData,
                        defect_species: List[DefectSpecies],
-                       **kwargs: Optional[Dict[Any, Any]]) -> None:
+                       **kwargs: Optional[Dict[Any, Any]]) -> Site:
         """Create a Site instance from data stored in a SiteData object.
         
         Args:
