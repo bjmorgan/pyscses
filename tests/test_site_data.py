@@ -47,9 +47,9 @@ class TestSiteData(unittest.TestCase):
                                   x=x,
                                   defect_data=defect_data)
 
-    def test_as_input_line(self):
+    def test_as_input_string(self):
         expected_string = "A -2.0 1.2345 B -1.0 C 1.0"
-        self.assertEqual(self.site_data.as_input_line(),
+        self.assertEqual(self.site_data.as_input_string(),
                          expected_string)
 
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections import namedtuple
 from typing import Tuple
 
@@ -42,7 +43,7 @@ class SiteData(object):
         self.x = x
         self.defect_data = defect_data
 
-    def as_input_line(self) -> str:
+    def as_input_string(self) -> str:
         """Returns a formatted string equivalent to the expected line
         in an input file.
 
@@ -54,5 +55,10 @@ class SiteData(object):
 
         """
         defect_string = " ".join([f"{d.label} {d.energy}" for d in self.defect_data])
-        input_line_string = f"{self.label} {self.valence} {self.x} {defect_string}"
-        return input_line_string
+        input_string = f"{self.label} {self.valence} {self.x} {defect_string}"
+        return input_string
+
+    @classmethod
+    def from_input_line(self) -> SiteData:
+        """TODO"""
+        pass
