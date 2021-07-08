@@ -4,7 +4,8 @@ import math
 from pyscses.constants import fundamental_charge, boltzmann_eV
 from pyscses.grid_point import GridPoint
 from pyscses.defect_species import DefectSpecies
-from typing import List, Optional, Dict
+from pyscses.site_data import SiteData
+from typing import List, Optional, Dict, Any
 from pyscses.defect_at_site import DefectAtSite
 import warnings
 
@@ -210,3 +211,36 @@ class Site:
         charge += self.valence
         charge *= fundamental_charge
         return float(charge)
+        
+    @classmethod
+    def from_site_data(cls,
+                       site_data: SiteData,
+                       defect_species: List[DefectSpecies],
+                       **kwargs: Optional[Dict[Any, Any]]) -> None:
+        """Create a Site instance from data stored in a SiteData object.
+        
+        Args:
+            site_data (SiteData): The `SiteData` object, containing the data for this site.
+            defect_species (list(DefectSpecies)): List of `DefectSpecies` objects.
+                Only defect species with labels that match entries in the site data will
+                be added to the final `Site`.
+            **kwargs: Optional keyword arguments. See the `Site` class docstring for a list
+                of valid keywords and arguments.
+    
+        Returns:
+            None
+                        
+        """
+        defect_species_labels = {d.label for d in site_data.defect_data}
+        defect_species_to_pass = [ds for ds in defect_species
+                                  if ds.label in defect_species_labels]
+        # check that all defect species in the site data have corresponding DefectSpecies:
+        defect_species_to_pass_labels = {d.label for d in defect_species_to_pass}
+        for label in defect_species_labels:
+            if label not in defect_species_to_pass_labels:
+                raise ValueError(f"Could not find \"{label}\" in the passed list of defect species.")        
+        site = Site(label=site_data.label,
+                    x=site_data.x,
+                    defect_species=defect_species_to_pass,
+                    defect_energies=[d.energy for d in site_data.defect_data])
+        return site

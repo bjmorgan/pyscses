@@ -69,7 +69,7 @@ class SiteData(object):
     def from_input_string(self,
                           input_string: str) -> SiteData:
         """Parse a formatted string in the input file format and return
-            a corresponding `SiteData` instance.
+        a corresponding `SiteData` instance.
 
         Args:
             input_string (str): String describing the input data for this site.
