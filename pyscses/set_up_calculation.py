@@ -3,9 +3,10 @@ from operator import itemgetter
 from pyscses.site import Site
 import numpy as np
 from pyscses.constants import boltzmann_eV
+from pyscses.site_data import SiteData
 from bisect import bisect_left, bisect_right
 from sklearn.cluster import AgglomerativeClustering # type: ignore
-from typing import Optional, Tuple, List
+from typing import Tuple, List
 
 def site_from_input_file(site,
                          defect_species,
@@ -107,24 +108,40 @@ def load_site_data(filename,
     return input_data
 
 def sites_from_file(filename: str,
+                    x_limits: Tuple[float, float],
                     clustering_threshold: float = 1e-10,
-                    x_limits: Optional[Tuple[float, float]] = None,
                     site_charge: bool = False) -> List[Site]:
     """Reads and pre-processes a set of site data from a file.
 
     Performs the following operations on the site data:
-        1. Sorts the site data so that sites are sorted with respect to their x coordinate.
-        2. Performs clustering of sites with x coordinates equal within a specified threshold (Default is 0.01 nm).
-        3. (optional) Excludes any data for sites with x coordinates outside specified limits.
-        4. (optional) Sets site charges to zero.
+        1. Excludes any data for sites with x coordinates outside specified limits.
+        2. Sorts the site data so that sites are sorted with respect to their x coordinate.
+        3. Performs clustering of sites with x coordinates equal within a specified threshold (Default is 0.01 nm).
+        4. (optional) Use explicit site charges. If `False` all site charges
+            are set to zero. Default is `False`.
 
     Args:
         filename (str): The input file.
+        x_limits: (tuple(float, float)): x coordinates for the system boundaries.
         clustering_threshold (optional(float)): Distance threshold for clustering sites with similar x coordinated.
             Default is 1e-10.
-        TKTKTKTK >>>>
+        site_charge (bool): Set to `True` to use explicit site charges.
+            Default is `False.
+
+    Returns:
+        list(Site)
 
     """
+    with open(filename, 'r') as f:
+        input_data = [line.strip() for line in f.readlines() if line]
+    # TODO: Or validate the data here?
+    sites_data = [SiteData.from_input_string(line)
+                  for line in input_data]
+                  # TODO: Should probably check that `line` has the appropriate
+                  # TODO: format, and if it does not raise an error in
+                  # TODO: SiteData.from_input_string
+                  # TODO: which can be caught and turned into a more
+                  # TODO: useful error here.
     pass
 
 

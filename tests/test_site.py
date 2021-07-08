@@ -4,7 +4,7 @@ from pyscses.defect_species import DefectSpecies
 from pyscses.defect_at_site import DefectAtSite
 from pyscses.site_data import SiteData, DefectData
 from pyscses.site import Site, LabelError
-from unittest.mock import Mock, patch, call
+from unittest.mock import Mock, patch
 from pyscses.constants import fundamental_charge
 import numpy as np
 
@@ -194,7 +194,7 @@ class TestSite(unittest.TestCase):
         expected_value = ((1.0*0.1 + 2.0*0.2)*0.5 + 1.0) * fundamental_charge
         self.assertEqual(self.site.charge(phi=1.0, temp=298.0),
                          expected_value)
-                         
+
     def test_from_site_data(self):
         mock_defect_species = create_mock_defect_species(2)
         mock_defect_species[0].label = 'X'
