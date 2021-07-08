@@ -21,7 +21,10 @@ class DefectData(object):
         self.energy = energy
 
     def __eq__(self,
-               other: DefectData) -> bool:
+               other: object) -> bool:
+        if not isinstance(other, DefectData):
+            print('oops')
+            return NotImplemented
         return (self.label == other.label) and (self.energy == other.energy)
 
 class SiteData(object):
@@ -30,7 +33,7 @@ class SiteData(object):
                  label: str,
                  valence: float,
                  x: float,
-                 defect_data: Tuple[DefectData]) -> None:
+                 defect_data: Tuple[DefectData, ...]) -> None:
         """Instantiate a SiteData object.
 
         Args:
