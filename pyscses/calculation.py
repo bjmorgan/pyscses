@@ -4,7 +4,6 @@ import mpmath # type: ignore
 from bisect import bisect_left
 from pyscses.set_of_sites import SetOfSites
 from pyscses.matrix_solver import MatrixSolver
-from pyscses.set_up_calculation import calculate_grid_offsets
 from pyscses.constants import *
 from pyscses.grid import delta_x_from_grid, Grid, phi_at_x
 from scipy.optimize import minimize # type: ignore

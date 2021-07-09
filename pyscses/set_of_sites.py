@@ -210,11 +210,9 @@ class SetOfSites:
         return SetOfSites(sites), limits
 
     @classmethod
-    def set_of_sites_from_input_data(cls: object,
-                                     filename: str,
-                                     limits: Tuple[float, float],
-                                     defect_species: List[DefectSpecies],
-                                     site_charge: bool) -> SetOfSites:
+    def from_sites_data(cls: object,
+                       sites_data: List[SiteData],
+                       defect_species: List[DefectSpecies]) -> SetOfSites:
         """
         Takes the data from the input file and creates a SetOfSites object for those sites.
         The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
@@ -229,13 +227,7 @@ class SetOfSites:
     	    :obj:`SetOfSites`: `SetOfSites` object for the input data.
 
      	"""
-        site_data = sites_data_from_file(filename=filename,
-                                         x_limits=limits,
-                                         clustering_threshold=1e-10,
-                                         site_charge=site_charge)
-        sites = [Site.from_site_data(sd,
-                                     defect_species=defect_species)
-                 for sd in site_data]
+        sites = [Site.from_site_data(sd, defect_species=defect_species) for sd in sites_data]
         return SetOfSites(sites)
 
 # BEN: Is this used?
