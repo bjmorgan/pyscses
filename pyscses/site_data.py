@@ -5,7 +5,7 @@ import re
 
 class InputFormatError(Exception):
     pass
-    
+
 class DefectData(object):
 
     def __init__(self,
@@ -83,7 +83,7 @@ class SiteData(object):
 
         Return:
             SiteData
-            
+
         Raises:
             ValueError: if the input is found to be invalid syntax.
 
@@ -104,25 +104,24 @@ class SiteData(object):
                              x=x,
                              defect_data=defect_data)
         return site_data
-        
+
     @staticmethod
     def input_string_is_valid_syntax(string: str) -> bool:
         """Test whether a given input string is a valid format to construct a `SiteData` object.
-        
+
         Args:
             string (str): The string to be tested.
-            
+
         Returns
             bool
-            
+
         """
         input_re = re.compile(("(\w+)"                     # label (string)
                                "\s+"                       # whitespace
                                "([+-\.\d]+)"               # valence (float)
                                "\s+"                       # whitespace
                                "([+-\.e\d]+)"              # x-coordinate (float)
-                               "(\s+(\w+)\s+([+-\.\d]+))+" # 1 or more [defect_label defect_energy] pairs 
+                               "(\s+(\w+)\s+([+-\.e\d]+))+" # 1 or more [defect_label defect_energy] pairs
                                                            # (string, float)
                                "\Z"))                      # end of string
         return bool(input_re.match(string))
-    

@@ -105,7 +105,7 @@ class TestSiteData(unittest.TestCase):
                                            energy=+1.0))
         self.assertEqual(site_data.defect_data,
                          expected_defect_data)
-                         
+
     @patch('pyscses.site_data.SiteData.input_string_is_valid_syntax')
     def test_from_input_string_raise_InputFormatError_if_input_string_is_invalid(self,
         mock_input_string_is_valid_syntax):
@@ -125,24 +125,28 @@ class TestSiteData(unittest.TestCase):
 
 
 class TestSiteDataStaticMethods(unittest.TestCase):
-    
+
         def test_input_string_is_valid_syntax_returns_True(self):
             input_string = "A -2.0 1.2345 B -1.0 C 1.0"
             self.assertEqual(SiteData.input_string_is_valid_syntax(input_string), True)
-            
+
         def test_input_string_is_valid_syntax_returns_False(self):
             input_string = "A -2.0 1.2345 B -1.0 C 1.0 X"
             self.assertEqual(SiteData.input_string_is_valid_syntax(input_string), False)
-            
+
         def test_input_string_is_valid_syntax_returns_true_for_valid_string_with_extended_whitespace(self):
             input_string = "A -2.0 1.2345  B -1.0 C 1.0"
             self.assertEqual(SiteData.input_string_is_valid_syntax(input_string), True)
-            
+
         def test_input_string_is_valid_syntax_retuns_False_example_2(self):
             input_string = "B +1.0 -0.234 D +0.5 E"
             self.assertEqual(SiteData.input_string_is_valid_syntax(input_string), False)
-            
-    
+
+        def test_input_string_is_valid_syntax_returns_True_example_2(self):
+            input_string = "O -2 -1.0958833540000002e-09 Vo 8.73134e-05"
+            self.assertTrue(SiteData.input_string_is_valid_syntax(input_string))
+
+
 
 
 if __name__ == '__main__':
