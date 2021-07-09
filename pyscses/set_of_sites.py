@@ -2,7 +2,7 @@ from __future__ import annotations
 from scipy.interpolate import griddata # type: ignore
 import numpy as np
 import math
-from pyscses.set_up_calculation import site_from_input_file, load_site_data
+from pyscses.set_up_calculation import sites_data_from_file
 from pyscses.grid import index_of_grid_at_x, phi_at_x, energy_at_x
 from pyscses.constants import boltzmann_eV
 from pyscses.defect_species import DefectSpecies
@@ -209,15 +209,12 @@ class SetOfSites:
                                   scaling=np.array([scaling])))
         return SetOfSites(sites), limits
 
-    @ classmethod
+    @classmethod
     def set_of_sites_from_input_data(cls: object,
                                      filename: str,
                                      limits: Tuple[float, float],
                                      defect_species: List[DefectSpecies],
-                                     site_charge: bool,
-                                     core: str,
-                                     temperature: float,
-                                     offset: float = 0.0) -> SetOfSites:
+                                     site_charge: bool) -> SetOfSites:
         """
         Takes the data from the input file and creates a SetOfSites object for those sites.
         The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
@@ -227,25 +224,19 @@ class SetOfSites:
     	    limits (list): Minimum and maximum x coordinated defining the calculation region.
             defect_species (object): Class object containing information about the defect species present in the system.
             site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
-            core (str): Core definition. 'single' = Single segregation energy used to define the core. 'multi-site' = Layered segregation energies used to define the core while the energies fall in the region of positive and negative kT. 'all' = All sites between a minimum and maximum x coordinate used in calculation.
-    	    temperature (float): Temperature that the calculation is being run at.
 
     	Returns:
     	    :obj:`SetOfSites`: `SetOfSites` object for the input data.
 
      	"""
-        site_data = load_site_data(filename, limits[0], limits[1], site_charge, offset)
-        energies = [line[4] for line in site_data]
-        min_energy = min(energies)
-        if core == 'single':
-            for line in site_data:
-                if line[4] > min_energy:
-                    line[4] = 0.0
-        if core == 'multi_site':
-            for line in site_data:
-                if ( -boltzmann_eV * temperature) <= line[4] <= ( boltzmann_eV * temperature ):
-                    line[4] = 0.0
-        return SetOfSites([site_from_input_file(line, defect_species, site_charge, core, temperature) for line in site_data])
+        site_data = sites_data_from_file(filename=filename,
+                                         x_limits=limits,
+                                         clustering_threshold=1e-10,
+                                         site_charge=site_charge)
+        sites = [Site.from_site_data(sd,
+                                     defect_species=defect_species)
+                 for sd in site_data]
+        return SetOfSites(sites)
 
 # BEN: Is this used?
 #     @ classmethod
