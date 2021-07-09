@@ -107,7 +107,7 @@ def load_site_data(filename,
 
     return input_data
 
-def sites_from_file(filename: str,
+def sites_data_from_file(filename: str,
                     x_limits: Tuple[float, float],
                     clustering_threshold: float = 1e-10,
                     site_charge: bool = False) -> List[Site]:
@@ -132,9 +132,11 @@ def sites_from_file(filename: str,
         list(Site)
 
     """
+    # Read raw data from `filename`.
     with open(filename, 'r') as f:
         input_data = [line.strip() for line in f.readlines() if line]
-    # TODO: Or validate the data here?
+    # Convert raw data to a list of SiteData objects.
+        # TODO: Or validate the data here?
     sites_data = [SiteData.from_input_string(line)
                   for line in input_data]
                   # TODO: Should probably check that `line` has the appropriate
@@ -142,7 +144,13 @@ def sites_from_file(filename: str,
                   # TODO: SiteData.from_input_string
                   # TODO: which can be caught and turned into a more
                   # TODO: useful error here.
-    pass
+    # 1. Exclude data for sites with x coordinates outside the specified limits
+    sites_data = [sd for sd in sites_data
+                  if ((sd.x >= x_limits[0]) and
+                      (sd.x < x_limits[1]))]
+    # 2. Sort sites data by x coordinate.
+    sites_data = sorted(sites_data, key=lambda sd: sd.x)
+    return sites_data
 
 
 def cluster_similar_sites(input_data):
