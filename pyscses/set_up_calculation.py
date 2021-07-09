@@ -6,7 +6,7 @@ from pyscses.constants import boltzmann_eV
 from pyscses.site_data import SiteData, InputFormatError
 from bisect import bisect_left, bisect_right
 from sklearn.cluster import AgglomerativeClustering # type: ignore
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 
 def sites_data_from_file(filename: str,
                          x_limits: Tuple[float, float],
@@ -79,7 +79,7 @@ def cluster_similar_sites_data(sites_data: List[SiteData],
                                       linkage='ward',
                                       distance_threshold=distance_threshold)
     cluster.fit(all_coordinates)
-    clustered_sites_data = {}
+    clustered_sites_data: Dict[int, List[SiteData]] = {}
     for label, sd in zip(cluster.labels_, sites_data):
         clustered_sites_data.setdefault(label, []).append(sd)
     for sd_cluster in clustered_sites_data.values():
