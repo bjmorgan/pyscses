@@ -1,6 +1,7 @@
 import unittest
 from pyscses.site_data import SiteData
 from pyscses.site_data import DefectData
+from unittest.mock import patch
 
 class TestDefectDataInit(unittest.TestCase):
 
@@ -90,7 +91,9 @@ class TestSiteData(unittest.TestCase):
         self.assertEqual(self.site_data.as_input_string(),
                          expected_string)
 
-    def test_from_input_string(self):
+    @patch('pyscses.site_data.SiteData.input_string_is_valid_syntax')
+    def test_from_input_string(self, mock_input_string_is_valid_syntax):
+        mock_input_string_is_valid_syntax.return_value = True
         input_string = "A -2.0 1.2345 B -1.0 C 1.0"
         site_data = SiteData.from_input_string(input_string)
         self.assertEqual(site_data.label, 'A')
@@ -103,15 +106,33 @@ class TestSiteData(unittest.TestCase):
         self.assertEqual(site_data.defect_data,
                          expected_defect_data)
                          
+    @patch('pyscses.site_data.SiteData.input_string_is_valid_syntax')
+    def test_from_input_string_raise_ValueError_if_input_string_is_invalid(self,
+        mock_input_string_is_valid_syntax):
+        input_string = "A -2.0 1.2345 B -1.0 C 1.0 X"
+        mock_input_string_is_valid_syntax.return_value = False
+        with self.assertRaises(ValueError):
+            site_data = SiteData.from_input_string(input_string,
+                                                   validate_input=True)
+        mock_input_string_is_valid_syntax.assert_called_with(input_string)
+
+    @patch('pyscses.site_data.SiteData.input_string_is_valid_syntax')
+    def test_from_input_string_calls_input_string_is_valid_as_default_behaviour(self,
+        mock_input_string_is_valid_syntax):
+        input_string = "A -2.0 1.2345 B -1.0 C 1.0 X"
+        site_data = SiteData.from_input_string(input_string)
+        mock_input_string_is_valid_syntax.assert_called_with(input_string)
+        
+                         
 class TestSiteDataStaticMethods(unittest.TestCase):
     
-        def test_validate_input_string_returns_True(self):
+        def test_input_string_is_valid_syntax_returns_True(self):
             input_string = "A -2.0 1.2345 B -1.0 C 1.0"
-            self.assertTrue(SiteData.validate_input_string(input_string))
+            self.assertTrue(SiteData.input_string_is_valid_syntax(input_string))
             
-        def test_validate_input_string_returns_False(self):
+        def test_input_string_is_valid_syntax_returns_False(self):
             input_string = "A -2.0 1.2345 B -1.0 C 1.0 X"
-            self.assertFalse(SiteData.validate_input_string(input_string))
+            self.assertFalse(SiteData.input_string_is_valid_syntax(input_string))
     
 
 

@@ -67,18 +67,27 @@ class SiteData(object):
         return input_string
 
     @classmethod
-    def from_input_string(self,
-                          input_string: str) -> SiteData:
+    def from_input_string(cls,
+                          input_string: str,
+                          validate_input: bool = True) -> SiteData:
         """Parse a formatted string in the input file format and return
         a corresponding `SiteData` instance.
 
         Args:
             input_string (str): String describing the input data for this site.
+            validate_input (optional, bool): Flag for whether to validate the input string.
+                Default is `True`.
 
         Return:
             SiteData
+            
+        Raises:
+            ValueError: if the input is found to be invalid syntax.
 
         """
+        if validate_input:
+            if not cls.input_string_is_valid_syntax(input_string):
+                raise ValueError(f"Invalid syntax for site data: {input_string}")
         input = input_string.split()
         label = input[0]
         valence = float(input[1])
@@ -94,7 +103,7 @@ class SiteData(object):
         return site_data
         
     @staticmethod
-    def validate_input_string(string: str) -> bool:
+    def input_string_is_valid_syntax(string: str) -> bool:
         """Test whether a given input string is a valid format to construct a `SiteData` object.
         
         Args:
