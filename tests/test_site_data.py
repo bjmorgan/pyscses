@@ -102,6 +102,17 @@ class TestSiteData(unittest.TestCase):
                                            energy=+1.0))
         self.assertEqual(site_data.defect_data,
                          expected_defect_data)
+                         
+class TestSiteDataStaticMethods(unittest.TestCase):
+    
+        def test_validate_input_string_returns_True(self):
+            input_string = "A -2.0 1.2345 B -1.0 C 1.0"
+            self.assertTrue(SiteData.validate_input_string(input_string))
+            
+        def test_validate_input_string_returns_False(self):
+            input_string = "A -2.0 1.2345 B -1.0 C 1.0 X"
+            self.assertFalse(SiteData.validate_input_string(input_string))
+    
 
 
 if __name__ == '__main__':
