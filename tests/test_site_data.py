@@ -1,5 +1,5 @@
 import unittest
-from pyscses.site_data import SiteData
+from pyscses.site_data import SiteData, InputFormatError
 from pyscses.site_data import DefectData
 from unittest.mock import patch
 
@@ -107,11 +107,11 @@ class TestSiteData(unittest.TestCase):
                          expected_defect_data)
                          
     @patch('pyscses.site_data.SiteData.input_string_is_valid_syntax')
-    def test_from_input_string_raise_ValueError_if_input_string_is_invalid(self,
+    def test_from_input_string_raise_InputFormatError_if_input_string_is_invalid(self,
         mock_input_string_is_valid_syntax):
         input_string = "A -2.0 1.2345 B -1.0 C 1.0 X"
         mock_input_string_is_valid_syntax.return_value = False
-        with self.assertRaises(ValueError):
+        with self.assertRaises(InputFormatError):
             site_data = SiteData.from_input_string(input_string,
                                                    validate_input=True)
         mock_input_string_is_valid_syntax.assert_called_with(input_string)
@@ -122,17 +122,26 @@ class TestSiteData(unittest.TestCase):
         input_string = "A -2.0 1.2345 B -1.0 C 1.0 X"
         site_data = SiteData.from_input_string(input_string)
         mock_input_string_is_valid_syntax.assert_called_with(input_string)
-        
-                         
+
+
 class TestSiteDataStaticMethods(unittest.TestCase):
     
         def test_input_string_is_valid_syntax_returns_True(self):
             input_string = "A -2.0 1.2345 B -1.0 C 1.0"
-            self.assertTrue(SiteData.input_string_is_valid_syntax(input_string))
+            self.assertEqual(SiteData.input_string_is_valid_syntax(input_string), True)
             
         def test_input_string_is_valid_syntax_returns_False(self):
             input_string = "A -2.0 1.2345 B -1.0 C 1.0 X"
-            self.assertFalse(SiteData.input_string_is_valid_syntax(input_string))
+            self.assertEqual(SiteData.input_string_is_valid_syntax(input_string), False)
+            
+        def test_input_string_is_valid_syntax_returns_true_for_valid_string_with_extended_whitespace(self):
+            input_string = "A -2.0 1.2345  B -1.0 C 1.0"
+            self.assertEqual(SiteData.input_string_is_valid_syntax(input_string), True)
+            
+        def test_input_string_is_valid_syntax_retuns_False_example_2(self):
+            input_string = "B +1.0 -0.234 D +0.5 E"
+            self.assertEqual(SiteData.input_string_is_valid_syntax(input_string), False)
+            
     
 
 

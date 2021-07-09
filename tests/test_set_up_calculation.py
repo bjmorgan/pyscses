@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock, patch, mock_open, call
 from pyscses.set_up_calculation import sites_data_from_file
-from pyscses.site_data import SiteData
+from pyscses.site_data import SiteData, InputFormatError
 
 class TestSetUpCalculation(unittest.TestCase):
 
@@ -18,7 +18,8 @@ class TestSetUpCalculation(unittest.TestCase):
         with patch('builtins.open', mock_open(read_data=sites_input_data)):
             sites_data = sites_data_from_file(filename='sites.dat',
                                               x_limits=(-1.0, +1.0))
-        expected_calls = [call(line) for line in sites_input_data.split("\n") if line]
+        expected_calls = [call(line, validate_input=False)
+                          for line in sites_input_data.split("\n") if line]
         mock_from_input_string.assert_has_calls(expected_calls)
 
     @patch('pyscses.set_up_calculation.SiteData.from_input_string')
@@ -52,7 +53,44 @@ class TestSetUpCalculation(unittest.TestCase):
             sites_data = sites_data_from_file(filename='sites.dat',
               x_limits=(-2.0, +2.0))
         self.assertEqual(sites_data, mock_site_data[::-1])
+    
+    @patch('pyscses.set_up_calculation.SiteData.from_input_string')
+    @patch('pyscses.set_up_calculation.SiteData.input_string_is_valid_syntax')    
+    def test_sites_data_from_file_validates_input_data(self,
+        mock_input_string_is_valid_syntax,
+        mock_from_input_string):
+        mock_input_string_is_valid_syntax.return_value = True
+        sites_input_data = ("A -2.0 1.2345 B -1.0 C 1.0\n"
+                            "B +1.0 -0.234 D +0.5\n")
+        mock_site_data = [Mock(spec=SiteData),
+                          Mock(spec=SiteData)]
+        mock_site_data[0].x = 1.2345
+        mock_site_data[1].x = -0.234
+        mock_from_input_string.side_effect = mock_site_data
+        with patch('builtins.open', mock_open(read_data=sites_input_data)):
+            sites_data = sites_data_from_file(filename='sites.dat',
+                                              x_limits=(-1.0, +1.0))
+        expected_calls = [call(line) for line in sites_input_data.split("\n") if line]
+        mock_input_string_is_valid_syntax.assert_has_calls(expected_calls)
 
+    @patch('pyscses.set_up_calculation.SiteData.from_input_string')
+    @patch('pyscses.set_up_calculation.SiteData.input_string_is_valid_syntax')    
+    def test_sites_data_from_file_raises_InputFormatError(self,
+        mock_input_string_is_valid_syntax,
+        mock_from_input_string):
+        mock_input_string_is_valid_syntax.return_value = False
+        print("this test")
+        sites_input_data = ("A -2.0 1.2345 B -1.0 C 1.0\n"
+                            "B +1.0 -0.234 D +0.5 E\n")
+        mock_site_data = [Mock(spec=SiteData),
+                          Mock(spec=SiteData)]
+        mock_site_data[0].x = 1.2345
+        mock_site_data[1].x = -0.234
+        mock_from_input_string.side_effect = mock_site_data
+        with patch('builtins.open', mock_open(read_data=sites_input_data)):
+            with self.assertRaises(InputFormatError):
+                sites_data = sites_data_from_file(filename='sites.dat',
+                                                  x_limits=(-1.0, +1.0))
 
 if __name__ == '__main__':
     unittest.main()

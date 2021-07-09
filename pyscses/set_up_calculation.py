@@ -3,7 +3,7 @@ from operator import itemgetter
 from pyscses.site import Site
 import numpy as np
 from pyscses.constants import boltzmann_eV
-from pyscses.site_data import SiteData
+from pyscses.site_data import SiteData, InputFormatError
 from bisect import bisect_left, bisect_right
 from sklearn.cluster import AgglomerativeClustering # type: ignore
 from typing import Tuple, List
@@ -110,7 +110,7 @@ def load_site_data(filename,
 def sites_data_from_file(filename: str,
                     x_limits: Tuple[float, float],
                     clustering_threshold: float = 1e-10,
-                    site_charge: bool = False) -> List[Site]:
+                    site_charge: bool = False) -> List[SiteData]:
     """Reads and pre-processes a set of site data from a file.
 
     Performs the following operations on the site data:
@@ -132,18 +132,17 @@ def sites_data_from_file(filename: str,
         list(Site)
 
     """
-    # Read raw data from `filename`.
+    # Read raw data from `filename`:
     with open(filename, 'r') as f:
         input_data = [line.strip() for line in f.readlines() if line]
-    # Convert raw data to a list of SiteData objects.
-        # TODO: Or validate the data here?
-    sites_data = [SiteData.from_input_string(line)
+    # Validate the input data:
+    for line_number, line in enumerate(input_data, 1):
+        if not SiteData.input_string_is_valid_syntax(line):
+            raise InputFormatError(f"Input format error at line number {line_number} in file {filename}")
+    # Convert raw data to a list of SiteData objects:
+    sites_data = [SiteData.from_input_string(line, 
+                                             validate_input=False) # We have already validated the input above.
                   for line in input_data]
-                  # TODO: Should probably check that `line` has the appropriate
-                  # TODO: format, and if it does not raise an error in
-                  # TODO: SiteData.from_input_string
-                  # TODO: which can be caught and turned into a more
-                  # TODO: useful error here.
     # 1. Exclude data for sites with x coordinates outside the specified limits
     sites_data = [sd for sd in sites_data
                   if ((sd.x >= x_limits[0]) and

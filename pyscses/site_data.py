@@ -3,6 +3,9 @@ from collections import namedtuple
 from typing import Tuple
 import re
 
+class InputFormatError(Exception):
+    pass
+    
 class DefectData(object):
 
     def __init__(self,
@@ -87,7 +90,7 @@ class SiteData(object):
         """
         if validate_input:
             if not cls.input_string_is_valid_syntax(input_string):
-                raise ValueError(f"Invalid syntax for site data: {input_string}")
+                raise InputFormatError(f"Invalid syntax for site data: {input_string}")
         input = input_string.split()
         label = input[0]
         valence = float(input[1])
@@ -113,12 +116,13 @@ class SiteData(object):
             bool
             
         """
-        input_re = re.compile(("(\w+)"                   # label (string)
-                               "\s"                      # whitespace
-                               "([+-\.\d]+)"             # valence (float)
-                               "\s"                      # whitespace
-                               "([+-\.e\d]+)"            # x-coordinate (float)
-                               "(\s(\w+)\s([+-\.\d]+))+" # 1 or more [defect_label defect_energy] pairs (string, float)
-                               "\Z"))                    # end of string
-        return input_re.match(string)
+        input_re = re.compile(("(\w+)"                     # label (string)
+                               "\s+"                       # whitespace
+                               "([+-\.\d]+)"               # valence (float)
+                               "\s+"                       # whitespace
+                               "([+-\.e\d]+)"              # x-coordinate (float)
+                               "(\s+(\w+)\s+([+-\.\d]+))+" # 1 or more [defect_label defect_energy] pairs 
+                                                           # (string, float)
+                               "\Z"))                      # end of string
+        return bool(input_re.match(string))
     
