@@ -8,7 +8,9 @@ from pyscses.site_data import SiteData, InputFormatError
 class TestSetUpCalculation(unittest.TestCase):
 
     @patch('pyscses.set_up_calculation.SiteData.from_input_string')
+    @patch('pyscses.set_up_calculation.cluster_similar_sites_data')
     def test_sites_data_from_file_calls_SiteData_from_input_string(self,
+        mock_cluster_similar_sites_data,
         mock_from_input_string):
         sites_input_data = ("A -2.0 1.2345 B -1.0 C 1.0\n"
                             "B +1.0 -0.234 D +0.5\n")
@@ -25,7 +27,9 @@ class TestSetUpCalculation(unittest.TestCase):
         mock_from_input_string.assert_has_calls(expected_calls)
 
     @patch('pyscses.set_up_calculation.SiteData.from_input_string')
+    @patch('pyscses.set_up_calculation.cluster_similar_sites_data')
     def test_sites_data_from_file_removes_sites_outside_x_limits(self,
+        mock_cluster_similar_sites_data,
         mock_from_input_string):
         sites_input_data = ("A -2.0 -1.2345 B -1.0 C 1.0\n"
                             "B +1.0 0.234 D +0.5\n"
@@ -42,7 +46,9 @@ class TestSetUpCalculation(unittest.TestCase):
         self.assertEqual(sites_data, [mock_site_data[1]])
 
     @patch('pyscses.set_up_calculation.SiteData.from_input_string')
+    @patch('pyscses.set_up_calculation.cluster_similar_sites_data')
     def test_sites_data_from_file_returns_SiteData_sorted_by_x(self,
+        mock_cluster_similar_sites_data,
         mock_from_input_string):
         sites_input_data = ("A -2.0 1.2345 B -1.0 C 1.0\n"
                             "B +1.0 -0.234 D +0.5\n")
@@ -58,7 +64,9 @@ class TestSetUpCalculation(unittest.TestCase):
 
     @patch('pyscses.set_up_calculation.SiteData.from_input_string')
     @patch('pyscses.set_up_calculation.SiteData.input_string_is_valid_syntax')
+    @patch('pyscses.set_up_calculation.cluster_similar_sites_data')
     def test_sites_data_from_file_validates_input_data(self,
+        mock_cluster_similar_sites_data,
         mock_input_string_is_valid_syntax,
         mock_from_input_string):
         mock_input_string_is_valid_syntax.return_value = True
@@ -77,7 +85,9 @@ class TestSetUpCalculation(unittest.TestCase):
 
     @patch('pyscses.set_up_calculation.SiteData.from_input_string')
     @patch('pyscses.set_up_calculation.SiteData.input_string_is_valid_syntax')
+    @patch('pyscses.set_up_calculation.cluster_similar_sites_data')
     def test_sites_data_from_file_raises_InputFormatError(self,
+        mock_cluster_similar_sites_data,
         mock_input_string_is_valid_syntax,
         mock_from_input_string):
         mock_input_string_is_valid_syntax.return_value = False
@@ -94,7 +104,9 @@ class TestSetUpCalculation(unittest.TestCase):
                                                   x_limits=(-1.0, +1.0))
     @patch('pyscses.set_up_calculation.SiteData.from_input_string')
     @patch('pyscses.set_up_calculation.SiteData.input_string_is_valid_syntax')
+    @patch('pyscses.set_up_calculation.cluster_similar_sites_data')
     def test_sites_data_from_file_clusters_similar_sites(self,
+        mock_cluster_similar_sites_data,
         mock_input_string_is_valid_syntax,
         mock_from_input_string):
         mock_input_string_is_valid_syntax.return_value = True
@@ -108,6 +120,8 @@ class TestSetUpCalculation(unittest.TestCase):
         with patch('builtins.open', mock_open(read_data=sites_input_data)):
             sites_data = sites_data_from_file(filename='sites.dat',
                                               x_limits=(-1.0, +1.0))
+        mock_cluster_similar_sites_data.assert_called_with(sites_data=mock_site_data,
+            distance_threshold=1e-10)
 
     def test_cluster_similar_sites_data(self):
         mock_sites_data = [Mock(spec=SiteData),
