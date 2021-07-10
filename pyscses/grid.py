@@ -129,8 +129,8 @@ class Grid:
             volumes (np.array): Volume of each consecutive grid point.
             points (list): GridPoint object at each grid point in Grid.
             x (np.array): The x-coordinates for each grid point.
-            limits(list): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively.
-            limits_for_laplacian(list): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
+            limits (tuple(float, float)): distance between the midpoint of the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively.
+            limits_for_laplacian (tuple(float, float)): distance between the endmost sites and the next site outside of the calculation region for the first and last sites respectively.
             b (float):                b dimension for every grid-point.
             c (float):                c dimension for every grid-point.
             limits ([float,float])    x-coordinates for the minimum and maximum grid edges.

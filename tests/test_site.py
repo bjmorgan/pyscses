@@ -216,7 +216,8 @@ class TestSite(unittest.TestCase):
         mock_Site.assert_called_with(label=mock_site_data.label,
                                      x=mock_site_data.x,
                                      defect_species=mock_defect_species,
-                                     defect_energies=[-1.0, +1.0])
+                                     defect_energies=[-1.0, +1.0],
+                                     valence=-2.0)
 
     def test_from_site_data_only_passes_necessary_defect_species(self):
         mock_defect_species = create_mock_defect_species(3)
@@ -239,7 +240,8 @@ class TestSite(unittest.TestCase):
         mock_Site.assert_called_with(label=mock_site_data.label,
                                      x=mock_site_data.x,
                                      defect_species=mock_defect_species[:2],
-                                     defect_energies=[-1.0, +1.0])
+                                     defect_energies=[-1.0, +1.0],
+                                     valence=-2.0)
 
     def test_from_site_data_raises_ValueError_if_necessary_defect_species_are_not_passed(self):
         mock_defect_species = create_mock_defect_species(3)

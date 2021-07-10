@@ -126,15 +126,17 @@ class StructureData(object):
             raise Exception("TODO")
 
     @property
-    def limits_for_laplacian(self) -> Tuple[float, float]:
+    def laplacian_limits(self) -> Tuple[float, float]:
         """TODO"""
-        min_offset = (self.site_x_coords[1] - self.adjacent_sites_data[0].x)/2.0
-        max_offset = (self.adjacent_sites_data[1].x - self.site_x_coords[-2])/2.0
+        min_value = self.site_x_coords[0] - self.adjacent_sites_data[0].x
+        max_value = self.adjacent_sites_data[1].x - self.site_x_coords[-1]
         if self.system == 'single':
-            return (self.site_x_coords[0] - self.adjacent_sites_data[0].x,
-                    self.adjacent_sites_data[1].x - self.site_x_coords[-1])
+            return (min_value, max_value)
+            # return (self.site_x_coords[0] - self.adjacent_sites_data[0].x,
+            #         self.adjacent_sites_data[1].x - self.site_x_coords[-1])
         elif self.system == 'double':
-                return (self.site_x_coords[0] - self.adjacent_sites_data[0].x,
-                        self.site_x_coords[0] - self.adjacent_sites_data[0].x)
+            return (min_value, min_value)
+                # return (self.site_x_coords[0] - self.adjacent_sites_data[0].x,
+                #         self.site_x_coords[0] - self.adjacent_sites_data[0].x)
         else:
             raise Exception("TODO")

@@ -83,19 +83,30 @@ class TestStructureData(unittest.TestCase):
             split_sites_data = StructureData.split_sites_data(sites_data=mock_sites_data,
                 x_limits=x_limits)
 
-    # @patch('pyscses.structure_data.sites_data_from_file')
-    # def test_StructureData_from_file(self,
-    #                                  mock_sites_data_from_file):
-    #     filename = 'foo'
-    #     x_limits = (0.0, 1.0)
-    #     b = 1.0
-    #     c = 1.0
-    #     system = 'single'
-    #     StructureData.from_file(filename=filename,
-    #                             x_limits=x_limits,
-    #                             b=b,
-    #                             c=c,
-    #                             system=system)
+    @patch('pyscses.structure_data.sites_data_from_file')
+    @patch('pyscses.structure_data.StructureData')
+    def test_StructureData_from_file(self,
+                                     mock_StructureData,
+                                     mock_sites_data_from_file):
+        filename = 'foo'
+        x_limits = (0.0, 1.0)
+        b = 1.0
+        c = 1.0
+        system = 'single'
+        mock_sites_data = [Mock(spec=SiteData)]
+        mock_sites_data_from_file.return_value = mock_sites_data
+        StructureData.from_file(filename=filename,
+                                x_limits=x_limits,
+                                b=b,
+                                c=c,
+                                system=system)
+        mock_StructureData.assert_called_with(sites_data=mock_sites_data,
+                                              x_limits=x_limits,
+                                              b=b,
+                                              c=c,
+                                              system=system)
+
+
 
 
 

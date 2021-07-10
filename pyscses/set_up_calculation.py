@@ -47,8 +47,10 @@ def sites_data_from_file(filename: str,
     # 2. Cluster sites data with similar x coordinates.
     cluster_similar_sites_data(sites_data=sites_data,
                                distance_threshold=1e-10)
-    # 3. (Optional). Set site charges to zero if site_charge == True.
-    # TODO
+    # 3. (Optional). Use explicit site charges to zero if site_charge == True.
+    if not site_charge:
+        for sd in sites_data:
+            sd.valence = 0.0
     return sites_data
 
 def cluster_similar_sites_data(sites_data: List[SiteData],

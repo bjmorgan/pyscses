@@ -181,7 +181,7 @@ class SetOfSites:
             n_points (int): Number of points that the data should be interpolated on to.
             b (float): b dimension for every grid point.
             c (float): c dimension for every grid point.
-            defect_species (object): Class object containing information about the defect species present in the system.
+            defect_species (list(DefectSpecies): List of `DefectSpecies` objects.
             limits for laplacian (list): distance between the endmost sites and the midpoint of the next site outside of the calculation region for the first and last sites respectively.
             site_labels( list ): List of strings for the different site species.
             defect_labels (list): List of strings for the different defect species.
@@ -194,6 +194,7 @@ class SetOfSites:
         grid = np.linspace(x_min, x_max, n_points)
         limits = (grid[1] - grid[0], grid[1] - grid[0])
         sites = []
+        defect_species = {d.label: d for d in defect_species}
         for label, d_label in zip(site_labels, defect_labels):
             scaling = len( all_sites.subset(label)) / len(grid)
             continuum_grid = Grid(grid, b, c, limits, limits_for_laplacian, all_sites.subset(label))

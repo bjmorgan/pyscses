@@ -211,14 +211,14 @@ class Site:
         charge += self.valence
         charge *= fundamental_charge
         return float(charge)
-        
+
     @classmethod
     def from_site_data(cls,
                        site_data: SiteData,
                        defect_species: List[DefectSpecies],
                        **kwargs: Optional[Dict[Any, Any]]) -> Site:
         """Create a Site instance from data stored in a SiteData object.
-        
+
         Args:
             site_data (SiteData): The `SiteData` object, containing the data for this site.
             defect_species (list(DefectSpecies)): List of `DefectSpecies` objects.
@@ -226,10 +226,10 @@ class Site:
                 be added to the final `Site`.
             **kwargs: Optional keyword arguments. See the `Site` class docstring for a list
                 of valid keywords and arguments.
-    
+
         Returns:
             None
-                        
+
         """
         defect_species_labels = {d.label for d in site_data.defect_data}
         defect_species_to_pass = [ds for ds in defect_species
@@ -238,9 +238,10 @@ class Site:
         defect_species_to_pass_labels = {d.label for d in defect_species_to_pass}
         for label in defect_species_labels:
             if label not in defect_species_to_pass_labels:
-                raise ValueError(f"Could not find \"{label}\" in the passed list of defect species.")        
+                raise ValueError(f"Could not find \"{label}\" in the passed list of defect species.")
         site = Site(label=site_data.label,
                     x=site_data.x,
                     defect_species=defect_species_to_pass,
-                    defect_energies=[d.energy for d in site_data.defect_data])
+                    defect_energies=[d.energy for d in site_data.defect_data],
+                    valence=site_data.valence)
         return site
