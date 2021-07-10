@@ -45,6 +45,7 @@ class StructureData(object):
         self.b = b
         self.c = c
         self.site_x_coords = np.unique([sd.x for sd in self.sites_data])
+        self.defect_labels = set.union(*[sd.defect_labels for sd in self.sites_data])
         self.system = system
 
     @staticmethod
