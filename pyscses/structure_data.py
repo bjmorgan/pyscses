@@ -3,6 +3,9 @@ import numpy as np
 from pyscses.set_up_calculation import sites_data_from_file
 from typing import Tuple, List
 from pyscses.site_data import SiteData
+from collections import namedtuple
+
+SplitSitesData = namedtuple('SplitSitesData', ['inner_sites_data', 'adjacent_sites_data'])
 
 class StructureData(object):
     """A `StructureData` object contains all the structural information
@@ -34,10 +37,10 @@ class StructureData(object):
             x_limits (tuple(float, float)):
 
         """
-        (self.sites_data,
-            self.adjacent_sites_data) = StructureData.split_sites_dat(
-                sites_data=sites_data,
-                x_limits=x_limits)
+        split_sites_data = StructureData.split_sites_data(sites_data=sites_data,
+            x_limits=x_limits)
+        self.sites_data = split_sites_data.inner_sites_data
+        self.adjacent_sites_data = split_sites_data.adjacent_sites_data
         self.x_limits = x_limits
         self.b = b
         self.c = c
@@ -46,15 +49,34 @@ class StructureData(object):
 
     @staticmethod
     def split_sites_data(sites_data: List[SiteData],
-                         x_limits: Tuple[float, float]) -> Tuple[List[SiteData], Tuple[SiteData, SiteData]]:
-        """TODO"""
+                         x_limits: Tuple[float, float]) -> SplitSitesData:
+        """Given a set of `SiteData` describing defect sites, finds
+            1. All `SiteData` objects for sites within given x-coordinate limits, and
+            2. The `SiteData` objects immediately adjacent to the lower and upper x-limit positions, respectively.
+
+        Args:
+            sites_data: list(SiteData): Full list of `SiteData` objects.
+            x_limits: tuple(float, float): Lower and upper x-coordinate limits.
+
+        Returns:
+            list(SiteData), tuple(SiteData, SiteData): List of data for sites that are located between the x-coordinate limits; Tuple of data for the pair of sites located immediately adjacent to the lower and upper x-coordinate limits, respectively.
+
+        Raises:
+            ValueError: if at least one site is not located below the lower x-coordinate limit, and at least one site is located above the upper y-coordinate limit.
+
+        """
         x_coords = [sd.x for sd in sites_data]
+        if len(np.unique(x_coords)) < 3:
+            raise ValueError('Cannot split sites data with fewer than 3 unique x coordinates.')
         index_lower = int(np.searchsorted(x_coords, x_limits[0]))
         index_upper = int(np.searchsorted(x_coords, x_limits[1]))
-        adjacent_sites_data = sites_data[index_lower-1], sites_data[index_upper]
+        if index_lower == 0:
+            raise ValueError('Cannot split sites data. No sites found with x coordinates < the lower x-coordinate limit.')
+        if index_upper == len(x_coords):
+            raise ValueError('Cannot split sites data. No sites found with x coordinates > the upper x-coordinate limit.')
         inner_sites_data = sites_data[index_lower:index_upper]
-        return inner_sites_data, adjacent_sites_data
-
+        adjacent_sites_data = sites_data[index_lower-1], sites_data[index_upper]
+        return SplitSitesData(inner_sites_data, adjacent_sites_data)
 
     @classmethod
     def from_file(cls,
