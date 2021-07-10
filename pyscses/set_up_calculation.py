@@ -9,9 +9,8 @@ from sklearn.cluster import AgglomerativeClustering # type: ignore
 from typing import Tuple, List, Dict
 
 def sites_data_from_file(filename: str,
-                         x_limits: Tuple[float, float],
                          clustering_threshold: float = 1e-10,
-                         site_charge: bool = False) -> Tuple[List[SiteData], Tuple[SiteData, SiteData]]:
+                         site_charge: bool = False) -> List[SiteData]:
     """Reads and pre-processes a set of site data from a file.
 
     Performs the following operations on the site data:
@@ -29,7 +28,7 @@ def sites_data_from_file(filename: str,
             Default is `False.
 
     Returns:
-        list(SiteData), tuple(SiteData, SiteData): TODO Explain what is being returned.
+        list(SiteData)
 
     """
     # Read raw data from `filename`:
@@ -50,14 +49,7 @@ def sites_data_from_file(filename: str,
                                distance_threshold=1e-10)
     # 3. (Optional). Set site charges to zero if site_charge == True.
     # TODO
-    # 4. Select sites with x coordinates within the specified x limits,
-    #    plus the two adjacent sites outside the upper and lower bounds.
-    x_coords = [sd.x for sd in sites_data]
-    index_lower = np.searchsorted(x_coords, x_limits[0])
-    index_upper = np.searchsorted(x_coords, x_limits[1])
-    bounding_sites_data = sites_data[index_lower-1], sites_data[index_upper]
-    sites_data = sites_data[index_lower:index_upper]
-    return sites_data, bounding_sites_data
+    return sites_data
 
 def cluster_similar_sites_data(sites_data: List[SiteData],
                                distance_threshold: float = 1e-10) -> List[SiteData]:
