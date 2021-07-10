@@ -21,6 +21,7 @@ class TestSiteDataInit(unittest.TestCase):
         self.assertEqual(site_data.valence, valence)
         self.assertEqual(site_data.x, x)
         self.assertEqual(site_data.defect_data, defect_data)
+        self.assertEqual(site_data.defect_labels, {'B', 'C'})
 
 class TestSiteData(unittest.TestCase):
 

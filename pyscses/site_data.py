@@ -30,6 +30,7 @@ class SiteData(object):
         self.valence = valence
         self.x = x
         self.defect_data = defect_data
+        self.defect_labels = set(dd.label for dd in self.defect_data)
 
     def as_input_string(self) -> str:
         """Returns a formatted string equivalent to the expected line
