@@ -87,7 +87,23 @@ class StructureData(object):
                   system: str,
                   clustering_threshold: float = 1e-10,
                   site_charge: bool = False) -> StructureData:
-        """TODO"""
+        """Initialise a `StructureData` object by loading a set of site data from an input file.
+
+        Args:
+            filename (str): Filename for the input file of site data.
+            x_limits (tuple(float, float): x coordinates of the lower and upper bounds for the calculation.
+            b (float): Length of the b dimension of the input structure (perpendicular to x).
+            c (float): Length of the c dimension of the input structure (perpendicular to x).
+            system (str): ?? (TODO)
+            clustering_threshold (optional(float)): Distance threshold for clustering sites with similar x coordinated.
+            Default is 1e-10.
+            site_charge (bool): Set to `True` to use explicit site charges.
+                Default is `False.
+
+        Returns:
+            StructureData
+
+        """
         sites_data = sites_data_from_file(filename=filename,
                                           clustering_threshold=clustering_threshold,
                                           site_charge=site_charge)
