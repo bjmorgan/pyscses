@@ -10,6 +10,7 @@ from bisect import bisect_left
 from typing import List, Iterator, Tuple, Optional, Union
 from pyscses.site import Site
 from pyscses.grid import Grid
+from pyscses.site_data import SiteData
 
 class SetOfSites:
     """The SetOfSites object groups together all of the Site objects into one object and

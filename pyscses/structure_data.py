@@ -1,7 +1,8 @@
 from __future__ import annotations
 import numpy as np
 from pyscses.set_up_calculation import sites_data_from_file
-from typing import Tuple
+from typing import Tuple, List
+from pyscses.site_data import SiteData
 
 class StructureData(object):
     """Defines the structural model, including all defect sites
@@ -36,8 +37,8 @@ class StructureData(object):
                          x_limits: Tuple[float, float]) -> Tuple[List[SiteData], Tuple[SiteData, SiteData]]:
         """TODO"""
         x_coords = [sd.x for sd in sites_data]
-        index_lower = np.searchsorted(x_coords, x_limits[0])
-        index_upper = np.searchsorted(x_coords, x_limits[1])
+        index_lower = int(np.searchsorted(x_coords, x_limits[0]))
+        index_upper = int(np.searchsorted(x_coords, x_limits[1]))
         adjacent_sites_data = sites_data[index_lower-1], sites_data[index_upper]
         inner_sites_data = sites_data[index_lower:index_upper]
         return inner_sites_data, adjacent_sites_data
@@ -49,7 +50,7 @@ class StructureData(object):
                   x_limits: Tuple[float, float],
                   b: float,
                   c: float,
-                  system: system,
+                  system: str,
                   clustering_threshold: float = 1e-10,
                   site_charge: bool = False) -> StructureData:
         """TODO"""
