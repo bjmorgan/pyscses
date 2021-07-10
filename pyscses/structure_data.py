@@ -5,8 +5,19 @@ from typing import Tuple, List
 from pyscses.site_data import SiteData
 
 class StructureData(object):
-    """Defines the structural model, including all defect sites
-    and segregation energies.
+    """A `StructureData` object contains all the structural information
+    necessary for a calculation, including the positions of all
+    defect sites, and all defect segregation energies.
+
+    Attributes:
+        sites_data (list(SiteData)): List of `SiteData` objects for each site to be explicitly included in a calculation.
+        adjacent_sites_data (tuple(SiteData, SiteData)): Pair of `SiteData` objects describing the sites immediately adjacent to the lower and upper x-bounds for the calculation.
+            These `SiteData` objects are used to calculate the boundary terms for Poisson solver.
+        x_limits (tuple(float, float)): x coordinates of the lower and upper bounds for the calculation.
+        b (float): Length of the b dimension of the input structure (perpendicular to x).
+        c (float): Length of the c dimension of the input structure (perpendicular to x).
+        site_x_coords (np.array): Array of the unique x coordinates of the sites to be explicitly included in a calculation.
+        system (str): ?? (TODO)
 
     """
 
@@ -24,8 +35,9 @@ class StructureData(object):
 
         """
         (self.sites_data,
-            self.adjacent_sites_data) = StructureData.split_sites_data(sites_data=sites_data,
-                                                                       x_limits=x_limits)
+            self.adjacent_sites_data) = StructureData.split_sites_dat(
+                sites_data=sites_data,
+                x_limits=x_limits)
         self.x_limits = x_limits
         self.b = b
         self.c = c
