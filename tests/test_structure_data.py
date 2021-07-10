@@ -30,7 +30,6 @@ class TestStructureData(unittest.TestCase):
                                        b=b,
                                        c=c,
                                        system=system)
-        print(structure_data)
         self.assertEqual(structure_data.sites_data, mock_split_sites_return[0])
         self.assertEqual(structure_data.adjacent_sites_data, mock_split_sites_return[1])
         self.assertEqual(structure_data.x_limits, x_limits)
@@ -38,6 +37,8 @@ class TestStructureData(unittest.TestCase):
         self.assertEqual(structure_data.c, c)
         np.testing.assert_array_equal(structure_data.site_x_coords, np.array([0.5, 0.7]))
         self.assertEqual(structure_data.defect_labels, {'A', 'B'})
+        np.testing.assert_array_equal(structure_data.site_x_coords_by_defect['A'], np.array([0.5]))
+        np.testing.assert_array_equal(structure_data.site_x_coords_by_defect['B'], np.array([0.7]))
         self.assertEqual(structure_data.system, system)
 
     def test_split_sites_data(self):
