@@ -2,7 +2,8 @@ import unittest
 from pyscses.set_of_sites import SetOfSites
 from pyscses.defect_species import DefectSpecies
 from pyscses.defect_at_site import DefectAtSite
-from pyscses.site_data import SiteData, DefectData
+from pyscses.site_data import SiteData
+from pyscses.defect_data import DefectData
 from pyscses.site import Site, LabelError
 from unittest.mock import Mock, patch
 from pyscses.constants import fundamental_charge
