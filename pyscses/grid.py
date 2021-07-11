@@ -120,7 +120,7 @@ class Grid:
                  limits: Tuple[float, float],
                  limits_for_laplacian: Tuple[float, float],
                  set_of_sites: SetOfSites) -> None:
-       # x_coordinates need to be sorted for the delta_x calculation in volumes_from_grid
+        # x_coordinates need to be sorted for the delta_x calculation in volumes_from_grid
         """
         Grid objects contain information and methods for the calculation grid.
 
