@@ -2,7 +2,7 @@ from __future__ import annotations
 from scipy.interpolate import griddata # type: ignore
 import numpy as np
 import math
-from pyscses.set_up_calculation import sites_data_from_file
+from pyscses.sites_data_importer import sites_data_from_file
 from pyscses.grid import index_of_grid_at_x, phi_at_x, energy_at_x
 from pyscses.constants import boltzmann_eV
 from pyscses.defect_species import DefectSpecies

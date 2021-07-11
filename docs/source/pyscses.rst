@@ -14,5 +14,5 @@ Submodules
    pyscses.grid_point
    pyscses.matrix_solver
    pyscses.set_of_sites
-   pyscses.set_up_calculation
+   pyscses.sites_data_importer
    pyscses.site

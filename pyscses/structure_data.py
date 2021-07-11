@@ -1,6 +1,6 @@
 from __future__ import annotations
 import numpy as np
-from pyscses.set_up_calculation import sites_data_from_file
+from pyscses.sites_data_importer import sites_data_from_file
 from typing import Tuple, List
 from pyscses.site_data import SiteData
 from collections import namedtuple

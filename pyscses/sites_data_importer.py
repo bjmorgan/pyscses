@@ -1,11 +1,7 @@
-from copy import copy
-from operator import itemgetter
-from pyscses.site import Site
 import numpy as np
-from pyscses.constants import boltzmann_eV
-from pyscses.site_data import SiteData, InputFormatError
-from bisect import bisect_left, bisect_right
 from sklearn.cluster import AgglomerativeClustering # type: ignore
+from pyscses.site import Site
+from pyscses.site_data import SiteData, InputFormatError
 from typing import Tuple, List, Dict
 
 def sites_data_from_file(filename: str,
@@ -17,7 +13,7 @@ def sites_data_from_file(filename: str,
         1. Sorts the site data so that sites are sorted with respect to their x coordinate.
         2. Performs clustering of sites with x coordinates equal within a specified threshold (Default is 0.01 nm).
         3. (optional) Use explicit site charges. If `False` all site charges
-            are set to zero. Default is `False`. !!TODO!!
+            are set to zero. Default is `False`.
 
     Args:
         filename (str): The input file.
@@ -34,23 +30,29 @@ def sites_data_from_file(filename: str,
     # Read raw data from `filename`:
     with open(filename, 'r') as f:
         input_data = [line.strip() for line in f.readlines() if line]
+
     # Validate the input data:
     for line_number, line in enumerate(input_data, 1):
         if not SiteData.input_string_is_valid_syntax(line):
             raise InputFormatError(f"Input format error at line number {line_number} in file {filename}")
+
     # Convert raw data to a list of SiteData objects:
     sites_data = [SiteData.from_input_string(line,
                                              validate_input=False) # We have already validated the input above.
                   for line in input_data]
+
     # 1. Sort sites data by x coordinate.
     sites_data = sorted(sites_data, key=lambda sd: sd.x)
+
     # 2. Cluster sites data with similar x coordinates.
     cluster_similar_sites_data(sites_data=sites_data,
                                distance_threshold=1e-10)
+
     # 3. (Optional). Use explicit site charges to zero if site_charge == True.
     if not site_charge:
         for sd in sites_data:
             sd.valence = 0.0
+
     return sites_data
 
 def cluster_similar_sites_data(sites_data: List[SiteData],

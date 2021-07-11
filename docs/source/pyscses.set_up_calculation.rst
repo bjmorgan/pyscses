@@ -1,7 +1,7 @@
 pyscses.set\_up\_calculation module
 -----------------------------------
 
-.. automodule:: pyscses.set_up_calculation
+.. automodule:: pyscses.sites_data_importer
     :members:
     :undoc-members:
     :show-inheritance:
