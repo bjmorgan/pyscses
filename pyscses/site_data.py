@@ -94,12 +94,12 @@ class SiteData(object):
             bool
 
         """
-        input_re = re.compile(("(\w+)"                      # label (string)
-                               "\s+"                        # whitespace
-                               "([+-\.\d]+)"                # valence (float)
-                               "\s+"                        # whitespace
-                               "([+-\.e\d]+)"               # x-coordinate (float)
-                               "(\s+(\w+)\s+([+-\.e\d]+))+" # 1 or more [defect_label defect_energy] pairs
+        input_re = re.compile((r"(\w+)"                      # label (string)
+                               r"\s+"                        # whitespace
+                               r"([+-\.\d]+)"                # valence (float)
+                               r"\s+"                        # whitespace
+                               r"([+-\.e\d]+)"               # x-coordinate (float)
+                               r"(\s+(\w+)\s+([+-\.e\d]+))+" # 1 or more [defect_label defect_energy] pairs
                                                                 # (string, float)
-                               "\Z"))                       # end of string
+                               r"\Z"))                       # end of string
         return bool(input_re.match(string))
