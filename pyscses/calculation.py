@@ -158,7 +158,7 @@ class Calculation:
                          grid: Grid,
                          min_cutoff: float,
                          max_cutoff: float) -> Tuple[float, float]:
-        """Calculate the offset between the midpoint of the last x coordinate in the calculation region and the x coordinate outside of the calulation region.
+        """Calculate the offset between the midpoint of the last x coordinate in the calculation region and the x coordinate outside of the calculation region.
 
         Args:
             grid (:obj:`pyscses.Grid`): Contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
