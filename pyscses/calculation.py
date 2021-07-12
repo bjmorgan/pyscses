@@ -234,9 +234,9 @@ class Calculation:
 
         """
         poisson_solver = MatrixSolver(grid=self.grid,
-              dielectric=self.dielectric,
-              temp=self.temp,
-              boundary_conditions=self.boundary_conditions)
+                                      dielectric=self.dielectric,
+                                      temp=self.temp,
+                                      boundary_conditions=self.boundary_conditions)
 
         phi = np.zeros_like(self.grid.x)
         rho = np.zeros_like(self.grid.x)
