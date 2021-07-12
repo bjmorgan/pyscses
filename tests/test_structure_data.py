@@ -14,7 +14,6 @@ class TestStructureData(unittest.TestCase):
         x_limits = (0.0, 1.0)
         b = 1.0
         c = 1.0
-        system = 'single'
         mock_site_data = [Mock(spec=SiteData),
                           Mock(spec=SiteData)]
         mock_site_data[0].defect_labels = {'A'}
@@ -28,8 +27,7 @@ class TestStructureData(unittest.TestCase):
         structure_data = StructureData(sites_data=sites_data,
                                        x_limits=x_limits,
                                        b=b,
-                                       c=c,
-                                       system=system)
+                                       c=c)
         self.assertEqual(structure_data.sites_data, mock_split_sites_return[0])
         self.assertEqual(structure_data.adjacent_sites_data, mock_split_sites_return[1])
         self.assertEqual(structure_data.x_limits, x_limits)
@@ -39,7 +37,6 @@ class TestStructureData(unittest.TestCase):
         self.assertEqual(structure_data.defect_labels, {'A', 'B'})
         np.testing.assert_array_equal(structure_data.site_x_coords_by_defect['A'], np.array([0.5]))
         np.testing.assert_array_equal(structure_data.site_x_coords_by_defect['B'], np.array([0.7]))
-        self.assertEqual(structure_data.system, system)
 
     def test_split_sites_data(self):
         mock_sites_data = [Mock(spec=SiteData),
@@ -99,19 +96,16 @@ class TestStructureData(unittest.TestCase):
         x_limits = (0.0, 1.0)
         b = 1.0
         c = 1.0
-        system = 'single'
         mock_sites_data = [Mock(spec=SiteData)]
         mock_sites_data_from_file.return_value = mock_sites_data
         StructureData.from_file(filename=filename,
                                 x_limits=x_limits,
                                 b=b,
-                                c=c,
-                                system=system)
+                                c=c)
         mock_StructureData.assert_called_with(sites_data=mock_sites_data,
                                               x_limits=x_limits,
                                               b=b,
-                                              c=c,
-                                              system=system)
+                                              c=c)
 
 
 

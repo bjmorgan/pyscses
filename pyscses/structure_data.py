@@ -20,7 +20,6 @@ class StructureData(object):
         b (float): Length of the b dimension of the input structure (perpendicular to x).
         c (float): Length of the c dimension of the input structure (perpendicular to x).
         site_x_coords (np.array): Array of the unique x coordinates of the sites to be explicitly included in a calculation.
-        system (str): ?? (TODO)
 
     """
 
@@ -28,13 +27,14 @@ class StructureData(object):
                  sites_data: List[SiteData],
                  x_limits: Tuple[float, float],
                  b: float,
-                 c: float,
-                 system: str) -> None:
+                 c: float) -> None:
         """Initialise a StructureData object.
 
         Args:
             sites_data (list(site_data)): List of `SiteData` objects.
-            x_limits (tuple(float, float)):
+            x_limits (tuple(float, float)),
+            b (float): Length of the b dimension of the input structure (perpendicular to x).
+            c (float): Length of the c dimension of the input structure (perpendicular to x).
 
         """
         split_sites_data = StructureData.split_sites_data(sites_data=sites_data,
@@ -50,7 +50,6 @@ class StructureData(object):
                                                           for sd in self.sites_data
                                                           if label in sd.defect_labels])
                                         for label in self.defect_labels}
-        self.system = system
 
     @staticmethod
     def split_sites_data(sites_data: List[SiteData],
@@ -89,7 +88,6 @@ class StructureData(object):
                   x_limits: Tuple[float, float],
                   b: float,
                   c: float,
-                  system: str,
                   clustering_threshold: float = 1e-10,
                   site_charge: bool = False) -> StructureData:
         """Initialise a `StructureData` object by loading a set of site data from an input file.
@@ -99,7 +97,6 @@ class StructureData(object):
             x_limits (tuple(float, float): x coordinates of the lower and upper bounds for the calculation.
             b (float): Length of the b dimension of the input structure (perpendicular to x).
             c (float): Length of the c dimension of the input structure (perpendicular to x).
-            system (str): ?? (TODO)
             clustering_threshold (optional(float)): Distance threshold for clustering sites with similar x coordinated.
             Default is 1e-10.
             site_charge (bool): Set to `True` to use explicit site charges.
@@ -115,33 +112,18 @@ class StructureData(object):
         return StructureData(sites_data=sites_data,
                              x_limits=x_limits,
                              b=b,
-                             c=c,
-                             system=system)
+                             c=c)
 
     @property
     def limits(self) -> Tuple[float, float]:
         """TODO"""
         min_offset = (self.site_x_coords[1] - self.adjacent_sites_data[0].x)/2.0
         max_offset = (self.adjacent_sites_data[1].x - self.site_x_coords[-2])/2.0
-        if self.system == 'single':
-            return (min_offset, max_offset)
-        elif self.system == 'double':
-            return (min_offset, min_offset)
-        else:
-            raise Exception("TODO")
+        return (min_offset, max_offset)
 
     @property
     def laplacian_limits(self) -> Tuple[float, float]:
         """TODO"""
         min_value = self.site_x_coords[0] - self.adjacent_sites_data[0].x
         max_value = self.adjacent_sites_data[1].x - self.site_x_coords[-1]
-        if self.system == 'single':
-            return (min_value, max_value)
-            # return (self.site_x_coords[0] - self.adjacent_sites_data[0].x,
-            #         self.adjacent_sites_data[1].x - self.site_x_coords[-1])
-        elif self.system == 'double':
-            return (min_value, min_value)
-                # return (self.site_x_coords[0] - self.adjacent_sites_data[0].x,
-                #         self.site_x_coords[0] - self.adjacent_sites_data[0].x)
-        else:
-            raise Exception("TODO")
+        return (min_value, max_value)
