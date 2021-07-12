@@ -4,7 +4,6 @@ import mpmath # type: ignore
 from bisect import bisect_left
 from pyscses.set_of_sites import SetOfSites
 from pyscses.matrix_solver import MatrixSolver
-from pyscses.set_up_calculation import calculate_grid_offsets
 from pyscses.constants import *
 from pyscses.grid import delta_x_from_grid, Grid, phi_at_x
 from scipy.optimize import minimize # type: ignore
@@ -22,7 +21,8 @@ class Calculation:
         convergence (float): The convergence limit. The difference between the updated phi and the phi from the previous iteration must be below this for the calculation to be sufficiently converged.
         dielectric (float): The dielectric constant for the studied material.
         temp (float): The temperature that the calculation is run.
-        boundary_conditions (str): Specified boundary conditions for the matrix solver. Allowed values are `dirichlet` and `periodic`. Default = `dirichlet`.
+        boundary_conditions (str): Specified boundary conditions for the matrix solver.
+            Allowed values are `dirichlet` and `periodic`. Default = `dirichlet`.
 
     """
 
@@ -67,7 +67,7 @@ class Calculation:
             for i in range(len(mf)):
                 output = output_mole_fractions[0,i]
                 target = target_mole_fractions[0,i]
-                squares.append(( output - target )**2)
+                squares.append((output - target)**2)
         return sum( squares )
 
     def mole_fraction_output(self,
@@ -89,7 +89,6 @@ class Calculation:
                         defect_species.mole_fraction = input_mole_fractions[0,i]
                     for defect in site.defects:
                         defect.mole_fraction = input_mole_fractions[0,i]
-
         self.solve(approximation)
         species = []
         for mf in input_mole_fractions:
@@ -159,7 +158,7 @@ class Calculation:
                          grid: Grid,
                          min_cutoff: float,
                          max_cutoff: float) -> Tuple[float, float]:
-        """Calculate the offset between the midpoint of the last x coordinate in the calculation region and the x coordinate outside of the calulation region.
+        """Calculate the offset between the midpoint of the last x coordinate in the calculation region and the x coordinate outside of the calculation region.
 
         Args:
             grid (:obj:`pyscses.Grid`): Contains properties of the grid including the x coordinates and the volumes. Used to access the x coordinates.
@@ -168,12 +167,12 @@ class Calculation:
 
         Returns:
             float: Offset for the minimum x coordinate.
-	    float: Offset fot the maximum x coordinate.
+	    float: Offset for the maximum x coordinate.
 
         """
-        min_index, max_index = self.find_index( grid, min_cutoff, max_cutoff )
-        min_offset = ( ( grid.x[ min_index + 1 ] - grid.x[ min_index ] ) / 2 ) + ( ( grid.x[ min_index ] - grid.x[ min_index - 1 ] ) / 2 )
-        max_offset = ( ( grid.x[ max_index ] - grid.x[ max_index - 1 ] ) / 2 ) + ( ( grid.x[ max_index - 1 ] - grid.x[ max_index -2 ] ) / 2 )
+        min_index, max_index = self.find_index(grid, min_cutoff, max_cutoff)
+        min_offset = ((grid.x[min_index + 1] - grid.x[min_index])/2) + ((grid.x[min_index] - grid.x[min_index - 1])/2)
+        max_offset = ((grid.x[max_index] - grid.x[max_index - 1])/2) + ((grid.x[max_index - 1] - grid.x[max_index - 2])/2)
         return min_offset, max_offset
 
     def calculate_delta_x(self,
@@ -191,8 +190,8 @@ class Calculation:
 	    list: Distance between consecutive sites.
 
 	"""
-        min_index, max_index = self.find_index( grid, min_cutoff, max_cutoff )
-        min_offset, max_offset = self.calculate_offset( grid, min_cutoff, max_cutoff )
+        min_index, max_index = self.find_index(grid, min_cutoff, max_cutoff)
+        min_offset, max_offset = self.calculate_offset(grid, min_cutoff, max_cutoff)
         return delta_x_from_grid(grid.x[min_index+1: max_index ],
                                  (min_offset, max_offset))
 
@@ -215,7 +214,7 @@ class Calculation:
 	"""
         min_index, max_index = self.find_index(grid, min_cutoff, max_cutoff)
         delta_x = self.calculate_delta_x(grid, min_cutoff, max_cutoff)
-        return np.sum( sc_property[ min_index + 1 : max_index ] * delta_x ) / np.sum( delta_x )
+        return np.sum(sc_property[min_index + 1: max_index] * delta_x) / np.sum(delta_x)
 
     def solve(self,
               approximation: str,
@@ -235,9 +234,9 @@ class Calculation:
 
         """
         poisson_solver = MatrixSolver(grid=self.grid,
-              dielectric=self.dielectric,
-              temp=self.temp,
-              boundary_conditions=self.boundary_conditions)
+                                      dielectric=self.dielectric,
+                                      temp=self.temp,
+                                      boundary_conditions=self.boundary_conditions)
 
         phi = np.zeros_like(self.grid.x)
         rho = np.zeros_like(self.grid.x)
@@ -267,7 +266,6 @@ class Calculation:
             # TODO: This definition of convergence should not be averaged over all sites.
             phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
             conv = sum((predicted_phi - phi )**2) / len(self.grid.x)
-            # prob = self.grid.set_of_sites.calculate_probabilities( self.grid, phi, self.temp) # Jacob: Does this do anything?
             niter += 1
             if verbose:
                 if niter % 500 == 0:
@@ -335,15 +333,15 @@ class Calculation:
 
 	"""
         space_charge_region = []
-        self.phi_on_mobile_defect_grid = [ phi_at_x( self.phi, self.grid.x, x ) for x in grid.x ]
-        x_and_phi = np.column_stack( ( grid.x, self.phi_on_mobile_defect_grid ) )
-        for i in range( len( x_and_phi ) ):
+        self.phi_on_mobile_defect_grid = [phi_at_x(self.phi, self.grid.x, x) for x in grid.x]
+        x_and_phi = np.column_stack((grid.x, self.phi_on_mobile_defect_grid))
+        for i in range(len(x_and_phi)):
             if pos_or_neg_scr == 'positive':
                 if x_and_phi[i, 1]-x_and_phi[0,1] > scr_limit:
-                    space_charge_region.append( x_and_phi[i,0] )
+                    space_charge_region.append(x_and_phi[i,0])
             if pos_or_neg_scr == 'negative':
                 if x_and_phi[i,1]-x_and_phi[0,1] < scr_limit:
-                    space_charge_region.append( x_and_phi[i,0] )
+                    space_charge_region.append(x_and_phi[i,0])
         return space_charge_region
 
     def calculate_mobile_defect_conductivities(self,
@@ -369,32 +367,32 @@ class Calculation:
 	    """
         # TODO: Needs refactoring.
         # TODO: Updated copy of this function from Jacob.
-        space_charge_region = self.create_space_charge_region( self.subgrids[species], pos_or_neg_scr, scr_limit )
-        space_charge_region_limits = self.calculate_offset( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
-        space_charge_region_sites = self.create_subregion_sites( self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region) )
+        space_charge_region = self.create_space_charge_region(self.subgrids[species], pos_or_neg_scr, scr_limit)
+        space_charge_region_limits = self.calculate_offset(self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region))
+        space_charge_region_sites = self.create_subregion_sites(self.subgrids[species], np.min(space_charge_region), np.max(space_charge_region))
         for site in space_charge_region_sites:
             charge = site.defects[0].valence
             mobilities = site.defects[0].mobility
-        space_charge_region_grid = Grid.from_set_of_sites( space_charge_region_sites, space_charge_region_limits, space_charge_region_limits, self.grid.b, self.grid.c )
+        space_charge_region_grid = Grid.from_set_of_sites(space_charge_region_sites, space_charge_region_limits, space_charge_region_limits, self.grid.b, self.grid.c)
         space_charge_region_width = space_charge_region_grid.x[-1] - space_charge_region_grid.x[0]
-        mobile_defect_density = self.subgrids[species].set_of_sites.subgrid_calculate_defect_density( self.subgrids[species], self.grid, self.phi, self.temp )
-        space_charge_region_mobile_defect_mf = space_charge_region_sites.calculate_probabilities( space_charge_region_grid, self.phi, self.temp )
+        mobile_defect_density = self.subgrids[species].set_of_sites.subgrid_calculate_defect_density(self.subgrids[species], self.grid, self.phi, self.temp)
+        space_charge_region_mobile_defect_mf = space_charge_region_sites.calculate_probabilities(space_charge_region_grid, self.phi, self.temp)
         space_charge_region_mobile_defect_density = space_charge_region_sites.subgrid_calculate_defect_density(space_charge_region_grid, self.grid, self.phi, self.temp)
         # TODO: According to Jacob this only scales the mobility of space-charge region but not the
         # TODO: bulk region, or vice-versa depending on whether it is switched on or not?
         if mobility_scaling:
-             mobile_defect_conductivity = space_charge_region_mobile_defect_density * ( 1 - space_charge_region_mobile_defect_mf ) * charge * mobilities
+             mobile_defect_conductivity = space_charge_region_mobile_defect_density * (1 - space_charge_region_mobile_defect_mf) * charge * mobilities
         else:
             mobile_defect_conductivity = space_charge_region_mobile_defect_density * charge * mobilities
         # TODO: This example bulk region can overlap with the space-charge region for cells that are similar lengths to the space-charge width, and will give spurious results.
         # TODO: Possible solution: We can directly compute the bulk resistivity from the bulk site density, without having to query the space-charge model.
         # TODO: Jacob to share his working code for this from his solver.
         bulk_x_max = self.bulk_x_min + space_charge_region_width
-        min_bulk_index, max_bulk_index = self.find_index( self.subgrids[species], self.bulk_x_min, bulk_x_max )
-        self.bulk_limits = self.calculate_offset( self.subgrids[species], self.bulk_x_min, bulk_x_max )
-        bulk_mobile_defect_sites = self.create_subregion_sites( self.subgrids[species], self.bulk_x_min, bulk_x_max )
-        bulk_mobile_defect_grid = Grid.from_set_of_sites( bulk_mobile_defect_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c )
-        bulk_mobile_defect_density = bulk_mobile_defect_grid.set_of_sites.subgrid_calculate_defect_density( bulk_mobile_defect_grid, self.grid, self.phi, self.temp )
+        min_bulk_index, max_bulk_index = self.find_index(self.subgrids[species], self.bulk_x_min, bulk_x_max)
+        self.bulk_limits = self.calculate_offset(self.subgrids[species], self.bulk_x_min, bulk_x_max)
+        bulk_mobile_defect_sites = self.create_subregion_sites(self.subgrids[species], self.bulk_x_min, bulk_x_max)
+        bulk_mobile_defect_grid = Grid.from_set_of_sites(bulk_mobile_defect_sites, self.bulk_limits, self.bulk_limits, self.grid.b, self.grid.c)
+        bulk_mobile_defect_density = bulk_mobile_defect_grid.set_of_sites.subgrid_calculate_defect_density(bulk_mobile_defect_grid, self.grid, self.phi, self.temp )
         bulk_region_mobile_defect_mf = bulk_mobile_defect_sites.calculate_probabilities(bulk_mobile_defect_grid, self.phi, self.temp)
         # TODO: According to Jacob this only scales the mobility of space-charge region but not the
         # TODO: bulk region, or vice-versa depending on whether it is switched on or not?
@@ -402,18 +400,18 @@ class Calculation:
             bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities
         else:
             bulk_mobile_defect_conductivity = bulk_mobile_defect_density * charge * mobilities * (1-bulk_region_mobile_defect_mf)
-        space_charge_array = np.column_stack( ( mobile_defect_conductivity, space_charge_region_grid.x ) )
-        bulk_array = np.column_stack( ( bulk_mobile_defect_conductivity, bulk_mobile_defect_grid.x ) )
+        space_charge_array = np.column_stack((mobile_defect_conductivity, space_charge_region_grid.x))
+        bulk_array = np.column_stack((bulk_mobile_defect_conductivity, bulk_mobile_defect_grid.x))
         # TODO: This uses an incorrect definition of the perpendicular resistivity!!!
         # TODO: Jacob has fixed this!!
         # TODO: Should be refactored into its own function.
         if mobilities != 0.0:
-            space_charge_perpendicular = sum( space_charge_region_grid.delta_x / mobile_defect_conductivity )
-            self.average_bulk_mobile_defect_density = sum(bulk_mobile_defect_grid.delta_x * bulk_mobile_defect_density ) / sum(bulk_mobile_defect_grid.delta_x)
-            bulk_perpendicular = sum( bulk_mobile_defect_conductivity / bulk_mobile_defect_grid.delta_x )
-            space_charge_parallel = sum( mobile_defect_conductivity / space_charge_region_grid.delta_x )
-            bulk_parallel = sum( bulk_mobile_defect_grid.delta_x / bulk_mobile_defect_conductivity )
-            perpendicular_conductivity_ratio = 1 / ( space_charge_perpendicular * bulk_perpendicular )
+            space_charge_perpendicular = sum(space_charge_region_grid.delta_x / mobile_defect_conductivity)
+            self.average_bulk_mobile_defect_density = sum(bulk_mobile_defect_grid.delta_x * bulk_mobile_defect_density) / sum(bulk_mobile_defect_grid.delta_x)
+            bulk_perpendicular = sum(bulk_mobile_defect_conductivity / bulk_mobile_defect_grid.delta_x)
+            space_charge_parallel = sum(mobile_defect_conductivity / space_charge_region_grid.delta_x)
+            bulk_parallel = sum(bulk_mobile_defect_grid.delta_x / bulk_mobile_defect_conductivity)
+            perpendicular_conductivity_ratio = 1 / (space_charge_perpendicular * bulk_perpendicular)
             parallel_conductivity_ratio = space_charge_parallel * bulk_parallel
         else:
             perpendicular_conductivity_ratio = 0.0
@@ -437,7 +435,7 @@ class Calculation:
         full_parallel_conductivity_data = []
         full_perpendicular_conductivity_data = []
         for label in self.site_labels:
-            c_per, c_par = ( self.calculate_mobile_defect_conductivities( pos_or_neg_scr, scr_limit, label, mobility_scaling  ))
+            c_per, c_par = (self.calculate_mobile_defect_conductivities(pos_or_neg_scr, scr_limit, label, mobility_scaling))
             full_parallel_conductivity_data.append(c_par)
             full_perpendicular_conductivity_data.append(c_per)
         self.perpendicular_resistivity_ratio = 1.0 / sum(full_perpendicular_conductivity_data)
@@ -475,7 +473,7 @@ class Calculation:
         """
         if self.perpendicular_resistivity_ratio < 1.36:
             raise ValueError( "Resistivity ratio < 1.36. Solution not on a real branch." )
-        self.ms_phi = (-mpmath.lambertw(-1/(2*self.perpendicular_resistivity_ratio),k=-1)) * ( ( boltzmann_eV * self.temp ) / valence )
+        self.ms_phi = (-mpmath.lambertw(-1/(2*self.perpendicular_resistivity_ratio),k=-1)) * ((boltzmann_eV * self.temp) / valence)
 
     def calculate_debye_length(self) -> None:
         """Calculate the `Debye length`_.
@@ -488,7 +486,7 @@ class Calculation:
             None
 
         """
-        self.debye_length = np.sqrt( ( self.dielectric * vacuum_permittivity * boltzmann_eV * self.temp ) / ( 2 * ( fundamental_charge ** 2 ) * self.average_bulk_mobile_defect_density ) )
+        self.debye_length = np.sqrt((self.dielectric * vacuum_permittivity * boltzmann_eV * self.temp) / (2 * (fundamental_charge ** 2) * self.average_bulk_mobile_defect_density))
 
     def calculate_space_charge_width(self,
                                      valence: float) -> None:
@@ -499,7 +497,7 @@ class Calculation:
 	    valence (float): The charge of the mobile defect species.
 
         """
-        self.space_charge_width = 2 * ( self.debye_length * math.sqrt( max(self.phi) / ( ( boltzmann_eV * self.temp ) / valence ) ) )
+        self.space_charge_width = 2 * (self.debye_length * math.sqrt( max(self.phi) / ((boltzmann_eV * self.temp) / valence)))
 
 
     def mole_fractions(self) -> None:

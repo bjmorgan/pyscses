@@ -2,6 +2,8 @@ import unittest
 from pyscses.set_of_sites import SetOfSites
 from pyscses.defect_species import DefectSpecies
 from pyscses.defect_at_site import DefectAtSite
+from pyscses.site_data import SiteData
+from pyscses.defect_data import DefectData
 from pyscses.site import Site, LabelError
 from unittest.mock import Mock, patch
 from pyscses.constants import fundamental_charge
@@ -194,6 +196,71 @@ class TestSite(unittest.TestCase):
         self.assertEqual(self.site.charge(phi=1.0, temp=298.0),
                          expected_value)
 
+    def test_from_site_data(self):
+        mock_defect_species = create_mock_defect_species(2)
+        mock_defect_species[0].label = 'X'
+        mock_defect_species[1].label = 'Y'
+        mock_site_data = Mock(spec=SiteData)
+        mock_site_data.label = 'A'
+        mock_site_data.valence = -2.0
+        mock_site_data.x = 1.2345
+        mock_defect_data = [Mock(spec=DefectData), Mock(spec=DefectData)]
+        mock_defect_data[0].label = 'X'
+        mock_defect_data[1].label = 'Y'
+        mock_defect_data[0].energy = -1.0
+        mock_defect_data[1].energy = +1.0
+        mock_site_data.defect_data = mock_defect_data
+        with patch('pyscses.site.Site', autospec=True) as mock_Site:
+            site = Site.from_site_data(site_data=mock_site_data,
+                                       defect_species=mock_defect_species)
+        mock_Site.assert_called_with(label=mock_site_data.label,
+                                     x=mock_site_data.x,
+                                     defect_species=mock_defect_species,
+                                     defect_energies=[-1.0, +1.0],
+                                     valence=-2.0)
+
+    def test_from_site_data_only_passes_necessary_defect_species(self):
+        mock_defect_species = create_mock_defect_species(3)
+        mock_defect_species[0].label = 'X'
+        mock_defect_species[1].label = 'Y'
+        mock_defect_species[2].label = 'Z'
+        mock_site_data = Mock(spec=SiteData)
+        mock_site_data.label = 'A'
+        mock_site_data.valence = -2.0
+        mock_site_data.x = 1.2345
+        mock_defect_data = [Mock(spec=DefectData), Mock(spec=DefectData)]
+        mock_defect_data[0].label = 'X'
+        mock_defect_data[1].label = 'Y'
+        mock_defect_data[0].energy = -1.0
+        mock_defect_data[1].energy = +1.0
+        mock_site_data.defect_data = mock_defect_data
+        with patch('pyscses.site.Site', autospec=True) as mock_Site:
+            site = Site.from_site_data(site_data=mock_site_data,
+                                       defect_species=mock_defect_species)
+        mock_Site.assert_called_with(label=mock_site_data.label,
+                                     x=mock_site_data.x,
+                                     defect_species=mock_defect_species[:2],
+                                     defect_energies=[-1.0, +1.0],
+                                     valence=-2.0)
+
+    def test_from_site_data_raises_ValueError_if_necessary_defect_species_are_not_passed(self):
+        mock_defect_species = create_mock_defect_species(3)
+        mock_defect_species[0].label = 'X'
+        mock_defect_species[1].label = 'W'
+        mock_site_data = Mock(spec=SiteData)
+        mock_site_data.label = 'A'
+        mock_site_data.valence = -2.0
+        mock_site_data.x = 1.2345
+        mock_defect_data = [Mock(spec=DefectData), Mock(spec=DefectData)]
+        mock_defect_data[0].label = 'X'
+        mock_defect_data[1].label = 'Y'
+        mock_defect_data[0].energy = -1.0
+        mock_defect_data[1].energy = +1.0
+        mock_site_data.defect_data = mock_defect_data
+        with patch('pyscses.site.Site', autospec=True) as mock_Site:
+            with self.assertRaises(ValueError):
+                site = Site.from_site_data(site_data=mock_site_data,
+                                           defect_species=mock_defect_species)
 
 if __name__ == '__main__':
     unittest.main()

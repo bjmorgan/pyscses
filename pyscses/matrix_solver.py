@@ -100,7 +100,7 @@ class MatrixSolver:
             rho (array): Updated charge density on a one-dimensional grid.
 
         """
-        rho = self.grid.rho( phi_old, self.temp )
+        rho = self.grid.rho(phi_old, self.temp)
         if self.boundary_conditions == 'periodic':
             rho_prime = np.sum(rho * self.grid.delta_x) / np.sum(self.grid.delta_x)
             rho -= rho_prime
