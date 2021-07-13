@@ -89,7 +89,7 @@ class Site:
                                      mobility=d.mobility,
                                      energy=e,
                                      site=self,
-                                     fixed=d.fixed)
+                                     can_equilibrate=d.can_equilibrate)
             for d, e in zip(defect_species, defect_energies)]
         if scaling:
             self.scaling = scaling
@@ -98,9 +98,10 @@ class Site:
         self.grid_point: Optional[GridPoint] = None
         self.valence = valence
         self.saturation_parameter = saturation_parameter
-        self.fixed_defects = tuple(d for d in self.defects if d.fixed)
-        self.mobile_defects = tuple(d for d in self.defects if not d.fixed)
+        self.fixed_defects = tuple(d for d in self.defects if not d.can_equilibrate)
+        self.mobile_defects = tuple(d for d in self.defects if d.can_equilibrate)
         self.alpha = self.saturation_parameter - sum((d.mole_fraction for d in self.fixed_defects))
+        self.fixed_charge = self.calculate_fixed_charge()
 
     def defect_with_label(self,
                           label: str) -> DefectAtSite:
@@ -117,6 +118,23 @@ class Site:
             raise LabelError(f"\"{label}\" does not match any of the defect species labels for this site.")
         else:
             return next(d for d in self.defects if d.label == label)
+
+    def calculate_fixed_charge(self) -> float:
+        """ Calculates the constant charge on the site using the site valence and fixed defect DefectSpecies
+
+        Returns:
+            float: The fixed charge on the site
+
+        """
+        fixed_charge = self.valence
+
+        for defect in self.defects:
+            if not defect.can_equilibrate:
+                fixed_charge += defect.mole_fraction * defect.valence
+
+        fixed_charge *= fundamental_charge
+
+        return fixed_charge
 
     def energies(self) -> List[float]:
         """Returns a list of the segregation energies for each defect from self.defects """
@@ -160,9 +178,33 @@ class Site:
                        sum([d.mole_fraction * (boltzmann_factors[d.label] - 1.0)
                             for d in self.mobile_defects]))
         for defect in self.defects:
-            if defect.fixed:
+            if not defect.can_equilibrate:
                 probabilities_dict[defect.label] = defect.mole_fraction
             else:
+                numerator = self.alpha * defect.mole_fraction * boltzmann_factors[defect.label]
+                probabilities_dict[defect.label] = numerator / denominator
+        return probabilities_dict
+
+    def mobile_defect_probabilities(self,
+                      phi: float,
+                      temp: float) -> Dict[str, float]:
+        """Calculates the probabilities of this site being occupied by each mobile defect species.
+
+        Args:
+            phi (float): Electrostatic potential at this site in Volts.
+            temp (float): Temperature in Kelvin.
+
+        Returns:
+            dict(str, float): Probabilities of site occupation for each mobile defect species.
+
+        """
+        probabilities_dict = {}
+        boltzmann_factors = {d.label: d.boltzmann_factor(phi, temp) for d in self.mobile_defects}
+        denominator = (self.alpha +
+                       sum([d.mole_fraction * (boltzmann_factors[d.label] - 1.0)
+                            for d in self.mobile_defects]))
+        for defect in self.defects:
+            if defect.can_equilibrate:
                 numerator = self.alpha * defect.mole_fraction * boltzmann_factors[defect.label]
                 probabilities_dict[defect.label] = numerator / denominator
         return probabilities_dict
@@ -209,6 +251,24 @@ class Site:
         charge = sum([defect_probabilities[d.label] * d.valence
                       for d in self.defects]) * self.scaling
         charge += self.valence
+        charge *= fundamental_charge
+        return float(charge)
+
+    def charge_from_mobile_defects(self, phi: float, temp: float) -> float:
+        """
+        Calculates the charge from mobile defects at this site (in Coulombs):
+
+        Args:
+            phi (float): Electrostatic potential at this site in volts
+            temp (float): Temperature in Kelvin
+
+        Returns:
+            float: The charge from mobile defects at this site.
+        """
+
+        mobile_defect_probabilities = self.mobile_defect_probabilities(phi = phi, temp = temp)
+        charge = sum([mobile_defect_probabilities[d.label] * d.valence
+                      for d in self.defects]) * self.scaling
         charge *= fundamental_charge
         return float(charge)
 
