@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyscses.set_of_sites import SetOfSites
 
+
 def phi_at_x(phi: np.ndarray,
              coordinates: np.ndarray,
              x: float) -> float:
@@ -157,10 +158,32 @@ class Grid:
             for defect_species in site.defect_species:
                 if defect_species not in self.defect_species:
                     self.defect_species.append(defect_species)
+        # Update fixed charge on grid points
+        for point in self.points:
+            point.update_fixed_charge()
+            point.separate_by_site_type()
+        # Calculate the fixed charge as an array
+        self.fixed_charge_on_grid = self.calculate_fixed_charge()
 
     def __getitem__(self,
                     key: int) -> GridPoint:
         return self.points[key]
+
+
+
+    def calculate_fixed_charge(self) -> np.ndarray:
+        """
+        Calculate the fixed charge on each grid point as an array
+
+        Returns:
+            np.ndarray: the fixed charge across the grid
+        """
+
+        fixed_charge_on_grid = np.zeros_like(self.x)
+        for idx, point in enumerate(self.points):
+            fixed_charge_on_grid[idx] = point.fixed_charge
+
+        return fixed_charge_on_grid
 
     def charge(self,
                phi: np.ndarray,
@@ -186,6 +209,30 @@ class Grid:
                              for site in point.sites])
         return np.array(charge)
 
+    def mobile_charge(self,
+               phi: np.ndarray,
+               temp: float) -> np.ndarray:
+        """
+        Calculates the charge from mobile defects at each point on a grid.
+
+        Args:
+            phi (np.array): Electrostatic potential on a 1D grid.
+            temp (float): Temperature in Kelvin.
+
+        Returns:
+            np.array: Charge from mobile defects at each point on a 1D grid.
+        """
+        mobile_charge = np.zeros_like(self.x)
+        for i, point in enumerate(self.points):
+            mobile_charge[i] = sum([site.charge_from_mobile_defects(
+                                phi=phi_at_x(
+                                    phi=phi,
+                                    coordinates=self.x,
+                                    x=site.x),
+                                temp=temp)
+                             for site in point.variable_sites])
+        return np.array(mobile_charge)
+
     def rho(self,
             phi: np.ndarray,
             temp: float) -> np.ndarray:
@@ -199,8 +246,9 @@ class Grid:
         Returns:
             np.array: The charge density at each point on a grid.
         """
-        rho = np.zeros_like(self.x)
-        rho = self.charge(phi, temp) / self.volumes
+
+        rho = self.fixed_charge_on_grid + self.mobile_charge(phi, temp)
+        rho = rho / self.volumes
         return rho
 
 # BEN Is this ever called?
