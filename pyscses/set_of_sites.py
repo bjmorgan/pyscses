@@ -101,6 +101,7 @@ class SetOfSites:
             array: probabilities of defects occupying each site using their grid points
 
         """
+        # TODO: This only works if all defects are mobile. Needs replacing.
         # TODO: This is Jacob's fixed code, but it is inefficient and slow.
         probability = np.zeros_like(grid.x)
         for i,j in enumerate(grid.x):
@@ -197,8 +198,8 @@ class SetOfSites:
         defect_species = {d.label: d for d in defect_species}
         for label, d_label in zip(site_labels, defect_labels):
             scaling = len( all_sites.subset(label)) / len(grid)
-            continuum_grid = Grid(grid, b, c, limits, limits_for_laplacian, all_sites.subset(label))
-            average_energies = np.array([site.average_local_energy(method='mean')[0] for site in all_sites.subset(label)])
+            continuum_grid = Grid(grid, b, c, limits, limits_for_laplacian, all_sites.subset(label)) # is this variable used?
+            average_energies = np.array([site.average_local_energy(method='mean')[0] for site in all_sites.subset(label)]) # this averages energies over all defects at each site
             new_energies = griddata(([site.x for site in all_sites.subset(label)]),
                                      average_energies,
                                      grid,
@@ -214,7 +215,8 @@ class SetOfSites:
     @classmethod
     def from_sites_data(cls: object,
                        sites_data: List[SiteData],
-                       defect_species: List[DefectSpecies]) -> SetOfSites:
+                       defect_species: List[DefectSpecies],
+                       verbose: bool = False) -> SetOfSites:
         """
         Takes the data from the input file and creates a SetOfSites object for those sites.
         The input data file is a .txt file where each line in the file corresponds to a site. The values in each line are formatted and separated into the corresponding properties before creating a Site object for each site.
@@ -224,12 +226,19 @@ class SetOfSites:
     	    limits (list): Minimum and maximum x coordinated defining the calculation region.
             defect_species (object): Class object containing information about the defect species present in the system.
             site_charge (bool): The site charge refers to the contribution to the overall charge of a site given by the original, non-defective species present at that site. True if the site charge contribution is to be included in the calculation, False if it is not to be included.
-
+            verbose (bool): Print defect information Default is 'False.'
     	Returns:
     	    :obj:`SetOfSites`: `SetOfSites` object for the input data.
 
      	"""
         sites = [Site.from_site_data(sd, defect_species=defect_species) for sd in sites_data]
+        if verbose:
+            for d in defect_species:
+                if d.can_equilibrate:
+                    equilibrate = "can"
+                else:
+                    equilibrate = "cannot"
+                print(f"Defect species {d.label} has valence {d.valence}, bulk mole fraction {d.mole_fraction}, and mobility {d.mobility}. Defect species {d.label} {equilibrate} equilibrate.")
         return SetOfSites(sites)
 
 # BEN: Is this used?
