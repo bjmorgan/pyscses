@@ -21,7 +21,7 @@ def create_mock_defect_species(n):
         m.mole_fraction = mole_fraction.pop()
         m.valence = valence.pop()
         m.mobility = mobility.pop()
-        m.fixed = False
+        m.can_equilibrate = True
         mock_defect_species.append(m)
     return mock_defect_species
 
@@ -39,7 +39,7 @@ def create_mock_defects_at_site(n):
         m.mole_fraction = mole_fraction.pop()
         m.mobility = mobility.pop()
         m.energy = energies.pop()
-        m.fixed = False
+        m.can_equilibrate = True
         mock_defects_at_site.append(m)
     return mock_defects_at_site
 
@@ -88,11 +88,11 @@ class TestSiteInit(unittest.TestCase):
     def test_site_init_with_mixed_mobile_and_fixed_defects(self):
         mock_defect_species = create_mock_defect_species(3)
         mock_defects_at_site = create_mock_defects_at_site(3)
-        mock_defects_at_site[0].fixed = False
+        mock_defects_at_site[0].can_equilibrate = True
         mock_defects_at_site[0].mole_fraction = 0.4
-        mock_defects_at_site[1].fixed = True
+        mock_defects_at_site[1].can_equilibrate = False
         mock_defects_at_site[1].mole_fraction = 0.3
-        mock_defects_at_site[2].fixed = True
+        mock_defects_at_site[2].can_equilibrate = False
         mock_defects_at_site[2].mole_fraction = 0.2
         with patch('pyscses.site.DefectAtSite', autospec=True) as mock_DefectAtSite:
             mock_DefectAtSite.side_effect = mock_defects_at_site
@@ -173,7 +173,7 @@ class TestSite(unittest.TestCase):
         self.site.defects[0].boltzmann_factor = Mock(return_value=0.1)
         self.site.defects[0].mole_fraction = 0.2
         self.site.defects[0].label = 'A'
-        self.site.defects[0].fixed = True
+        self.site.defects[0].can_equilibrate = False
         self.site.alpha = 0.8
         self.site.fixed_defects = (self.site.defects[0],)
         self.site.defects[1].boltzmann_factor = Mock(return_value=0.1)

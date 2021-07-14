@@ -86,6 +86,7 @@ class TestGrid(unittest.TestCase):
                             Mock( spec=GridPoint )]
         for g in mock_grid_points:
             g.sites = []
+            g.fixed_charge = 0
         mock_GridPoint.side_effect = mock_grid_points
         x_coordinates = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
         b = 0.25
