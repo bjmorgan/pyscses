@@ -20,6 +20,36 @@ class GridPoint:
         self.x = x
         self.volume = volume
         self.sites: List[Site] = []
+        self.variable_sites , self.static_sites = [] , []
+        self.fixed_charge = 0
+
+    def separate_by_site_type(self) -> None:
+        """
+        Separate the grid point into sites containing at least one defect able to
+        equilibrate (variable_sites) and sites containing zero defects able to
+        equilibrate (static_sites).
+
+        Returns:
+            Updates the self.variable_sites and self.static_sites variables as:
+            List[Site] : a list of Site objects that contain at least one mobile defect
+            List[Site] : a list of Site objects that contain zero mobile defects
+        """
+
+
+        for site in self.sites:
+            if len(site.mobile_defects) > 0:
+                self.variable_sites.append(site)
+            else:
+                self.static_sites.append(site)
+
+
+    def update_fixed_charge(self) -> float:
+        """
+        Update the fixed charge on the grid point. It is initialised as zero, but
+        should be updated when all sites are added to the grid point. This
+        function facilitates that.
+        """
+        self.fixed_charge = sum((s.fixed_charge for s in self.sites))
 
     def average_site_energy(self,
                             method: str = 'mean') -> Optional[np.ndarray]:
