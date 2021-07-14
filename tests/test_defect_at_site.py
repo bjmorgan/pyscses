@@ -18,9 +18,9 @@ class TestDefectAtSiteInit(unittest.TestCase):
         self.assertEqual(defect_at_site.mole_fraction, 0.5)
         self.assertEqual(defect_at_site.mobility, 2.3)
         self.assertEqual(defect_at_site.site, mock_site),
-        self.assertEqual(defect_at_site.fixed, False)
+        self.assertEqual(defect_at_site.can_equilibrate, True)
 
-    def test_init_with_fixed_equals_true(self):
+    def test_init_with_can_equilibrate_equals_false(self):
         mock_site = Mock(spec=Site)
         defect_at_site = DefectAtSite(label='A',
                                       valence=1.0,
@@ -28,8 +28,8 @@ class TestDefectAtSiteInit(unittest.TestCase):
                                       mobility=2.3,
                                       energy=-1.5,
                                       site=mock_site,
-                                      fixed=True)
-        self.assertEqual(defect_at_site.fixed, True)
+                                      can_equilibrate=False)
+        self.assertEqual(defect_at_site.can_equilibrate, False)
 
 class TestDefectAtSite(unittest.TestCase):
 

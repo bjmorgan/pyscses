@@ -7,8 +7,8 @@ class DefectSpecies(object):
         valence (float): The formal charge for this defect species, in atomic units.
         mole_fraction (float): The bulk mole fraction of this defect species.
         mobility (float): Mobility of this defect species. Default is `0.0`.
-        fixed (bool): Specifies whether this defect species is allowed to redistribute to achieve an equilibrium distribution,
-            or is kept at its input distribution. Default is `False`.
+        can_equilibrate (bool): Specifies whether this defect species is allowed to redistribute to achieve an equilibrium distribution,
+        or is kept at its input distribution. Default is `True`.
 
     """
 
@@ -17,7 +17,7 @@ class DefectSpecies(object):
                  valence: float,
                  mole_fraction: float,
                  mobility: float = 0.0,
-                 fixed: bool = False) -> None:
+                 can_equilibrate: bool = True) -> None:
         if not isinstance(label, str):
             raise TypeError("When initialising a DefectSpecies object, the label argument must be a string.")
         if not isinstance(valence, float):
@@ -28,4 +28,4 @@ class DefectSpecies(object):
         self.valence = valence
         self.mole_fraction = mole_fraction
         self.mobility = mobility
-        self.fixed = fixed
+        self.can_equilibrate = can_equilibrate

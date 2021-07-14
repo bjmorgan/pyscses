@@ -21,7 +21,7 @@ class DefectAtSite:
         mobility (float): The bulk mobility of the defect species. Default = 0.0. TODO Where is this default mobility set?
         energy (float): The segregation energy for the defect when occupying the respective site.
         site (:obj:`Site`): The pyscses.Site object that corresponding to each defect at each x coordinate.
-        fixed (bool): set whether this defect species can redistribute to an equilibrium distribution. Default=False.
+        can_equilibrate (bool): set whether this defect species can redistribute to an equilibrium distribution. Default=True.
 
     """
     def __init__(self,
@@ -31,14 +31,14 @@ class DefectAtSite:
                  mobility: float,
                  energy: float,
                  site: Site,
-                 fixed: bool = False) -> None:
+                 can_equilibrate: bool = True) -> None:
         self.label = label
         self.valence = valence
         self.mole_fraction = mole_fraction
         self.mobility = mobility
         self.energy = energy
         self.site = site
-        self.fixed = fixed
+        self.can_equilibrate = can_equilibrate
 
     def potential_energy(self,
                          phi: float) -> float:

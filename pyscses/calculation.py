@@ -243,15 +243,27 @@ class Calculation:
 
         conv = 1.0
         niter = 0
-        while conv > self.convergence:
-            predicted_phi, rho = poisson_solver.solve(phi)
-            if approximation == 'gouy-chapman':
+        if approximation == 'gouy-chapman':
+            while conv > self.convergence:
+                predicted_phi, rho = poisson_solver.solve(phi)
                 average_phi = self.calculate_average(grid=self.grid,
-                                             min_cutoff=self.bulk_x_min,
-                                             max_cutoff=self.bulk_x_max,
-                                             sc_property=predicted_phi)
+                                         min_cutoff=self.bulk_x_min,
+                                         max_cutoff=self.bulk_x_max,
+                                         sc_property=predicted_phi)
                 predicted_phi -= average_phi
-            elif approximation == 'mott-schottky':
+
+                phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
+                conv =  max(abs((predicted_phi - phi ))) # Maximum change in phi at all grid points
+                niter += 1
+                if verbose:
+                    if niter % 500 == 0:
+                        print(f'Iteration: {niter} -> Convergence: {conv} / {self.convergence}')
+
+
+
+        elif approximation == 'mott-schottky':
+            while conv > self.convergence:
+                predicted_phi, rho = poisson_solver.solve(phi)
                 subgrid = self.grid.subgrid(self.site_labels[0])
                 predicted_phi_subgrid = np.array([phi_at_x(phi=predicted_phi,
                                                    coordinates=self.grid.x,
@@ -263,13 +275,12 @@ class Calculation:
                                                        sc_property=predicted_phi_subgrid)
                 predicted_phi -= average_predicted_phi
             # TODO: This is inefficient. Jacob has some ideas for how to improve things.
-            # TODO: This definition of convergence should not be averaged over all sites.
-            phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
-            conv = sum((predicted_phi - phi )**2) / len(self.grid.x)
-            niter += 1
-            if verbose:
-                if niter % 500 == 0:
-                    print(f'Iteration: {niter} -> Convergence: {conv} / {self.convergence}')
+                phi =  self.alpha * predicted_phi + ( 1.0 - self.alpha ) * phi
+                conv = max(abs((predicted_phi - phi ))) # Maximum change in phi at all grid points
+                niter += 1
+                if verbose:
+                    if niter % 500 == 0:
+                        print(f'Iteration: {niter} -> Convergence: {conv} / {self.convergence}')
         if verbose:
             print(f'Converged at iteration {niter} -> Convergence: {conv} / {self.convergence}')
         self.phi = phi

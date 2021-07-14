@@ -11,7 +11,7 @@ def sites_data_from_file(filename: str,
 
     Performs the following operations on the site data:
         1. Sorts the site data so that sites are sorted with respect to their x coordinate.
-        2. Performs clustering of sites with x coordinates equal within a specified threshold (Default is 0.01 nm).
+        2. Performs clustering of sites with x coordinates equal within a specified threshold (Default is 0.1 nm).
         3. (optional) Use explicit site charges. If `False` all site charges
             are set to zero. Default is `False`.
 
